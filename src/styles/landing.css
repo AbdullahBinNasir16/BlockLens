@@ -1,0 +1,629 @@
+/* ============================================================
+   Landing
+   ============================================================ */
+
+.bl-landing {
+  --pad: clamp(20px, 4.4vw, 64px);
+}
+
+/* ---------------- nav ---------------- */
+.bl-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px var(--pad);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(1.1) blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--med) var(--ease);
+}
+.bl-nav__right {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+.bl-nav__link {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  transition: color var(--fast) var(--ease);
+}
+.bl-nav__link:hover {
+  color: var(--ink);
+}
+
+/* ---------------- buttons ---------------- */
+.bl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 99px;
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background var(--fast) var(--ease), transform var(--fast) var(--ease);
+  border: 1px solid var(--ink);
+}
+.bl-btn:hover {
+  background: var(--ink-2);
+}
+.bl-btn:active {
+  transform: translateY(1px);
+}
+.bl-btn--sm {
+  font-size: 10.5px;
+  padding: 9px 16px 8px;
+}
+.bl-btn--lg {
+  font-size: 12px;
+  padding: 15px 26px 14px;
+}
+.bl-btn--xl {
+  font-size: 13px;
+  padding: 19px 40px 18px;
+  letter-spacing: 0.12em;
+}
+.bl-btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule-strong);
+}
+.bl-btn--ghost:hover {
+  background: var(--paper-sunken);
+  border-color: var(--ink);
+}
+
+/* ---------------- hero ---------------- */
+.bl-hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad) 0;
+  overflow: hidden;
+}
+.bl-hero__plate {
+  position: absolute;
+  /* stop short of the status strip so the lattice never runs under it */
+  inset: 0 0 40px 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.bl-plate {
+  width: 100%;
+  height: 100%;
+}
+.bl-plate__tx path {
+  animation: bl-tx 9s linear infinite;
+}
+@keyframes bl-tx {
+  from {
+    stroke-dashoffset: 1614;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.bl-plate__pending {
+  animation: bl-pending 2.6s var(--ease) infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes bl-pending {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.28);
+  }
+}
+/* stop every hero animation the moment it leaves the screen */
+.bl-hero[data-off='true'] .bl-plate__tx path,
+.bl-hero[data-off='true'] .bl-plate__pending {
+  animation-play-state: paused;
+}
+
+.bl-hero__content {
+  position: relative;
+  z-index: 1;
+  /* must stay inside the plate's reserved type zone */
+  max-width: 700px;
+  padding: 2vh 0 5vh;
+}
+.bl-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 24px;
+}
+.bl-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--pos);
+  animation: bl-live 2.4s var(--ease) infinite;
+}
+@keyframes bl-live {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.bl-hero__h {
+  margin-bottom: 34px;
+}
+
+/* input row */
+.bl-inputrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+  border: 1px solid var(--ink);
+  border-radius: 26px;
+  background: var(--paper);
+}
+.bl-inputrow__field {
+  flex: 1 1 300px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bl-input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--rule-strong);
+  background: transparent;
+  padding: 6px 0 8px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  outline: none;
+  transition: border-color var(--fast) var(--ease);
+}
+.bl-input:focus {
+  border-bottom-color: var(--ink);
+}
+.bl-input::placeholder {
+  color: var(--ink-5);
+}
+.bl-inputrow__chains {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+}
+.bl-chainchip {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 13px 6px;
+  border-radius: 99px;
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-3);
+  transition: all var(--fast) var(--ease);
+}
+.bl-chainchip:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+.bl-chainchip[data-on='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.bl-sample {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 6px 14px 5px;
+  border-radius: 99px;
+  border: 1px dashed var(--rule-strong);
+  transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+.bl-sample:hover {
+  border-color: var(--ink-3);
+  background: var(--paper-sunken);
+}
+.bl-sample__addr {
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.bl-hero__strip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
+}
+.bl-hero__scroll {
+  margin-left: auto;
+}
+
+/* ---------------- moon vs rug ---------------- */
+.bl-mr {
+  height: 320vh;
+  position: relative;
+}
+.bl-mr__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.bl-mr__inner {
+  width: 100%;
+  padding: 0 var(--pad);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 3vh, 40px);
+}
+.bl-mr__eyebrow {
+  text-align: center;
+}
+.bl-mr__charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 5vw, 90px);
+  align-items: start;
+}
+.bl-mr__fig {
+  margin: 0;
+  min-width: 0;
+}
+.bl-mr__cap {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+  margin-bottom: 14px;
+}
+.bl-mr__name {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.bl-mr__result {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.2vw, 44px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  transition: opacity 200ms var(--ease);
+}
+.bl-mr__svg {
+  width: 100%;
+  height: clamp(150px, 26vh, 290px);
+  overflow: visible;
+}
+.bl-mr__flag {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 12px;
+  transition: opacity 220ms var(--ease);
+}
+.bl-mr__flagdot {
+  width: 18px;
+  height: 18px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+}
+.bl-mr__copy {
+  position: relative;
+  min-height: clamp(70px, 12vh, 140px);
+  text-align: center;
+}
+.bl-mr__l1,
+.bl-mr__l2 {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: opacity, transform;
+}
+.bl-mr__l1 em,
+.bl-mr__l2 em {
+  font-style: italic;
+}
+
+/* ---------------- flow ---------------- */
+.bl-flow {
+  padding: clamp(70px, 12vh, 150px) var(--pad);
+  border-top: 1px solid var(--rule);
+}
+.bl-flow__grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+  gap: clamp(30px, 6vw, 100px);
+  align-items: start;
+}
+.bl-flow__h {
+  margin: 14px 0 34px;
+}
+
+.bl-pipe {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bl-pipe__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  gap: 16px;
+  padding: 0 0 26px;
+  align-items: start;
+}
+.bl-pipe__rail {
+  position: relative;
+  width: 26px;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+}
+.bl-pipe__rail::before {
+  content: '';
+  position: absolute;
+  top: 13px;
+  bottom: -13px;
+  width: 1px;
+  background: var(--rule-strong);
+}
+.bl-pipe__step[data-last='true'] .bl-pipe__rail::before {
+  display: none;
+}
+.bl-pipe__node {
+  position: relative;
+  z-index: 1;
+  width: 11px;
+  height: 11px;
+  border-radius: 99px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  margin-top: 7px;
+}
+.bl-pipe__step[data-last='true'] .bl-pipe__node {
+  background: var(--ink);
+  width: 15px;
+  height: 15px;
+  margin-top: 5px;
+}
+.bl-pipe__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.bl-pipe__k {
+  font-size: 21px;
+  letter-spacing: -0.018em;
+  line-height: 1.2;
+}
+.bl-pipe__step[data-last='true'] .bl-pipe__k {
+  font-size: 25px;
+}
+.bl-pipe__d {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-3);
+  letter-spacing: 0.01em;
+}
+.bl-pipe__n {
+  padding-top: 8px;
+  color: var(--ink-5);
+}
+
+.bl-flow__map {
+  min-width: 0;
+}
+.bl-flow__maplabel {
+  text-align: right;
+  margin-bottom: 6px;
+}
+.bl-radialwrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.bl-radial {
+  width: 100%;
+  height: auto;
+  max-height: 78vh;
+  overflow: visible;
+}
+.bl-radial__center {
+  position: absolute;
+  pointer-events: none;
+}
+.bl-flow__mapnote {
+  text-align: right;
+  margin-top: 6px;
+}
+
+/* ---------------- intro ---------------- */
+.bl-intro {
+  padding: clamp(60px, 10vh, 130px) var(--pad) clamp(50px, 8vh, 100px);
+  border-top: 1px solid var(--rule);
+}
+.bl-intro__top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding-bottom: 34px;
+  border-bottom: 1px solid var(--ink);
+}
+.bl-intro__note {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  max-width: 26ch;
+  text-align: right;
+  line-height: 1.6;
+}
+
+.bl-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-left: 1px solid var(--rule);
+}
+.bl-index__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 22px 24px 26px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  transition: background var(--fast) var(--ease);
+}
+.bl-index__item:hover {
+  background: var(--paper-sunken);
+}
+.bl-index__n {
+  color: var(--ink-5);
+}
+.bl-index__k {
+  font-size: 26px;
+  letter-spacing: -0.024em;
+  line-height: 1.1;
+}
+.bl-index__d {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+
+/* ---------------- cta ---------------- */
+.bl-cta {
+  position: relative;
+  margin-top: clamp(50px, 9vh, 110px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding-top: 90px;
+}
+.bl-cta__arc {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, 90%);
+  height: 120px;
+  pointer-events: none;
+}
+.bl-cta__arc svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------- footer ---------------- */
+.bl-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 26px var(--pad);
+  border-top: 1px solid var(--rule);
+}
+.bl-foot__cols {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+/* ---------------- responsive ---------------- */
+/* Below this the plate is cropped enough that it reaches under the copy.
+   It becomes background texture rather than a diagram. */
+@media (max-width: 1280px) {
+  .bl-hero__plate {
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 1080px) {
+  .bl-flow__grid {
+    grid-template-columns: 1fr;
+  }
+  .bl-flow__maplabel,
+  .bl-flow__mapnote {
+    text-align: left;
+  }
+  .bl-index {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 780px) {
+  .bl-hero {
+    min-height: 88vh;
+  }
+  .bl-hero__plate {
+    opacity: 0.5;
+  }
+  .bl-nav__link {
+    display: none;
+  }
+  .bl-mr {
+    height: 300vh;
+  }
+  .bl-mr__charts {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .bl-mr__svg {
+    height: clamp(110px, 17vh, 180px);
+  }
+  .bl-index {
+    grid-template-columns: 1fr;
+  }
+  .bl-intro__note {
+    text-align: left;
+    max-width: none;
+  }
+  .bl-inputrow {
+    border-radius: 20px;
+  }
+}
