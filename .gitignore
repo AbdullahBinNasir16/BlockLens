@@ -1,0 +1,29 @@
+# Frontend
+node_modules
+dist
+*.tsbuildinfo
+.DS_Store
+*.local
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Local Postgres binaries and data (portable install, not source)
+backend/.local/
+
+# Runtime state, caches and logs; the trained model artifact is kept
+backend/data/*
+!backend/data/models/
+*.log
+*.log.err
+
+# Editor / assistant settings
+.claude/
+.vscode/
+
+# Presentation files (kept outside the code history)
+*.pptx
+*.docx
