@@ -1,0 +1,615 @@
+/* ============================================================
+   BlockLens — KOL directory
+
+   Faces first. Every card leads with the account's own picture, the way
+   a reader recognises these people in the feed; the numbers sit under
+   the face, not the other way round.
+   ============================================================ */
+
+/* not .bl-kols — research.css still carries that name from an older list */
+.bl-kdir {
+  max-width: 1480px;
+}
+.bl-kdir__note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--ink-3);
+}
+
+/* ---------------- filter panel ---------------- */
+
+.bl-kf {
+  margin-top: 26px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+.bl-kf__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 30px;
+}
+.bl-ksearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 260px;
+  max-width: 380px;
+  padding: 9px 12px 9px 18px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 99px;
+  background: var(--paper-raised);
+  color: var(--ink-3);
+  transition: border-color var(--fast) var(--ease);
+}
+.bl-ksearch:focus-within {
+  border-color: var(--ink);
+}
+.bl-ksearch__in {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 16px;
+  color: var(--ink);
+}
+.bl-ksearch__in::placeholder {
+  color: var(--ink-4);
+}
+.bl-ksearch__x {
+  width: 22px;
+  height: 22px;
+  border-radius: 99px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ink-4);
+}
+.bl-ksearch__x:hover {
+  color: var(--ink);
+  background: var(--paper-sunken);
+}
+
+.bl-kf__grp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.bl-kf__l {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-right: 6px;
+}
+.bl-kchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+  padding: 6px 14px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 99px;
+  background: var(--paper-raised);
+  color: var(--ink-2);
+  transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+.bl-kchip:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.bl-kchip[data-on='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.bl-kchip--chain {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  padding: 7px 12px 6px 8px;
+}
+.bl-kchip--chain img {
+  border-radius: 99px;
+}
+
+.bl-kf__ranges {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px 34px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule-faint);
+}
+
+/* ---------------- threshold slider ---------------- */
+
+.bl-range__h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.bl-range__l {
+  font-size: 15.5px;
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+}
+.bl-range__v {
+  font-size: 12.5px;
+  color: var(--ink-4);
+  white-space: nowrap;
+}
+.bl-range[data-active='true'] .bl-range__l,
+.bl-range[data-active='true'] .bl-range__v {
+  color: var(--ink);
+}
+.bl-range__rail {
+  position: relative;
+  height: 32px;
+  margin-top: 6px;
+}
+.bl-range__track,
+.bl-range__kept {
+  position: absolute;
+  top: 21px;
+  height: 2px;
+  border-radius: 99px;
+}
+.bl-range__track {
+  left: 0;
+  right: 0;
+  background: var(--rule-strong);
+}
+/* the kept stretch is inked — it is the part that answers the question */
+.bl-range__kept {
+  right: 0;
+  background: var(--ink);
+}
+.bl-range__ticks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 3px;
+  height: 11px;
+}
+.bl-range__tick {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 11px;
+  background: var(--ink-2);
+  transform: translateX(-0.5px);
+  transition: background var(--fast) var(--ease);
+}
+.bl-range__tick[data-in='false'] {
+  background: var(--rule-strong);
+}
+/* the native input is widened by the thumb's radius on each side, so the
+   thumb's centre lands exactly on the track's value */
+.bl-range__input {
+  position: absolute;
+  left: -8px;
+  width: calc(100% + 16px);
+  top: 13px;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+.bl-range__input:focus {
+  outline: none;
+}
+.bl-range__input::-webkit-slider-runnable-track {
+  height: 18px;
+  background: transparent;
+}
+.bl-range__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  border-radius: 99px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  box-shadow: 0 0 0 3px var(--paper);
+  transition: background var(--fast) var(--ease);
+}
+.bl-range__input::-moz-range-track {
+  background: transparent;
+}
+.bl-range__input::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 99px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  box-shadow: 0 0 0 3px var(--paper);
+}
+.bl-range[data-active='true'] .bl-range__input::-webkit-slider-thumb {
+  background: var(--ink);
+}
+.bl-range[data-active='true'] .bl-range__input::-moz-range-thumb {
+  background: var(--ink);
+}
+.bl-range__input:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 4.5px var(--ink);
+}
+.bl-range__n {
+  display: block;
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: var(--ink-4);
+}
+
+/* ---------------- results head ---------------- */
+
+.bl-kr {
+  margin-top: 32px;
+}
+.bl-kr__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink);
+}
+.bl-kr__count {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.bl-kr__n {
+  font-size: 44px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.bl-kr__active {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+.bl-kpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 6px 11px 5px 13px;
+  border-radius: 99px;
+  background: var(--ink);
+  color: var(--paper);
+  transition: opacity var(--fast) var(--ease);
+}
+.bl-kpill span {
+  font-size: 13px;
+  line-height: 1;
+  color: rgba(250, 249, 246, 0.65);
+}
+.bl-kpill:hover {
+  opacity: 0.84;
+}
+.bl-kr__head > .bl-seg {
+  margin-left: auto;
+}
+
+/* ---------------- cards ---------------- */
+
+.bl-kgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.bl-kc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 20px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 24px;
+  background: var(--paper-raised);
+  transition: border-color var(--fast) var(--ease);
+  animation: bl-rise var(--med) var(--ease) both;
+}
+.bl-kc:hover {
+  border-color: var(--ink-4);
+}
+.bl-kc__rank {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font-size: 11px;
+  color: var(--ink-5);
+}
+.bl-kc__h {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 26px;
+}
+.bl-kc__who {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.bl-kc__name {
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.bl-kc__handle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--ink-3);
+  transition: color var(--fast) var(--ease);
+}
+.bl-kc__handle:hover {
+  color: var(--ink);
+}
+.bl-kc__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+.bl-kc__tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px 2px;
+  border: 1px solid var(--rule);
+  border-radius: 99px;
+  color: var(--ink-3);
+}
+.bl-kc__chains {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.bl-kc__body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule-faint);
+  border-bottom: 1px solid var(--rule-faint);
+}
+.bl-kc__ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.bl-kc__m {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.bl-kc__row {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  grid-template-areas: 'l b v';
+  align-items: center;
+  gap: 10px;
+}
+.bl-kc__rl {
+  grid-area: l;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.bl-kc__rb {
+  grid-area: b;
+}
+.bl-kc__rv {
+  grid-area: v;
+  margin: 0;
+  font-size: 14px;
+  text-align: right;
+  min-width: 4.5ch;
+}
+/* the measure being sorted by is marked on every card */
+.bl-kc__row[data-on='true'] .bl-kc__rl,
+.bl-kc__ring[data-on='true'] .eyebrow,
+.bl-kc__fs[data-on='true'] {
+  color: var(--ink);
+}
+.bl-kc__row[data-on='true'] .bl-kc__rl::before,
+.bl-kc__ring[data-on='true'] .eyebrow::before,
+.bl-kc__fs[data-on='true']::before {
+  content: '●';
+  font-size: 6px;
+  vertical-align: 2px;
+  margin-right: 5px;
+}
+.bl-kc__f {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+.bl-kc__fs b {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--ink);
+}
+.bl-kc__cov {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.bl-kc__cov a {
+  display: block;
+  border-radius: 6px;
+  transition: transform var(--fast) var(--ease);
+}
+.bl-kc__cov a:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------------- map ---------------- */
+
+.bl-kmap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  margin-top: 18px;
+  border: 1px solid var(--rule);
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--paper-raised);
+}
+.bl-kmap__plot {
+  padding: 18px 18px 8px;
+  min-width: 0;
+}
+.bl-kmap__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.bl-kmap__tick {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  fill: var(--ink-4);
+}
+.bl-kmap__axis {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+.bl-kmap__th {
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.bl-kmap__thl {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: var(--ink-2);
+}
+.bl-kmap__k {
+  outline: none;
+  transition: opacity var(--fast) var(--ease), filter var(--fast) var(--ease);
+}
+/* filtered-out accounts stay on the map, greyed, so the filter is read
+   against what it removed */
+.bl-kmap__k[data-ok='false'] {
+  opacity: 0.24;
+  filter: grayscale(1);
+}
+.bl-kmap__k[data-on='true'] {
+  opacity: 1;
+  filter: none;
+}
+.bl-kmap__read {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 22px;
+  border-left: 1px solid var(--rule);
+  background: var(--paper);
+}
+.bl-kmap__name {
+  font-size: 23px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.bl-kmap__handle {
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+.bl-kmap__handle:hover {
+  color: var(--ink);
+}
+.bl-kmap__stats {
+  margin: 8px 0 0;
+  border-top: 1px solid var(--rule);
+}
+.bl-kmap__stats > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule-faint);
+}
+.bl-kmap__stats dt {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 9.5px;
+}
+.bl-kmap__stats dd {
+  margin: 0;
+  font-size: 14px;
+}
+.bl-kmap__idle {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.bl-kmap__legend {
+  margin-top: auto;
+  color: var(--ink-4);
+}
+
+/* ---------------- responsive ---------------- */
+
+@media (max-width: 1240px) {
+  .bl-kf__ranges {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .bl-kmap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bl-kmap__read {
+    border-left: none;
+    border-top: 1px solid var(--rule);
+  }
+}
+
+@media (max-width: 760px) {
+  .bl-ksearch {
+    max-width: none;
+    flex-basis: 100%;
+  }
+  .bl-kf__ranges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 22px;
+  }
+  .bl-kr__head > .bl-seg {
+    margin-left: 0;
+  }
+  .bl-kgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bl-kmap__plot {
+    padding: 10px 8px 4px;
+  }
+}
