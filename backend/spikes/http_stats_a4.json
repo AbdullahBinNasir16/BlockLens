@@ -1,0 +1,22 @@
+{
+  "api.dexscreener.com": {
+    "calls": 1,
+    "seconds": 0.17,
+    "errors": 0
+  },
+  "api.etherscan.io": {
+    "calls": 9,
+    "seconds": 9.18,
+    "errors": 0
+  },
+  "api.mainnet-beta.solana.com": {
+    "calls": 14,
+    "seconds": 29.9,
+    "errors": 0
+  },
+  "base.gateway.tenderly.co": {
+    "calls": 2,
+    "seconds": 1.51,
+    "errors": 0
+  }
+}

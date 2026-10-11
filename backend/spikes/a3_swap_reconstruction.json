@@ -1,0 +1,23 @@
+{
+  "token": "CAS",
+  "pair": "0x5fF9912F6b7ee031d6e25A03C874a9102814C60C",
+  "tx": "0x6bf7c0133095955a820bdbc162510454b3553c3020133c65ff7923fbcf47b711",
+  "logs_in_tx": 15,
+  "erc20_transfers_in_tx": 8,
+  "reconstruction": {
+    "token_in": "0",
+    "token_out": "232395827174328505821",
+    "quote_in": "1186997544012883003",
+    "quote_out": "0",
+    "wallet": "0x498581ff718922c3f8e6a244956af099b2652b2b"
+  },
+  "swap_topic": "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822",
+  "pool_topic_histogram": {
+    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": 24,
+    "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1": 1979,
+    "0x4c209b5fc8ad50758f13e2e1088ba56a560dff690a1c6fef26394f4c03821c4f": 5,
+    "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": 1,
+    "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822": 1970,
+    "0xdccd412f0b1252819cb1fd330b93224ca42612892bb3f4f789976e6d81936496": 4
+  }
+}

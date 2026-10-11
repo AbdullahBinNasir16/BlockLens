@@ -1,0 +1,121 @@
+{
+ "head": 52545112,
+ "aerodrome-cl": {
+  "latest": {
+   "ok": true,
+   "weth": 158.760646,
+   "seconds": 0.2
+  },
+  "-7d": {
+   "ok": true,
+   "weth": 166.220858,
+   "seconds": 1.15
+  },
+  "-30d": {
+   "ok": true,
+   "weth": 143.521557,
+   "seconds": 0.19
+  },
+  "-90d": {
+   "ok": true,
+   "weth": 168.816435,
+   "seconds": 0.21
+  },
+  "-180d": {
+   "ok": true,
+   "weth": 213.780228,
+   "seconds": 0.72
+  },
+  "-365d": {
+   "ok": true,
+   "weth": 301.034098,
+   "seconds": 0.21
+  }
+ },
+ "uniswap-v3": {
+  "latest": {
+   "ok": true,
+   "weth": 17.676762,
+   "seconds": 1.2
+  },
+  "-7d": {
+   "ok": true,
+   "weth": 17.805572,
+   "seconds": 0.18
+  },
+  "-30d": {
+   "ok": true,
+   "weth": 12.400295,
+   "seconds": 1.2
+  },
+  "-90d": {
+   "ok": true,
+   "weth": 13.700933,
+   "seconds": 0.21
+  },
+  "-180d": {
+   "ok": true,
+   "weth": 17.074691,
+   "seconds": 1.2
+  },
+  "-365d": {
+   "ok": true,
+   "weth": 20.763329,
+   "seconds": 0.23
+  }
+ },
+ "v4-manager": {
+  "latest": {
+   "ok": true,
+   "weth": 4211.521096,
+   "seconds": 0.19
+  },
+  "-7d": {
+   "ok": true,
+   "weth": 4187.081208,
+   "seconds": 0.18
+  },
+  "-30d": {
+   "ok": true,
+   "weth": 4499.546211,
+   "seconds": 0.19
+  },
+  "-90d": {
+   "ok": true,
+   "weth": 5011.703423,
+   "seconds": 0.2
+  },
+  "-180d": {
+   "ok": true,
+   "weth": 4572.299359,
+   "seconds": 1.24
+  },
+  "-365d": {
+   "ok": true,
+   "weth": 594.347019,
+   "seconds": 0.21
+  }
+ },
+ "daily_series_90": {
+  "points_ok": 90,
+  "seconds": 42.7,
+  "seconds_per_call": 0.475,
+  "peak": 21.107401,
+  "latest": 17.676762,
+  "oldest": 13.060535,
+  "series_head": [
+   17.676762,
+   20.442612,
+   20.758313,
+   17.836574,
+   17.154589,
+   15.186332,
+   16.385173,
+   17.805572,
+   20.942801,
+   21.107401,
+   18.301185,
+   20.532025
+  ]
+ }
+}

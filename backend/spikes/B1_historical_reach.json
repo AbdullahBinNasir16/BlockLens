@@ -1,0 +1,70 @@
+{
+ "head": 52545001,
+ "block_90d": 48657001,
+ "header_90d": {
+  "ok": true,
+  "value": 1784103349,
+  "seconds": 0.21
+ },
+ "header_180d": {
+  "ok": true,
+  "value": 1776327349,
+  "seconds": 0.22
+ },
+ "v4_initialize_90d": {
+  "ok": true,
+  "value": 74,
+  "seconds": 0.26
+ },
+ "v4_initialize_180d": {
+  "ok": true,
+  "value": 492,
+  "seconds": 0.58
+ },
+ "pair_span_5000": {
+  "ok": false,
+  "error": "rpc eth_getLogs: {'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x321b261, 0x321b649], or use an access key for larger ranges.'}",
+  "seconds": 0.18
+ },
+ "pair_span_50000": {
+  "ok": false,
+  "error": "rpc eth_getLogs: {'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x3210299, 0x3210681], or use an access key for larger ranges.'}",
+  "seconds": 0.18
+ },
+ "pair_span_500000": {
+  "ok": false,
+  "error": "rpc eth_getLogs: {'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x31a24c9, 0x31a28b1], or use an access key for larger ranges.'}",
+  "seconds": 0.18
+ },
+ "pair_span_3888000": {
+  "ok": false,
+  "error": "rpc eth_getLogs: {'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x2e67269, 0x2e67651], or use an access key for larger ranges.'}",
+  "seconds": 0.18
+ },
+ "pair_topic_span_50000": {
+  "ok": false,
+  "error": "rpc eth_getLogs: {'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x3210299, 0x3210681], or use an access key for larger ranges.'}",
+  "seconds": 0.18
+ },
+ "pair_topic_span_500000": {
+  "ok": false,
+  "error": "rpc eth_getLogs: {'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x31a24c9, 0x31a28b1], or use an access key for larger ranges.'}",
+  "seconds": 0.18
+ },
+ "pair_event_census": {
+  "ok": true,
+  "value": {
+   "V3Swap": 23,
+   "0x7a53080ba4": 45,
+   "0x0c396cd989": 130,
+   "0x70935338e6": 130
+  },
+  "seconds": 0.29
+ },
+ "quote_inflow": {
+  "ok": true,
+  "value": 49,
+  "seconds": 0.31
+ },
+ "calls_spent": 13
+}

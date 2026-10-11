@@ -1,0 +1,8 @@
+{
+  "tx": "0x6bf7c0133095955a820bdbc162510454b3553c3020133c65ff7923fbcf47b711",
+  "tx_from": "0x7372e84887bd82fd9c0433f981c8a75972a59290",
+  "tx_to": "0x8407699e359ae158bd7ec0668600cc19a79f17c3",
+  "tx_value_wei": "0",
+  "transfer_counterparty_guess": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+  "counterparty_equals_eoa": false
+}

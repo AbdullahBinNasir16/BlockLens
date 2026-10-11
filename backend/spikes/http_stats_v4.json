@@ -1,0 +1,12 @@
+{
+  "api.dexscreener.com": {
+    "calls": 60,
+    "seconds": 26.57,
+    "errors": 0
+  },
+  "base.gateway.tenderly.co": {
+    "calls": 69,
+    "seconds": 51.87,
+    "errors": 0
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "target_day": "2026-06-15",
+  "start_block": 47346127,
+  "end_block": 47389327,
+  "calls": 176,
+  "tokens": [
+    {
+      "token": "0x5a09e90ae3f121feed084629bdba96d0d55fe057",
+      "dex": "aerodrome",
+      "created_block": 47358985
+    },
+    {
+      "token": "0x504cb9f00f67e8ee0e5d4d65a607671181579fa0",
+      "dex": "aerodrome",
+      "created_block": 47359367
+    },
+    {
+      "token": "0xcd5aef327d14a84df5be8ddb7ccdc15f35b7c1d6",
+      "dex": "aerodrome",
+      "created_block": 47359549
+    },
+    {
+      "token": "0x4e4e4a9eb3fe060b2bb9ab515fed9c72a90d953b",
+      "dex": "aerodrome",
+      "created_block": 47359688
+    },
+    {
+      "token": "0x54e0c734cb4043f13f370a1e9991f9be81c4cb20",
+      "dex": "aerodrome",
+      "created_block": 47359820
+    },
+    {
+      "token": "0x909851a8598f560f2f3b68bb949d836e7dbb5e93",
+      "dex": "aerodrome",
+      "created_block": 47376634
+    },
+    {
+      "token": "0x5c73d6b464feea352c34f735959a7d6ee0309600",
+      "dex": "pancakeswap",
+      "created_block": 47359761
+    },
+    {
+      "token": "0xe2ac3544377d771435e6a7734509e71d4d5c081a",
+      "dex": "pancakeswap",
+      "created_block": 47370575
+    }
+  ]
+}

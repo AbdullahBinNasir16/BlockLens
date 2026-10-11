@@ -1,0 +1,330 @@
+[
+  {
+    "endpoint": "https://1rpc.io/base",
+    "reachable": true,
+    "head": 52461889,
+    "tries": {
+      "50": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\": \"2.0\", \"id\": null, \"error\": {\"code\": -32005, \"message\": \"Rate limit exceeded on Nodies public endpoints. For higher limits, create a free account at https://nodies.a"
+      },
+      "100": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'eth_getLogs is limited to 0 - 50 blocks range'}"
+      },
+      "500": {
+        "ok": false,
+        "error": "{'http': 502, 'body': 'error code: 502\\n'}"
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'eth_getLogs is limited to 0 - 50 blocks range'}"
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'eth_getLogs is limited to 0 - 50 blocks range'}"
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'eth_getLogs is limited to 0 - 50 blocks range'}"
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'eth_getLogs is limited to 0 - 50 blocks range'}"
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'eth_getLogs is limited to 0 - 50 blocks range'}"
+      }
+    },
+    "max_range": 0,
+    "calls_per_token_day": null
+  },
+  {
+    "endpoint": "https://base.drpc.org",
+    "reachable": true,
+    "head": 52461917,
+    "tries": {
+      "50": {
+        "ok": true,
+        "logs": 4064
+      },
+      "100": {
+        "ok": true,
+        "logs": 8804
+      },
+      "500": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"id\":1,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"ranges over 10000 blocks are not supported on free plan\",\"code\":35}}'}"
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"id\":1,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"ranges over 10000 blocks are not supported on free plan\",\"code\":35}}'}"
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"id\":1,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"ranges over 10000 blocks are not supported on free plan\",\"code\":35}}'}"
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"id\":1,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"ranges over 10000 blocks are not supported on free plan\",\"code\":35}}'}"
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"id\":1,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"ranges over 10000 blocks are not supported on free plan\",\"code\":35}}'}"
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"id\":1,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"ranges over 10000 blocks are not supported on free plan\",\"code\":35}}'}"
+      }
+    },
+    "max_range": 100,
+    "calls_per_token_day": 433
+  },
+  {
+    "endpoint": "https://base.meowrpc.com",
+    "reachable": true,
+    "head": 52461925,
+    "tries": {
+      "50": {
+        "ok": false,
+        "error": "{'http': 429, 'body': 'Too Many Requests'}"
+      },
+      "100": {
+        "ok": false,
+        "error": "{'code': -32000, 'message': 'The method eth_getLogs is not supported.'}"
+      },
+      "500": {
+        "ok": false,
+        "error": "{'code': -32000, 'message': 'The method eth_getLogs is not supported.'}"
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'code': -32000, 'message': 'The method eth_getLogs is not supported.'}"
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'code': -32000, 'message': 'The method eth_getLogs is not supported.'}"
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'code': -32000, 'message': 'The method eth_getLogs is not supported.'}"
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'code': -32000, 'message': 'The method eth_getLogs is not supported.'}"
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'code': -32000, 'message': 'The method eth_getLogs is not supported.'}"
+      }
+    },
+    "max_range": 0,
+    "calls_per_token_day": null
+  },
+  {
+    "endpoint": "https://base.gateway.tenderly.co",
+    "reachable": true,
+    "head": 52461931,
+    "tries": {
+      "50": {
+        "ok": true,
+        "logs": 3742
+      },
+      "100": {
+        "ok": true,
+        "logs": 8759
+      },
+      "500": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'invalid params', 'data': 'Query returned more than 20000 results. Try with this block range [0x31ef8d8, 0x31ef9b7].'}"
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'invalid params', 'data': 'Query returned more than 20000 results. Try with this block range [0x31ef6e4, 0x31ef799].'}"
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x31ef2fc, 0x31ef6e4], or use an access key for larger r"
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x31ee744, 0x31eeb2c], or use an access key for larger r"
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x31ed3bc, 0x31ed7a4], or use an access key for larger r"
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 blocks. Try with this block range [0x31e520c, 0x31e55f4], or use an access key for larger r"
+      }
+    },
+    "max_range": 100,
+    "calls_per_token_day": 433
+  },
+  {
+    "endpoint": "https://base-mainnet.public.blastapi.io",
+    "reachable": true,
+    "head": 52461939,
+    "tries": {
+      "50": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      },
+      "100": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      },
+      "500": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'http': 400, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32600,\"message\":\"You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: "
+      }
+    },
+    "max_range": 0,
+    "calls_per_token_day": null
+  },
+  {
+    "endpoint": "https://base.api.onfinality.io/public",
+    "reachable": true,
+    "head": 52461946,
+    "tries": {
+      "50": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      },
+      "100": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      },
+      "500": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32029,\"message\":\"Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit\"},\"id\":1}'}"
+      }
+    },
+    "max_range": 0,
+    "calls_per_token_day": null
+  },
+  {
+    "endpoint": "https://base-pokt.nodies.app",
+    "reachable": true,
+    "head": 52461953,
+    "tries": {
+      "50": {
+        "ok": true,
+        "logs": 3601
+      },
+      "100": {
+        "ok": false,
+        "error": "{'code': -32001, 'message': 'Block range too large: maximum allowed is 50 blocks on your current plan. Upgrade your subscription at https://nodies.app/pricing for larger ranges.'}"
+      },
+      "500": {
+        "ok": false,
+        "error": "{'code': -32001, 'message': 'Block range too large: maximum allowed is 50 blocks on your current plan. Upgrade your subscription at https://nodies.app/pricing for larger ranges.'}"
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'code': -32001, 'message': 'Block range too large: maximum allowed is 50 blocks on your current plan. Upgrade your subscription at https://nodies.app/pricing for larger ranges.'}"
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'code': -32001, 'message': 'Block range too large: maximum allowed is 50 blocks on your current plan. Upgrade your subscription at https://nodies.app/pricing for larger ranges.'}"
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'code': -32001, 'message': 'Block range too large: maximum allowed is 50 blocks on your current plan. Upgrade your subscription at https://nodies.app/pricing for larger ranges.'}"
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'code': -32001, 'message': 'Block range too large: maximum allowed is 50 blocks on your current plan. Upgrade your subscription at https://nodies.app/pricing for larger ranges.'}"
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'code': -32001, 'message': 'Block range too large: maximum allowed is 50 blocks on your current plan. Upgrade your subscription at https://nodies.app/pricing for larger ranges.'}"
+      }
+    },
+    "max_range": 50,
+    "calls_per_token_day": 865
+  },
+  {
+    "endpoint": "https://mainnet.base.org",
+    "reachable": true,
+    "head": 52461962,
+    "tries": {
+      "50": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      },
+      "100": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      },
+      "500": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      },
+      "1000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      },
+      "2000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      },
+      "5000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      },
+      "10000": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      },
+      "43200": {
+        "ok": false,
+        "error": "{'http': 429, 'body': '{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32011,\"message\":\"request limit reached\"}}'}"
+      }
+    },
+    "max_range": 0,
+    "calls_per_token_day": null
+  }
+]

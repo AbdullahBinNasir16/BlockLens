@@ -1,0 +1,100 @@
+{
+  "etherscan": {
+    "Ethereum": {
+      "chainid": 1,
+      "status": "0",
+      "message": "Missing/Invalid API Key",
+      "free_tier": "yes (key required)"
+    },
+    "Base": {
+      "chainid": 8453,
+      "status": "0",
+      "message": "Free API access is not supported for this chain. Please upgrade your api plan for full chain coverage. https://etherscan",
+      "free_tier": "NO - paid plan required"
+    },
+    "BNB Chain": {
+      "chainid": 56,
+      "status": "0",
+      "message": "Free API access is not supported for this chain. Please upgrade your api plan for full chain coverage. https://etherscan",
+      "free_tier": "NO - paid plan required"
+    },
+    "Arbitrum One": {
+      "chainid": 42161,
+      "status": "0",
+      "message": "Missing/Invalid API Key",
+      "free_tier": "yes (key required)"
+    },
+    "Unichain": {
+      "chainid": 130,
+      "status": "0",
+      "message": "Missing/Invalid API Key",
+      "free_tier": "yes (key required)"
+    },
+    "Polygon": {
+      "chainid": 137,
+      "status": "0",
+      "message": "Missing/Invalid API Key",
+      "free_tier": "yes (key required)"
+    },
+    "Blast": {
+      "chainid": 81457,
+      "status": "0",
+      "message": "Missing/Invalid API Key",
+      "free_tier": "yes (key required)"
+    },
+    "Linea": {
+      "chainid": 59144,
+      "status": "0",
+      "message": "Missing/Invalid API Key",
+      "free_tier": "yes (key required)"
+    },
+    "Optimism": {
+      "chainid": 10,
+      "status": "0",
+      "message": "Free API access is not supported for this chain. Please upgrade your api plan for full chain coverage. https://etherscan",
+      "free_tier": "NO - paid plan required"
+    }
+  },
+  "solana": [
+    {
+      "mint": "HmHjsh3biZpApcdJbFcv4ZYqen38XcSMN2RLJdwhpump",
+      "signatures_seen": 5260,
+      "calls": 6,
+      "pages": [
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        260
+      ],
+      "span_hours": 0.1
+    },
+    {
+      "mint": "Fyt4p5wVhcxN6fjbRjkf4ViwBvZfExk9gHPEGQ3Fpump",
+      "signatures_seen": 4990,
+      "calls": 5,
+      "pages": [
+        1000,
+        1000,
+        1000,
+        1000,
+        990
+      ],
+      "span_hours": 1.6
+    },
+    {
+      "mint": "4KxoBymf7pueF1RuW3YUnGDR2jne6861pLBCLXvH8B9D",
+      "signatures_seen": 2906,
+      "calls": 3,
+      "pages": [
+        1000,
+        1000,
+        906
+      ],
+      "span_hours": 0.6
+    }
+  ],
+  "base_block_seconds": 2.0,
+  "base_blocks_per_day": 43200
+}

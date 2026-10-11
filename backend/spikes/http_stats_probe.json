@@ -1,0 +1,27 @@
+{
+  "1rpc.io": {
+    "calls": 4,
+    "seconds": 42.21,
+    "errors": 0
+  },
+  "base-rpc.publicnode.com": {
+    "calls": 2,
+    "seconds": 2.5,
+    "errors": 1
+  },
+  "base.drpc.org": {
+    "calls": 4,
+    "seconds": 3.35,
+    "errors": 1
+  },
+  "base.llamarpc.com": {
+    "calls": 1,
+    "seconds": 0.48,
+    "errors": 1
+  },
+  "mainnet.base.org": {
+    "calls": 2,
+    "seconds": 1.81,
+    "errors": 1
+  }
+}

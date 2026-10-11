@@ -1,0 +1,83 @@
+{
+ "head": 52545072,
+ "archive_tenderly": {
+  "latest": {
+   "ok": false,
+   "error": "{'code': 3, 'message': 'execution reverted'}"
+  },
+  "-1d": {
+   "ok": false,
+   "error": "{'code': 3, 'message': 'execution reverted'}"
+  },
+  "-30d": {
+   "ok": false,
+   "error": "{'code': 3, 'message': 'execution reverted'}"
+  },
+  "-90d": {
+   "ok": false,
+   "error": "{'code': 3, 'message': 'execution reverted'}"
+  },
+  "-180d": {
+   "ok": false,
+   "error": "{'code': 3, 'message': 'execution reverted'}"
+  }
+ },
+ "archive_publicnode": {
+  "latest": {
+   "ok": false,
+   "error": "{'code': 3, 'message': 'execution reverted'}"
+  },
+  "-1d": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  },
+  "-30d": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  },
+  "-90d": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  },
+  "-180d": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  }
+ },
+ "publicnode_caps": {
+  "10000": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  },
+  "20000": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  },
+  "50000": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  },
+  "100000": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  },
+  "500000": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  }
+ },
+ "lp_supply": {
+  "latest": "FAIL {'code': 3, 'message': 'execution reverted'}",
+  "-90d": "FAIL Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://developer.moz"
+ },
+ "blockscout": {
+  "https://base.blockscout.com/api/v2": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base.blockscout.com/api/v2/addresses/0x4e829f8a5213c42535ab84aa40bd4adcce9cba02/token-transfers?type=ERC"
+  },
+  "https://base.blockscout.com/api": {
+   "ok": false,
+   "error": "Client error '403 Forbidden' for url 'https://base.blockscout.com/api?module=account&action=tokentx&address=0x4e829f8a5213c42535ab84aa40bd4adcce9cba02"
+  }
+ }
+}

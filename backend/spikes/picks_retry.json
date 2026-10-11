@@ -1,0 +1,40 @@
+[
+  {
+    "token": "0x07b3d902783c3c12b077508c3b5c00113d1291d0",
+    "pool": "0x70928b899adf5977acaed7159b713e2983d9d9f5",
+    "created_block": 51912197,
+    "day": "2026-09-28",
+    "symbol": "XDP",
+    "pair": "0x6c6564baa24b9899ef6c14ec171082ccce1eb06ee4e462cca40cf858e4afa4b5",
+    "dex": "uniswap",
+    "quote": "0x0000000000000000000000000000000000000000",
+    "quote_symbol": "ETH",
+    "created_ms": 1790597931000,
+    "launch_day": "2026-09-28",
+    "is_launch_day": true,
+    "liq": 242,
+    "vol24h": 144,
+    "fdv": 256139494,
+    "state": "dead",
+    "launch_block": 51912197
+  },
+  {
+    "token": "0xb200000000000000000000397293cb8cda9a10c5",
+    "pool": "0x26fa54cdfc64faacb5364c09de7ac2f72308052d",
+    "created_block": 50924856,
+    "day": "2026-09-05",
+    "symbol": "SNDKc",
+    "pair": "0x26fa54cdfc64fAacb5364c09De7Ac2F72308052D",
+    "dex": "uniswap",
+    "quote": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "quote_symbol": "USDC",
+    "created_ms": 1788639059000,
+    "launch_day": "2026-09-05",
+    "is_launch_day": true,
+    "liq": 2790,
+    "vol24h": 10,
+    "fdv": 1509519,
+    "state": "dead",
+    "launch_block": 50924856
+  }
+]

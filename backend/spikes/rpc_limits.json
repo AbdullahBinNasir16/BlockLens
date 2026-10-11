@@ -1,0 +1,75 @@
+[
+  {
+    "endpoint": "https://mainnet.base.org",
+    "reachable": true,
+    "head_block": 52461653,
+    "ranges": {
+      "1": {
+        "ok": false,
+        "error": "{\"http\": 429, \"body\": \"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":1,\\\"error\\\":{\\\"code\\\":-32011,\\\"message\\\":\\\"request limit reached\\\"}}\"}"
+      }
+    },
+    "widest_ok_range": 0,
+    "logs_at_widest": null
+  },
+  {
+    "endpoint": "https://base-rpc.publicnode.com",
+    "reachable": true,
+    "head_block": 52461655,
+    "ranges": {
+      "1": {
+        "ok": false,
+        "error": "{\"http\": 403, \"body\": \"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"error\\\":{\\\"code\\\":-32602,\\\"message\\\":\\\"Archive requests require a personal token. Get one at: https://www.allnodes"
+      }
+    },
+    "widest_ok_range": 0,
+    "logs_at_widest": null
+  },
+  {
+    "endpoint": "https://base.llamarpc.com",
+    "reachable": false,
+    "error": "{'http': 525, 'body': 'error code: 525\\n'}"
+  },
+  {
+    "endpoint": "https://1rpc.io/base",
+    "reachable": true,
+    "head_block": 52461653,
+    "ranges": {
+      "1": {
+        "ok": true,
+        "logs": 222
+      },
+      "10": {
+        "ok": true,
+        "logs": 1852
+      },
+      "100": {
+        "ok": false,
+        "error": "{\"code\": -32602, \"message\": \"eth_getLogs is limited to 0 - 50 blocks range\"}"
+      }
+    },
+    "widest_ok_range": 10,
+    "logs_at_widest": 1852
+  },
+  {
+    "endpoint": "https://base.drpc.org",
+    "reachable": true,
+    "head_block": 52461676,
+    "ranges": {
+      "1": {
+        "ok": true,
+        "logs": 150
+      },
+      "10": {
+        "ok": true,
+        "logs": 1914
+      },
+      "100": {
+        "ok": false,
+        "error": "{\"http\": 408, \"body\": \"{\\\"id\\\":1,\\\"jsonrpc\\\":\\\"2.0\\\",\\\"error\\\":{\\\"message\\\":\\\"Request timeout on the free plan, please upgrade to paid plan\\\",\\\"code\\\":30}}\"}"
+      }
+    },
+    "widest_ok_range": 10,
+    "logs_at_widest": 1914
+  }
+]

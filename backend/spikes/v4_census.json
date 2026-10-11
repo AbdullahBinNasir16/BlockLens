@@ -1,0 +1,74 @@
+{
+  "day": "2026-09-05",
+  "start_block": 50888527,
+  "end_block": 50931727,
+  "calls": 44,
+  "initialize_events": 3115,
+  "distinct_tokens": 1540,
+  "sampled": 60,
+  "traded_in_sample": 5,
+  "launched_that_day_in_sample": 0,
+  "implied_tradeable": 128,
+  "rows": [
+    {
+      "token": "0x0f61edbfe6cd86024c0f210c0695b08df55fdfc9",
+      "pool_id": "0x2fccba2bfce118f8b554e51c634f46fffcb1a40e8582a4729418a22cb54dff9f",
+      "block": 50888575,
+      "symbol": "BSTONK",
+      "pair": "0xc9786476d2492eb8ddb2ebf8b4b69e227e1f31397c790d877541ab0ed5cf5ee2",
+      "dex": "uniswap",
+      "launch_day": "2026-08-17",
+      "liq": 103334,
+      "vol24h": 22997,
+      "fdv": 1240204
+    },
+    {
+      "token": "0xb200000000000000000000f1609ffd45046be501",
+      "pool_id": "0x9d854dac6668b267c260c3d375dbb20e30ffe0f980d7fc9fb9837227befecb68",
+      "block": 50888619,
+      "symbol": "COBIE",
+      "pair": "0x6e901b4173948242260001050264514018111d98e3096a3a24f781087ead80ab",
+      "dex": "uniswap",
+      "launch_day": "2026-08-18",
+      "liq": 14077,
+      "vol24h": 54,
+      "fdv": 17089
+    },
+    {
+      "token": "0x89d8cb38067b55f820f29a9e12d0ce18682a2bfc",
+      "pool_id": "0x1c7d844331e8c56fe08961332ea9e408ccc8e6358f0afcb91794b1ddda507dc1",
+      "block": 50888710,
+      "symbol": "STONX",
+      "pair": "0xc2dd131e210679afff1749c7f5d219bf87e9dd436b0bdd48a6bd27075b205ac3",
+      "dex": "uniswap",
+      "launch_day": "2026-09-04",
+      "liq": 443288,
+      "vol24h": 2098,
+      "fdv": 812163
+    },
+    {
+      "token": "0xb2000000000000000000004c27f6523082f41d01",
+      "pool_id": "0x39059fc7e798717f7ed01d2c52f0e943173be303cf723085f9bf2c554a79c7b0",
+      "block": 50889756,
+      "symbol": "Basecat",
+      "pair": "0x215b2146c3164aba3f5b18e8619b737c7f7dd11e5ba693646dcd9a336c5a30ba",
+      "dex": "uniswap",
+      "launch_day": "2026-08-15",
+      "liq": 544421,
+      "vol24h": 152758,
+      "fdv": 13520049
+    },
+    {
+      "token": "0xa9f6d9eca1f803854a13cecad0f21d43e007db07",
+      "pool_id": "0xd3945ac9656eefcb002d80c588eab068fcf5a2e1d17ba6cb5115f4294a4658ef",
+      "block": 50889831,
+      "symbol": "BAES",
+      "pair": "0x01bc3d69468c878544d9f1289fd2cec1d70cec76159a355ddcc80bce185aa398",
+      "dex": "uniswap",
+      "launch_day": "2025-11-11",
+      "liq": 41771,
+      "vol24h": 1253,
+      "fdv": 174775
+    }
+  ]
+}

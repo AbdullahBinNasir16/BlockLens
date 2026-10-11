@@ -1,0 +1,67 @@
+{
+  "api.dexscreener.com": {
+    "calls": 350,
+    "seconds": 167.44,
+    "errors": 0
+  },
+  "api.etherscan.io": {
+    "calls": 9,
+    "seconds": 9.18,
+    "errors": 0
+  },
+  "api.mainnet-beta.solana.com": {
+    "calls": 14,
+    "seconds": 29.9,
+    "errors": 0
+  },
+  "base.gateway.tenderly.co": {
+    "calls": 580,
+    "seconds": 431.71000000000004,
+    "errors": 0
+  },
+  "1rpc.io": {
+    "calls": 13,
+    "seconds": 88.89,
+    "errors": 2
+  },
+  "base-mainnet.public.blastapi.io": {
+    "calls": 9,
+    "seconds": 2.68,
+    "errors": 8
+  },
+  "base-pokt.nodies.app": {
+    "calls": 9,
+    "seconds": 8.99,
+    "errors": 0
+  },
+  "base.api.onfinality.io": {
+    "calls": 9,
+    "seconds": 5.05,
+    "errors": 8
+  },
+  "base.drpc.org": {
+    "calls": 13,
+    "seconds": 9.040000000000001,
+    "errors": 7
+  },
+  "base.meowrpc.com": {
+    "calls": 9,
+    "seconds": 1.84,
+    "errors": 1
+  },
+  "mainnet.base.org": {
+    "calls": 11,
+    "seconds": 4.58,
+    "errors": 9
+  },
+  "base-rpc.publicnode.com": {
+    "calls": 2,
+    "seconds": 2.5,
+    "errors": 1
+  },
+  "base.llamarpc.com": {
+    "calls": 1,
+    "seconds": 0.48,
+    "errors": 1
+  }
+}

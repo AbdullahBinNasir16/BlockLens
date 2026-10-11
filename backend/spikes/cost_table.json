@@ -1,0 +1,42 @@
+[
+  {
+    "symbol": "XDP",
+    "transfers": 0,
+    "txs": 0,
+    "pool_logs": 0,
+    "pages": 1,
+    "gAT_cu": 120,
+    "txfrom_cu": 0,
+    "buyers_h1": 0
+  },
+  {
+    "symbol": "gSPEED",
+    "transfers": 443,
+    "txs": 272,
+    "pool_logs": 261,
+    "pages": 1,
+    "gAT_cu": 120,
+    "txfrom_cu": 7072,
+    "buyers_h1": 36
+  },
+  {
+    "symbol": "SNDKc",
+    "transfers": 3270,
+    "txs": 1900,
+    "pool_logs": 13,
+    "pages": 4,
+    "gAT_cu": 480,
+    "txfrom_cu": 49400,
+    "buyers_h1": 0
+  },
+  {
+    "symbol": "CAS",
+    "transfers": 7679,
+    "txs": 2522,
+    "pool_logs": 3983,
+    "pages": 8,
+    "gAT_cu": 960,
+    "txfrom_cu": 65572,
+    "buyers_h1": 0
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "1rpc.io": {
+    "calls": 9,
+    "seconds": 46.68,
+    "errors": 2
+  },
+  "base-mainnet.public.blastapi.io": {
+    "calls": 9,
+    "seconds": 2.68,
+    "errors": 8
+  },
+  "base-pokt.nodies.app": {
+    "calls": 9,
+    "seconds": 8.99,
+    "errors": 0
+  },
+  "base.api.onfinality.io": {
+    "calls": 9,
+    "seconds": 5.05,
+    "errors": 8
+  },
+  "base.drpc.org": {
+    "calls": 9,
+    "seconds": 5.69,
+    "errors": 6
+  },
+  "base.gateway.tenderly.co": {
+    "calls": 9,
+    "seconds": 8.07,
+    "errors": 0
+  },
+  "base.meowrpc.com": {
+    "calls": 9,
+    "seconds": 1.84,
+    "errors": 1
+  },
+  "mainnet.base.org": {
+    "calls": 9,
+    "seconds": 2.77,
+    "errors": 8
+  }
+}

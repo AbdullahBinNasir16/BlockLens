@@ -1,0 +1,2139 @@
+{
+  "spans": {
+    "2026-07-20": {
+      "start": 48858127,
+      "end": 48901327
+    },
+    "2026-08-12": {
+      "start": 49851727,
+      "end": 49894927
+    },
+    "2026-09-05": {
+      "start": 50888527,
+      "end": 50931727
+    },
+    "2026-09-28": {
+      "start": 51882127,
+      "end": 51925327
+    }
+  },
+  "tokens": [
+    {
+      "token": "0xb20000000000000000000027dac02af4e3dc728f",
+      "pool": "0xa284e509cefff2aa7e8e8346aa91015e10f74ad3",
+      "created_block": 48858766,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb200000000000000000000e49cb10526187802e0",
+      "pool": "0xd7a2e720275f31cc6f0f7fffdb4a44dd41e6be60",
+      "created_block": 48863678,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x1a20756a7755b30bacfd7b2412b3fde867e4d638",
+      "pool": "0x7e7c099c0ec88b6d26153dd55226adea3acca5e2",
+      "created_block": 48864144,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x93174c8fe8f8ebbbbb44026f0a714e32893f33c6",
+      "pool": "0x8a6a83f0c31e9fa44087c836b23ac970a1d66e8b",
+      "created_block": 48866935,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2ead2efa6ae9382af39939a2ac6e87b7cea835d7",
+      "pool": "0x7648e0f46f16d4ca6a8d5b4cb2e5f9998f8bf755",
+      "created_block": 48866984,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb2000000000000000000002c0aca1aad25d4d406",
+      "pool": "0xa7e5398fe28ea6effc6a8a2edb4c5bd5508a02e8",
+      "created_block": 48869320,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x40e5cabf9fc9985b5eadae7924c48b4511e164a3",
+      "pool": "0x1e9c7d788e63afefbd0f8a368118570c8a97cbfa",
+      "created_block": 48870329,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x1c83210d669b5b3ef4094ee37483efec903b436f",
+      "pool": "0x5be7c14ba217f61aa1d55f773e1e1b9664a26139",
+      "created_block": 48870833,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xc74cd44ec6c78555f8e31ec081627fcf3b8fd8f9",
+      "pool": "0x6ab42ef0d0717654f7e7faa429974e47e5afc82c",
+      "created_block": 48870837,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb52a4c3bc127aacbb8f71459eae6410abd8709cb",
+      "pool": "0x5f0aaaacda330fbd478938548783c51d58764d4b",
+      "created_block": 48870842,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xde1bc532ab313bd4bd9a5cafbb1437c7604bcca0",
+      "pool": "0x796dcdbbe21227aad58123b03c95db86082f13b7",
+      "created_block": 48870848,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xfb86673b7407b437a227f2405ef3e65b8c92711c",
+      "pool": "0x7ecbcbacfdc929b671ffa6433b595b616da74c12",
+      "created_block": 48870853,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xed37d485285c8d5f610c5cf270ca68105f25c080",
+      "pool": "0x012d4306d01abe6188ac67905e1fa67df32897b8",
+      "created_block": 48871488,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2cc2bdb567094b08115c8245d2b8aee3996396b6",
+      "pool": "0x7d186271b25494435e28c41c17352b34e9b0ac0d",
+      "created_block": 48873005,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb47d47545f365ab40b959d6f885f9abef7a5705f",
+      "pool": "0xbfc13aea8a18f30fd72bcd97b633bf9c3035e0d7",
+      "created_block": 48874974,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x4d4e7c11c4f86cb5c37d255ce93a3556ecd21ad9",
+      "pool": "0x72b3fc97909f739a81e2363ce6b5a3f1fd138856",
+      "created_block": 48875119,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xab71e106d4abb15611847ab22bc6e0edb1302634",
+      "pool": "0xd7d66ca7d084fbcaf2b50962b35deb271c5ddb9c",
+      "created_block": 48875474,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x50626097a780881d3dff1ff97579e6daf965366b",
+      "pool": "0x5063c8ccabeffa15866211fcd2ec89d87f011826",
+      "created_block": 48875582,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xd7311ccf3e704512c3e1e917a16d6f39b1cf20fc",
+      "pool": "0xf558e9c61e9b6e0039e54a8993f6f8808488ccec",
+      "created_block": 48875839,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x006fca2f0c301dc099600d3d6c4503f4fc8de414",
+      "pool": "0xc26b4252d0ffb8e9033e1badb4491f93d2fe2998",
+      "created_block": 48876578,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x5c5e917623690d03cc0f5064313e31252439c661",
+      "pool": "0x35724361ca897fd178e18ad585dd4459cd79eaef",
+      "created_block": 48876615,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x129b18e2f6978bb197e9bbcaf8f2ffc4f9268181",
+      "pool": "0xe4c869a6e4b5f2ab287357fe624ffa46e1a19908",
+      "created_block": 48877185,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x7d68f7f342e244b99f285a3f57268a6d367149bb",
+      "pool": "0x82b18605e1ff14404be948901846efa67c66d847",
+      "created_block": 48877560,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb770f08b87c7910000d5e75388b02e7462975f7b",
+      "pool": "0x5a295358cf8f3d62f961163718db6649f0b29c10",
+      "created_block": 48877579,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x27276ffe3ab8f819632287352c59f6d24fb0e563",
+      "pool": "0x5dc3236304bdf407f0d0b7c221927888bd56f01c",
+      "created_block": 48877626,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x14300c133839f2edca3c89f15f36b867a2360e17",
+      "pool": "0xe54cfae5c6a528240d7e86d509b7ce9d73afe091",
+      "created_block": 48877655,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x62fbba4d5a36ab8c3f4c9427fa39134d19922954",
+      "pool": "0x3ea43aa8b0e9edd46fb00d136259ec9f2308a3b6",
+      "created_block": 48877980,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2823d4899274f7615abe1b3ecfd88d229c220086",
+      "pool": "0x3f8431e076d001ad4d47e3e08ff241b630054883",
+      "created_block": 48878460,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xf75c83cadd67613967a066f285ea6d05a57a5ade",
+      "pool": "0x94218522a61e230af6150d2f119cf891b2a79c6d",
+      "created_block": 48878858,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x57a1494a9fd76a863cb41bf790c96a2ef13e5e64",
+      "pool": "0xbaa67f7ddd1aeb32987c97d8147440f15e1b5737",
+      "created_block": 48878879,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x7bc4fea51066af1798164d0809305cdad30f969e",
+      "pool": "0x679ba0d445e7edcb1c9eef47ac8622b2705bdda2",
+      "created_block": 48878951,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x15e13995afdcab24d926ed2cfebdd95f98037cfa",
+      "pool": "0x9ce670966e4e5c8534fb1fd0facaa89d7c0658ca",
+      "created_block": 48879023,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x47ec4fb71368022f246964ce7a235e8b27a5b603",
+      "pool": "0x88b797d2c1c1dceb5383ec3a546b7a1d95c5d4e7",
+      "created_block": 48879029,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x7c917012b26a99608d271f55ffbc6c46e44b5bd7",
+      "pool": "0x31415b33ddb097b4325982888db9d2f2885ea6de",
+      "created_block": 48879063,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xbd68ccb302bd7c865836635be466503f9d068050",
+      "pool": "0xd38f6e497ae93d9a8b2d0cc36b9665f48dd9f6cd",
+      "created_block": 48879213,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb07233b38d3553dee22ad027a3cad0fd478cb15f",
+      "pool": "0x16a06b171e06c57ee0d4707158dbb9bbed53e0f4",
+      "created_block": 48879247,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x8dfb2dd910b218fd7b2d55ab98c90ac8f2861ef0",
+      "pool": "0x22f2da318e63395a9c3b5b270c9048e1124b9c2e",
+      "created_block": 48879269,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xe09b956494663ed4889435d3720fd33d1d8f9d54",
+      "pool": "0x46cd55f9a791fbc15dd14baea4384785997ac125",
+      "created_block": 48879350,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x0b1b32943a80260125456554fff7f705df6dafba",
+      "pool": "0xc22b889ed346bd54e081d8bd048f9f98d39adf39",
+      "created_block": 48879405,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xbc27cfd4bea3b7f41bfcedc5a10efae6696ae5ba",
+      "pool": "0x0a585f623074d1db4589e3ff33cd70bad995942a",
+      "created_block": 48879664,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x6aac8da33cc0fe63b2928666347daa1772a541e8",
+      "pool": "0x993b143b276b590f11c8c868a573e93c63e8802a",
+      "created_block": 48879705,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xd1c24bec2529f4196ffce2595bb80367b3d4c366",
+      "pool": "0x97499d9732d01d491236da276c84b6c077d7dd3d",
+      "created_block": 48879715,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xc6e279fd5e4b8ed4211881aa64155fa60304fd08",
+      "pool": "0xf14dda63747fc2049a2d74fea223804451c341aa",
+      "created_block": 48879777,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x550f75956571ff7b1c71a666b8d6ea07920ec8cb",
+      "pool": "0xa457ab05426a74440f705f6ef23cb1506d7162ae",
+      "created_block": 48879805,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x7bed02c924fb1593f1fbf13828b98faffd1d63c8",
+      "pool": "0xbf1a98d959f1ff646087301444952b0070506ec4",
+      "created_block": 48879839,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xafaf42d753f3d71184f91119f23fe39c06e1792e",
+      "pool": "0xf5986072bb4cff3b9e4ed111321b1a355e554239",
+      "created_block": 48879944,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x84ce8fbd805ec5c35ffd47d1c7289f32120e04cd",
+      "pool": "0xf2648f41a64ddae35d7bb03f4188433912cc82f7",
+      "created_block": 48880009,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x1dd981e1ef001d4c61a99cab6bdb64d38ed6786c",
+      "pool": "0x58e989268c497ca13cb485644494ebdf05669e33",
+      "created_block": 48880059,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xf2f507f4e6bcdd1bcfd094cb13ce3232384b6d64",
+      "pool": "0x7caddf34be829dc30c11865a159f61e283b5c1a9",
+      "created_block": 48880112,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x0b74f18098486dcd464e4426f9e8d2e5f4e29a84",
+      "pool": "0xe29424a212684a1a6d564478cbbea0a45bd089f8",
+      "created_block": 48880231,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2f7d3af12fe762344273cf26cc1777209a4ee777",
+      "pool": "0xab5be84f513375d72492d6a5fe0bf0366dc6b6b8",
+      "created_block": 48880282,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x1ee6915fb98defd756706806adefaee91a9455c5",
+      "pool": "0xe8e91e2f072d769c42f9d8ffbc06b131fcad2b2e",
+      "created_block": 48880311,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2b4859bfa05e5136b3c415b199097153b24c7e4f",
+      "pool": "0x00ddb93433d0b2e59bf96e74e097e805397e8263",
+      "created_block": 48880333,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x8dc9f536236e5fc5ed06e424fec152abb08addb0",
+      "pool": "0xa94c6ba14132e69dd5a9b8674e34ced94cd75837",
+      "created_block": 48880380,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x63ccd23c5c61e0e00b72f42b3d95f500c8d25010",
+      "pool": "0x6b635c0059c65124dae0ab4c0b1a814920bca64c",
+      "created_block": 48880385,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x6e5d2668e34e288b90ec652887ff67d09d23a0fc",
+      "pool": "0x0dcffbef74563efdee58f9cfa58c01ad840fa2d2",
+      "created_block": 48880409,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x3d14b48988183506fac48a2387b34f86c4fcfeb2",
+      "pool": "0x34161334e843a7c981edc594cd41cd654d9c4601",
+      "created_block": 48880415,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x8040d71ec1af793caf9ad555411fbb27d6c18f27",
+      "pool": "0x861e34eb81edae3494f0782b9fd6c0bb875f1680",
+      "created_block": 48880438,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xe4dc8679075b5b9b9e31e7e4c5b20325eb6ed851",
+      "pool": "0x44e2e33243ee054c3eb9452ae057e0025cfa3b5a",
+      "created_block": 48880475,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xe3910a6f8032c0fa75282cd6296e95c7cfa8c0e1",
+      "pool": "0x0d61dd65834d2d83f43020e0ccb65968b15ac6e4",
+      "created_block": 48880524,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xcdd39428acb43e21ca22689b417639cb22d25d50",
+      "pool": "0xb8413d8781c63abe1a873364c16520fc433cad9c",
+      "created_block": 48880555,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x93c13cf9aeb59ef84b6b864b0aae583b16036a76",
+      "pool": "0xead78cf61df3f0d078a12a252f51637d3679538a",
+      "created_block": 48880642,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xe757095740bfbe9b4510c4bbd7b0fbcf0b91f2cc",
+      "pool": "0x951d2ded0ad4883a346a67f0962e10d5369c4dd0",
+      "created_block": 48880668,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x4ce4ded7564bff338ad43b2a55e999f7b76b0532",
+      "pool": "0x548d325084872f5f4d31521543fe75d7b043901a",
+      "created_block": 48880701,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x626c405ffbd868f002c12126576f4871fc33be4b",
+      "pool": "0xe96858c052f482ffed2ebab7cf9b07498dbc4a5c",
+      "created_block": 48880820,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x94dff14bbbe32a999fd7d5c534ee76d57c0438d7",
+      "pool": "0xb8571ae8de60dfbd9d6c3f36d6e77d0b5b5d06c2",
+      "created_block": 48880937,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x8a060330ae271f2380adf47d3f9b36e45a55378d",
+      "pool": "0x7af1e130f470bc400139435d31764fd457e5d1aa",
+      "created_block": 48880986,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x08b7fa35bda29acad6776b276a710bf749539e10",
+      "pool": "0x091c74debadccdff2ee823674e67ab0661985bbd",
+      "created_block": 48881006,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x96d3daca0fed470458e9dbbb5dafbdfe658c9ebd",
+      "pool": "0x644889b4d60ef869b37f864247f5ab685f04f884",
+      "created_block": 48881104,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x3c65bea73545c0f3cade87c3e563b0bf3bfd2202",
+      "pool": "0x893bc207828f9170443c82142f9f7f3caf7852be",
+      "created_block": 48881359,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x6e362dd1e55af5cb2ee3955c0e2d8868e5e90da3",
+      "pool": "0xd67ed3cbfcf4dad8d5bfcbe9931c10ab8d44e1df",
+      "created_block": 48881773,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xaaf1f47c8b8e9b362f8257a09ea109b4af27d57a",
+      "pool": "0x4fa86f12a2a1e4c7c8a8758c507f79b96312e827",
+      "created_block": 48882024,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x4d867996945cc65bce5d45a566914af66ab5f86a",
+      "pool": "0x586de34320b656f4560bc26f9965e40850005c51",
+      "created_block": 48882189,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x0f539a7488d6e20bcd4c7a3f4ce96cae079fdd05",
+      "pool": "0xb145f075319e67f3bb6c137850c85da3bea30368",
+      "created_block": 48882500,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x156be2638c756250b539beb417624fb123d9819e",
+      "pool": "0xfc1687400ef9ffd8fc94f79c4786d3938f59c18f",
+      "created_block": 48882940,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x08699045dae642459f2c88c870ea5153aecfcc26",
+      "pool": "0xaceea7ec0bde6fa50cc78279232ec46013ba055f",
+      "created_block": 48883156,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x1e74c60341d5452c4163f4012eb7ed5c0ea35c6e",
+      "pool": "0xb149ba3d935dcf12b2a6c6f746837e0bab650d2f",
+      "created_block": 48883448,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x598f1e24b50f74d6155d75d6da00d9c27ea120a0",
+      "pool": "0x144f117dd19f600e00e38de714e51056cdd15951",
+      "created_block": 48883478,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x4d73f7729ac96bc70a2b213ce2dc175a19f95827",
+      "pool": "0x31bff4bdfcd4fe391094b14c801e7e0afc02b8dd",
+      "created_block": 48883564,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x00a04184fe285fb33dbe05da4691780fc257a3ee",
+      "pool": "0xfd7ea88c2b0ea93f1d7f928327a7a1faa7525968",
+      "created_block": 48883833,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb750ccd7d80c0dd215f4d8bb2938baf7c7be35a0",
+      "pool": "0x6e0574b280d75759656e6a490162a347f1e62f84",
+      "created_block": 48884025,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x617ae9f53d6aa6478314ee9329266914dc8fdd4c",
+      "pool": "0x0dc61d520561aa70be966e34cec46767b8e16f56",
+      "created_block": 48884204,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x185a57ed294b0712338584e81dcfe819eccb7309",
+      "pool": "0x5abf3b2885f328249af2bb67f74f1bb1f24c7545",
+      "created_block": 48884512,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xe1aaba4c83dcd2b657206213836fe2ab416508c1",
+      "pool": "0xa6e83cfa051136949bd684467d1ea9a9af6e5ded",
+      "created_block": 48884526,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x6751ec3807af1dba32e2d9b8b3cf54de18708d8b",
+      "pool": "0xb913936f462e36b38497853f7b1980fb9b02dae1",
+      "created_block": 48884809,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x05531d39af0a86b56996ed88927c7a7570ef9885",
+      "pool": "0xddcae3c91524eb85fc7e1b0ef3a54f18bfb0c35c",
+      "created_block": 48885329,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x56978c98b75d3bc9c7ffad3944075b45148e34bc",
+      "pool": "0x2fc7b19604697082e012287f8cbfbd487f115996",
+      "created_block": 48885797,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2415f9d6fdfe23dc3287e0c03680b2fb7a38e6f9",
+      "pool": "0x18df2c33f84f81448d6f82964f095433c74b0536",
+      "created_block": 48885800,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x1df021937c79da34c6257bb52244cd5814e31198",
+      "pool": "0xfda684059e493498814d18a4711f67c12fe5cf3d",
+      "created_block": 48886186,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x8f797a98959d0d239418296a965d382298a147c8",
+      "pool": "0x07f2f1117b0ac6ba18bc21ee62063f5b9f117861",
+      "created_block": 48886241,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2a6f1e543977a27b43cef070c1d818ec1be654c9",
+      "pool": "0x2c7f394203f51840419674ee03452b0a050364da",
+      "created_block": 48886324,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xb5deb50256919244c2db97dc443e6ca257211478",
+      "pool": "0x76f6c5d77cc70f700ad2c3e92ab76259f2ab938d",
+      "created_block": 48886474,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xcec0da6231e32084801181bb0c566cbf2e717103",
+      "pool": "0x9c5ab92476bb792269340dfbfdb5a3fb522f08d1",
+      "created_block": 48886509,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xd896ede4aa6e253fa1c5c217ce9653233612f9bb",
+      "pool": "0xb24d96e619039b2730b5e8544d392b4d2d0ff121",
+      "created_block": 48886551,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x7678da1e693fbb55bccbb2ff0062841ce70f8608",
+      "pool": "0xcfbdcd40670b9bedce693ab9a8cf38b6ad127406",
+      "created_block": 48886639,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2aca7d5f41ac30a7e708d11952f586ef2db55232",
+      "pool": "0x827344f4419aa975fc36ce3ed28cac547ffebe76",
+      "created_block": 48886670,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x6048d4c0eb4bd12b301c83655550de66a987edd1",
+      "pool": "0x9e909cc2356b989c98de688e12b9e929f2ce7a1a",
+      "created_block": 48886734,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xccad2fe340cc95292449ecfe48fc3ce0ec3e0e93",
+      "pool": "0x0588091d8e604013ad37b24aa7782090c8a54def",
+      "created_block": 48886828,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2451e9829aa8ed2ac7ef429f3e209118936ae608",
+      "pool": "0x58d6144df64130ad8144ac2b05545b3614ac3334",
+      "created_block": 48886859,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xf44d1de6824d8bc0684c3015341ed80cca2b20f8",
+      "pool": "0xaeb63e75f3fcd952243f29dd4472bb8a9ddfec3a",
+      "created_block": 48886900,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xaf60a353940397c702f46b59a19b4db1fa96999b",
+      "pool": "0xc94491360a17d076e3695454e6c831c0c5ce3e34",
+      "created_block": 48886994,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x260970458f2af9a74aa7d1a9c0def4a5d2b264f8",
+      "pool": "0x5827fdcfc6ed4199a902e08308cb9e0364f4a222",
+      "created_block": 48887039,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xdb35153835412b39f2591d44714743147a1d0ff5",
+      "pool": "0xe460d3247b135afd7f287fdf1e0d59f535c2c262",
+      "created_block": 48887064,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x60c787054006d7f4050ee6be6326fbe90ce2821c",
+      "pool": "0x75943dbb9bbf35fb3d6a025e13e55e1e46ad5bfb",
+      "created_block": 48887259,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x411ad9e13f83f99fca7b413bc636179b7d8711f9",
+      "pool": "0xd15e04dcbbee12a2709e6aab704b0232b14a8d19",
+      "created_block": 48887282,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x1d7b9d523f2db15cc9bff48f654a630e91f074ab",
+      "pool": "0xd262cae60a0f04a6f9a484b098e76935b2b372a7",
+      "created_block": 48887391,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xed738c9e94405527bd31ae5b8823256da3509ac2",
+      "pool": "0x3e86e20c2731fe9a1d6508d0f5dea950d11d3e74",
+      "created_block": 48887511,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x43713f54940626dd76b8ff33787091a3fc245778",
+      "pool": "0x3d6b9fecd20d47f6e4773fdd257e21b8dc7328dc",
+      "created_block": 48887620,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x389cf3126c63a0a93788a2aee93f9104c351c100",
+      "pool": "0x99595840a0897395147110d950a2dc55e51220aa",
+      "created_block": 48887691,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x14cd963668fae16518663054ea4b8f8894e14cfe",
+      "pool": "0x9af996a68b0468166dbb97012c3bff7994d71063",
+      "created_block": 48887714,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x10e68899349b1752d525121c78b2b621a14d66f5",
+      "pool": "0x2bfe90ce622004f803023f3950e9dde4ae2e58ed",
+      "created_block": 48887784,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2008d51497ca96119ad2ac592fd5374d02ba7ad7",
+      "pool": "0x5a25dd4a9cb2e1d0c9d0d4bc8037eb39cfce6b19",
+      "created_block": 48887883,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xa52fca6677552c342b520361662daaf11b4c4514",
+      "pool": "0x4dffd7a2764e24239738c865a83cf4ea9539be68",
+      "created_block": 48888431,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x3afd7d270c33f92f40283e7f33437d8fb1151625",
+      "pool": "0xd4c51d28069b51641e42e80a37c61a35c1571b9c",
+      "created_block": 48889396,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xe0414a2a427cff01b5df028e17efbcaecf65ee1a",
+      "pool": "0xdbd312741327e56a2d5d4caa9fcef91e14e04403",
+      "created_block": 48890234,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2f73dbda898231539f7901a7ab99358362b2af39",
+      "pool": "0x8ce9b3eb117076942e8fcbd00115823c71de70b7",
+      "created_block": 48890961,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xbac49141761898807a3fbfc221884ae5c937f627",
+      "pool": "0xff940153247409762460143718a32eacf3c4f6a6",
+      "created_block": 48892483,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xa845732e81a4beb484b0d1be92d4eaeaed32c048",
+      "pool": "0x4c7fa37216e2b2913d5f786a10979e8f4b30d8dc",
+      "created_block": 48892504,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xef5a846c7a06d9e1162f846fa5a40b1908be8251",
+      "pool": "0x00e7933726e9a2142a872ce3524adc915c1a7962",
+      "created_block": 48892523,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x48768a55c1140abf1b17c59756c60100d5346e66",
+      "pool": "0x938fe64fdaa16e50dac5dd1aae83d9f3d1b1b978",
+      "created_block": 48892543,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x580da114636d803a86748605fb2334dc4d8a306f",
+      "pool": "0x7cd7ff20422e461ee0f56a634416fe8c60152871",
+      "created_block": 48892579,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x9e19b366636424da73a9eb4cd2f129c13f427ddb",
+      "pool": "0x235405700d8e960f77144af6d51d7a1cbdb52efd",
+      "created_block": 48892605,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x5f245e33cd37bc318a596a1d3ca8d40459dd587a",
+      "pool": "0xe796437f0f9a3c7e5ea0633d23a2b844c3318219",
+      "created_block": 48892629,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x350b309b07175a6d49d8132430afbaa6fd33d95b",
+      "pool": "0x51959a70de6345532ed9b792d0a108d69158d31f",
+      "created_block": 48892649,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x98d9f7cd5b6363e976fad18bcc307be618a731cd",
+      "pool": "0x0b321b51318ae5c246af54c5bd9ada2310ede037",
+      "created_block": 48892673,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x02f49660ac0d1104f3be114b86f224a723485c0f",
+      "pool": "0x5f667a548905d56440b57acfd62b5d7f40c2b433",
+      "created_block": 48892694,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x32eb31d88177876a3abe26067f19f303a145cef3",
+      "pool": "0x8157fb661c78e04403fe677b761795ce925c7650",
+      "created_block": 48892718,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x278016c6ec48ac94dda4bc7883e16d0fc9c38342",
+      "pool": "0xc96e523fe63e24f591fd44de02038c0c7c670cb6",
+      "created_block": 48892771,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x7574dc725b9fc04ca78e3bc32faf19e027cc9b6d",
+      "pool": "0x34312efd1382f7c40ed4f885f6f4a6098d87dda1",
+      "created_block": 48892793,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xa92b383b5d9a2837d05fa762256077740c7ae9a2",
+      "pool": "0x6b65214cf3770ffc86338716a301899cf7a3e1ec",
+      "created_block": 48892819,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x75d28ff13ea8049c80e9ff0074663d24080f9cdd",
+      "pool": "0x2e9e2f4de726ff6c269b98d534813eb1737a7bf1",
+      "created_block": 48892844,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x18e1eec5c74856fab3ca3b6cd0edd6ad4d3c382f",
+      "pool": "0x0b53663fbbf82e1157f37765e16774fb91185dfd",
+      "created_block": 48892869,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x2fa17d55db817fba4c17f44fb5ac95dd28943b00",
+      "pool": "0x3f1572389e2cce5154cf8e05c63d035cfda33214",
+      "created_block": 48892893,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0xe512bf18ba2a01f520abff5b35fd849e67d31665",
+      "pool": "0xf28fc466703aa986f0f67e91d1257d27b270ce2e",
+      "created_block": 48893417,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x5bbb4f8a466f58ec9603a7aed5bc4632cf032029",
+      "pool": "0xcfc798d82d6cdac0172664a1b6df857ce1f4f01e",
+      "created_block": 48893895,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x349df5a7609d915dd78adef47ce669e9940ae12f",
+      "pool": "0x76c8d809e59e416b6efb0fd573e5c84ef209fec0",
+      "created_block": 48897306,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x857076ecc07086506c6130c46c306f241b97a8c9",
+      "pool": "0xdcea0903ec4d9960bea1925793591d8cea63e2c5",
+      "created_block": 48898953,
+      "day": "2026-07-20"
+    },
+    {
+      "token": "0x3a00113239029e57f36785890cf06fbd48f0eb68",
+      "pool": "0x6f1a321a14a7940406ab6cb8ca645de58dec383c",
+      "created_block": 49852775,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x04110f11406ac65f114f2bb9e32be63a0e77d445",
+      "pool": "0x159d4b58b3832b6a46eced62d8325c5e9558ff73",
+      "created_block": 49852783,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x36be58b068a75a7f23ea79e3a0dd9cb16f802268",
+      "pool": "0x443b2e39d4af844318eba7178838ae0f3f42de7d",
+      "created_block": 49853060,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x3d684b3dee26250669a22cca0f7a3de443b7581b",
+      "pool": "0x5903747f9d5e24ae2cb22022ef327705c6d377b0",
+      "created_block": 49854040,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x0c1ee43419d5b38a1c7af8939fd8c4fbc805f7e9",
+      "pool": "0xa9264d521ea38e196e7ebd1584c9a503d8ae05b5",
+      "created_block": 49854171,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xe65dcc91089adaced8459968e55ffefe47512fc9",
+      "pool": "0x1681897ccf3db7b5872283091c17629097b5ad37",
+      "created_block": 49854953,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x14a9886a5f1a2dac44795999056ff061d4d3255c",
+      "pool": "0xdc6d8c8055bb21e9ccb643fe772cffd14e0e35a4",
+      "created_block": 49855684,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x835bd06c6f84fc44d503e0af808cb5509192d1b2",
+      "pool": "0x2f3ccd58b6ecfad2d11256e0380ea4f7c15851f9",
+      "created_block": 49856439,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x45a466ac4566709bf0ae70b3cbdfb83b831771d9",
+      "pool": "0xb7dfbbfb3d2b8078b49e2af50528ff3e0e07a531",
+      "created_block": 49856476,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xf61f44d0992781de708129fa78a3531179b962a8",
+      "pool": "0x2a2e58868c8c13cb07716d157ae9b048f7c47d97",
+      "created_block": 49856987,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x3ac7125638798ca187bab7edde633182371adf09",
+      "pool": "0xf075b8ca1854749ee7739f2601c701af244652cf",
+      "created_block": 49857687,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xd986cff974f3c71110dddc95cc43eca0d198c975",
+      "pool": "0xae9dff2a224c64d49ff0a3bd482effc6f5dc3943",
+      "created_block": 49858226,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x2394f262c3196f784246b59bf126468d5133d2b7",
+      "pool": "0x7ee90ebd6a07e6aae83f290df7c19e9e7c1d7722",
+      "created_block": 49858322,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xd1722f82177ed0eee4e78ecaaa0c86b8154127ea",
+      "pool": "0xa4c7e69d0d072a637819860b1aaf40d387b30004",
+      "created_block": 49859114,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x4a2b95e6828fb05da788d7300a48016386f696bc",
+      "pool": "0x0478c870069a7f7fc2153ecca05f79d564591894",
+      "created_block": 49859171,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x4147c9cc9cecf09b0d6358614b25ca89688244de",
+      "pool": "0xbef9b2462c99e70e9994d3d84815bd6c35141041",
+      "created_block": 49860221,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xb33018134e0bf873b7e97d1d7380fb6a72fd3aa6",
+      "pool": "0xddfcbc12e16fbcf1f387ddb66a5bd81635d57c8b",
+      "created_block": 49861277,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x1a61cab5b7f23d30cb1a65f578d292c12ad11f4f",
+      "pool": "0x792847df00db7b51161fb315459a9ff034825d4c",
+      "created_block": 49861483,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xe8cdc515b412531c6f1fed912d85b17d22f09a3e",
+      "pool": "0x1c476b7fd354288f215be71e9573a8550a587b50",
+      "created_block": 49863860,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x305b9793ae051e5c0c0e21da4cf22fd02e2fbc04",
+      "pool": "0xc6a318c07aeec5d7f5743791cd70d02a500a93a1",
+      "created_block": 49866659,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x3eb245879a556c2ce2ae3c2dfb6283beb9468be4",
+      "pool": "0x01f391f5cc1032628b57f1aa3c7efa1d9b0b34df",
+      "created_block": 49869396,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xb34cb528efd39d2436393ff111a0c0de24db7da3",
+      "pool": "0x43888285db972ebafbc9a199f0fde03cfbb322de",
+      "created_block": 49869398,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xd27dccaba4205fbce58f272230cbf8cf6d60b684",
+      "pool": "0x9ba4a4890b40038b64f6662d02f794182f097f0e",
+      "created_block": 49869670,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x2abf81675ad3b6830e72505253418ed9650efeba",
+      "pool": "0xc4c76f0559251b863eb749984e7b7f80ad37ca32",
+      "created_block": 49870430,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xc22735ffa153371db3f7a77a4e4526c2ff4a94f5",
+      "pool": "0xa64d4245d2515ede4d6886f43aed01447711602d",
+      "created_block": 49872624,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x629db35be5fc5020ae381867d72041023a0ff12a",
+      "pool": "0x496b8b174f9b34b3aae886ed61d014070ea70935",
+      "created_block": 49872731,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x153023716a97e6cf4b3872c62e1bd68d68660c78",
+      "pool": "0x7c98836600f0f3b19be6a4e7e2cdb216c0dfa246",
+      "created_block": 49872769,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xe572cd45b429143b4e008a6e0dcb965e303f28f3",
+      "pool": "0xd4f3b3709d4a8769d53b377816a16480c249fd1b",
+      "created_block": 49872839,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xe160d0629855215cc5e80565cb32ef2bf7694f12",
+      "pool": "0xac6eeca4b5685564c934674f4b776dfaf1bbfa02",
+      "created_block": 49872869,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xabc758745b431d0c33867cbc81e6b75a90d36606",
+      "pool": "0x5d318c3ea0610041b1bdf5d0a2918af3b44439fa",
+      "created_block": 49872915,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x0c29f0737ec3d0d03778dbd10679efa764cce2fd",
+      "pool": "0x585944fa41a15ac3d1b9f804e6a178ee6dcfbdc9",
+      "created_block": 49872967,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x5154255621883d30cdcb0c3a2bef0e89670b1ebe",
+      "pool": "0x7600d31846ebac5c63f6388f844ec4a319d74435",
+      "created_block": 49873043,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x94e6d1f14ce3d8f131ff4d118029048ab4d9943f",
+      "pool": "0x2b4623ebc767a841144fe3034ff43ce9a7ed1ddf",
+      "created_block": 49873075,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xe9a1807e2dbaf2f514d87fe6d600d8cd5f9172e6",
+      "pool": "0xe50f6efdbc6fc0df397ce72ee8ed158957599ab8",
+      "created_block": 49873110,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xf1eb400351063a4aec01d88f6ffefb02d764089e",
+      "pool": "0x60280d4263ab799730ca7368d2c90ef32fff0d5b",
+      "created_block": 49873161,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x185088730a5e6ef33d1e2a914acdafdd5d279eb3",
+      "pool": "0x539925943658bdb9d7a0ac489ef48c90956e467e",
+      "created_block": 49873194,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x5ecb1224bd79e5d9467d91164cc87bf12abe147a",
+      "pool": "0x8a2d4d4e153af6090e0724b6b5030161cf6f4090",
+      "created_block": 49874185,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x1d78ca722d4a7c0f202aa274e3a2f58cfa50c0eb",
+      "pool": "0x1d75db4de07ed1d151e01c8c15f0e2945ab6441d",
+      "created_block": 49874943,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xc4ed98ce6321842eec63cce6c5d125a8cae17c26",
+      "pool": "0x71b6e571606ad518cb13064f3595e379680e81c1",
+      "created_block": 49875184,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x260859325ef0c34ef17c6370e6feb9c08a0f1111",
+      "pool": "0x7bd4b70285ea9b455adc7f908d155e68ab85c024",
+      "created_block": 49875210,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x489b6a9b30efef40fb0c1d4d3d76ead1bb75858a",
+      "pool": "0xed5b87634d53c0de197a5338450513be478ebf9d",
+      "created_block": 49877037,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x203e7494703fa0402ef252298c9b4d94643d2d42",
+      "pool": "0x8cab59ad77cd87d175c90c07b58820843a92ee32",
+      "created_block": 49878045,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x1fed80e69f7b60f555941800de0dc5f1e148a777",
+      "pool": "0xd29f5a278f1589e6b4ae85909227417d93d8c10c",
+      "created_block": 49878095,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x5706d365499375761c68d7980d8a3b64ba7549f0",
+      "pool": "0x648a5934261f9f16aaea0afe5f09f4046179e187",
+      "created_block": 49878131,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xa06b52fe9bf5e0a593b44f10bb39c0b7280cb2dd",
+      "pool": "0xa0be6d5c7d8903add38c990634182977c3afdeeb",
+      "created_block": 49878237,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x31a19b430fb06bbed79c4678f74ee347e3848979",
+      "pool": "0xddbae1d88f6763789fb81c9a9e3268a3be51137a",
+      "created_block": 49878337,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x714895a3cdbbc0a697486a6c0a00cb24e63e6ed1",
+      "pool": "0x3b8969ae1e3e16ed51c6c9853c64ff7f3103c2c5",
+      "created_block": 49878449,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xeadeb9d6916fd6d477001647156dbc13dd7c1811",
+      "pool": "0x85b59451b89c65f29cd8ffce26a55d2bfcebef26",
+      "created_block": 49878510,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xa25e55aa965b87b886ae09189c4bf07d0c84001b",
+      "pool": "0x49d7b286978532a06bb637e35de923298bbaf1d3",
+      "created_block": 49878550,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xc97b1e9e8727afa9fce54143ef04d3893f99374e",
+      "pool": "0x3570f2f919847e611ff5eec775c01ee515ee4d45",
+      "created_block": 49878647,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xfec4a22dd1bec0bdfb6ce08afbb90715e0b555e3",
+      "pool": "0xbe369b3996b200a7fd611b6db8c755c61fa634c4",
+      "created_block": 49878677,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x9ffc8b700a311a068887013e9403df81c9fbda57",
+      "pool": "0xf1ac9ab2db37366cb29c4cf0d54bdf31174b1960",
+      "created_block": 49880000,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x2d4b835699808db4f62071e84cee5d96a42b064c",
+      "pool": "0xc1809a0e16eb8d918c8c93fcf9a10a0490c8be16",
+      "created_block": 49880482,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x4409d3392019bae6b914a5d92fbff46fa2aca368",
+      "pool": "0xe49b3f5614a926b5f468c9ee340343d1bb59c507",
+      "created_block": 49882853,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0xb2000000000000000000007d9640993d01f94199",
+      "pool": "0x5a031e549be25902a31411c863dcfb189849f574",
+      "created_block": 49885940,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x547d91aff4eeb09ccf870f6cdf7e924243bd4666",
+      "pool": "0x7f4fc93bd38c575f5bae9f6e757b7806a5cdf8cb",
+      "created_block": 49890350,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x1e1eba66192a9e42f707c74450666b76eb8fc7af",
+      "pool": "0x7ecdf199b52d0c54df9ed821f42b2a71c32d3613",
+      "created_block": 49893817,
+      "day": "2026-08-12"
+    },
+    {
+      "token": "0x31c2c14134e6e3b7ef9478297f199331133fc2d8",
+      "pool": "0x89eaac039a6c20ea58a350aa33e959888a5a2ebc",
+      "created_block": 50889336,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb2000000000000000000007b9fcbd005511acbd5",
+      "pool": "0xe08e2eda9ce04009274cf6e6543f9a234bd910d2",
+      "created_block": 50891198,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x5a28b0325469b90344ec5ec555f6632045adab07",
+      "pool": "0x94ec5608f6ff9c24f0456202b780d97569e5f26f",
+      "created_block": 50891851,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x03dadd150f524ace5d84439089e35dab074a6e5a",
+      "pool": "0xf24fb45a28f2b1fbc64a1eb8782b97d638672b55",
+      "created_block": 50892380,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x123307da31663990cdee5495469754944551c495",
+      "pool": "0xdac0c5bdfd3580e1ed61067e6cbf5bcb7f1969c5",
+      "created_block": 50895062,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x88210810921eb3dd2bf7390cfeacda9d0ff813e0",
+      "pool": "0x0d6d01c0fab063f5b04710143b30ed11edae6b1d",
+      "created_block": 50897907,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf091ea1bc18b8c0da0d0a32740c3382a8c818d50",
+      "pool": "0x551fa44b72e65cdd1ae58d72982ed497d0bcbbc6",
+      "created_block": 50899456,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xa46dfacc9129c62704b75c3e9914a1db3364ba5e",
+      "pool": "0xf8289f0b54db75b133cd2cc3c9fa3e8deef575a6",
+      "created_block": 50901809,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x0c5b35b8b023712a4d27c870045495431b3b654d",
+      "pool": "0xa5c4b4004f9dad88ea0054f2e7add637d86a24b9",
+      "created_block": 50903439,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x7334ed07cc35a5121d48aa06314c8e2f75b91964",
+      "pool": "0xe7ae4211b1152e65439e9804ac3f605909613a07",
+      "created_block": 50904408,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf8117d5a7a7284f5a7b296633d5870cefdd533d5",
+      "pool": "0xea96999c8178650e3f20bafeece616fb64f278d4",
+      "created_block": 50905596,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x5c214534ba386340df4c30001d405fd4538f83f5",
+      "pool": "0x3f824bef03886f72eba665db8e5752afe28c4a21",
+      "created_block": 50905845,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x2c4a1503fbd1b367fe253bfa7d1712dc45e4f0e5",
+      "pool": "0xe3380d1ea2f039a61bc904833b188ab54612b340",
+      "created_block": 50908571,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb2098abbcf12945bbd6bc15983b79d9a0ae1766b",
+      "pool": "0x3e6f488eae71512b0d0639ab8633237c9f186630",
+      "created_block": 50908612,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x8ccacff70790fffa9118bd9fcb55b80d486ac2ca",
+      "pool": "0x795e4d931477ccdac6e8c95593f319a3c4ae22af",
+      "created_block": 50908966,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x0b15a0e747778d8f57d060bdccdcfe0995ed4715",
+      "pool": "0xaf224bf4494a894c59705b9040b28faaa3899fc6",
+      "created_block": 50909063,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xccf06753b900dba0bb729638a7ab9c6770e3b49e",
+      "pool": "0x71e4a45eb1105e709c43a6eaa153fde80bc483f2",
+      "created_block": 50911172,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x0457db28cdcbde801c969ab28a624612a1e80390",
+      "pool": "0x337dc85d35a42b3536c53a1699af97ecdee86481",
+      "created_block": 50911191,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb79ede44f9de0fbc914fa0da85a46f9e54a85b89",
+      "pool": "0xadbe9e9a46006cd849e30de41ffc052cbc6afd14",
+      "created_block": 50911199,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x2b02b17fb08dfdb557a567c916cedcbeadff8b9c",
+      "pool": "0xf7a65812701b1216a89b806855fb6f6ece9b3785",
+      "created_block": 50911229,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x15f69e0fc1a4b6ff7e153ee5428f47ea8857d3bc",
+      "pool": "0xf00f48c7f4b0b0e86dcf86a3a5e027b2607dea16",
+      "created_block": 50911253,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf08988250a105c4302cf1d8d3aaeaa2f1f546725",
+      "pool": "0xb0d4ee179b042a87ee0fca3d9e9f5a4f7e567ec9",
+      "created_block": 50911300,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xec32c5583c66bfb5bcd2610fa22dbffd57e4f4f1",
+      "pool": "0x1e84c602994fb5b84a3f9aaa6faa7a8353543fa2",
+      "created_block": 50911365,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x207c9b46049d5b18877675a8cfd0fd890daaf8e6",
+      "pool": "0x5cc357b119570aecddf4b69af9478551e3843724",
+      "created_block": 50911405,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x27fdc235bf64354c8648ff69c53d1ff23c9223f4",
+      "pool": "0x8d447f6a2ef4cd21ded9145aa071194f20335152",
+      "created_block": 50911450,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x483e8d7f33aae4fe98ff3595150e9c2e9157ece3",
+      "pool": "0xe1f9130590c01919532467bd24639c026b8715a3",
+      "created_block": 50911495,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x9a0011d1a0aec2ed81220e83ccef872fcde03312",
+      "pool": "0xb47f5e65c91a23fdcaf19e04c41ec776f7a25b54",
+      "created_block": 50911519,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x51e4711ce78704cb78918b2bf35eac9ff4cb7db8",
+      "pool": "0x54266ef6e56e44b132653e329a16d5b4d332244c",
+      "created_block": 50911529,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x84f693ab6be05e012a2f9e232325aacfe6088b8d",
+      "pool": "0xf8083e89c5f0679656cdb1533df299efdaf3dc88",
+      "created_block": 50911581,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x08bda6ec0667e4a126fe11f23ba566cb9bd123d7",
+      "pool": "0x9ad53df97ac2ecbce6d9c704678a4b49bab2cee3",
+      "created_block": 50911629,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x465b44b3e8414b456ada791654a0b01462de280b",
+      "pool": "0x0b3ed618d52c555f317842b8ce57a51ecd4af70a",
+      "created_block": 50911685,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb2b722d67e3f373c7180bee8383f7b6993c8a5b7",
+      "pool": "0xbeb26bd0dc885f7630fad7afb0340ba82173ad15",
+      "created_block": 50911706,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x094d166b1dd07fd465c7b34d37d8766aa5d265dd",
+      "pool": "0xcb3ef383967960874688513c2861fc1f195b02ae",
+      "created_block": 50911710,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xce8f297183b1a77202eb6b045df453affffcefd3",
+      "pool": "0x52d73d72f95becf514916cae56250020542958e7",
+      "created_block": 50911736,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x755156085a86fc90df56756c0956ed20fe538b30",
+      "pool": "0x54ea2fb79da23e2ac70c0ef64d0a123ea7beaa1d",
+      "created_block": 50911744,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf645747e359a58d8d9164287cee5983529062398",
+      "pool": "0xcff61bad250a4b1f195e08f2907ba02003225255",
+      "created_block": 50911766,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x874a695e0df5d1fdb7a180996a602f4d96924387",
+      "pool": "0xd7ac8420a9fe9dac7d00dc79e9f71e25323e5910",
+      "created_block": 50911785,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xe8aaa102ee2fc8791a894881863b3d658f5ac94c",
+      "pool": "0xcb60a64b05ee14e316549a6d28a4c573cbbf07b7",
+      "created_block": 50911809,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x84188af620de3c2aec2883e916c43383a604c1fe",
+      "pool": "0x79bc46889e5a88ae42ca3a5adf6b16d808ef713f",
+      "created_block": 50911846,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x7a9441883eb1ebc6f0db6b73deb7771f815d5937",
+      "pool": "0x7b1212e0d426bc6ddb91724c01187bbc35a1dd1a",
+      "created_block": 50911936,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x35fd70d28470fb7829db5a82f1f8016e8969f999",
+      "pool": "0xf64a36d928bfd6643103a3ce5c4fcb8c187060ae",
+      "created_block": 50911979,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x27a879b90ec25d83f685e21fd20e0568e5a6ef89",
+      "pool": "0x2c244b96fbb29a8914242528b398024d38211446",
+      "created_block": 50912060,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xcedea471df569ccc835cb819a81c48d5c8fb1c67",
+      "pool": "0x033ef61054078788368a969353b0e4682109b7e5",
+      "created_block": 50912114,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x7c0235af537064bcb08bc97617233219a99cc172",
+      "pool": "0x723baf829cb427beec00a8a725fa390145798b8b",
+      "created_block": 50912138,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf1fd270303be8a04ca0edd5a9c07d0f7b973cb0a",
+      "pool": "0x60838a581ace47af6d83b5c947d73aad1f38871a",
+      "created_block": 50912174,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x02d3d426b84004468c38fadd6ef06acac4c500bc",
+      "pool": "0x25251ca431aa8a1c2d4764b7355ec8d0e50369e3",
+      "created_block": 50912244,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x46b8425d1011219c306988466ae586c7753574b4",
+      "pool": "0x2d600388e69df28258fe9c8196d436ccc5f6a085",
+      "created_block": 50912276,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x9c0213ff0ab0dc5743ee2e66198dd08e7c85e296",
+      "pool": "0xc4a88cb0da7b6f99bd7183b521dfe51dd27c7520",
+      "created_block": 50912475,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf78f11a30be06ce2e31999c06bf30ae2d84912e5",
+      "pool": "0x2f1f0bab9f8af0b439e46ceecd77ee75105fc5f4",
+      "created_block": 50912577,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf28d69d21107aa9629433bd1b588358bb52e9be1",
+      "pool": "0xaf68a59700744ee6960b73ed54a3d75d6985a008",
+      "created_block": 50912700,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x504a47433cc24ddbc7abebd4496e58bcfe403e8e",
+      "pool": "0x72be301afe01201447ddcce1dd8eeaac88b3a8a3",
+      "created_block": 50912744,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xbfdeaab0191a47b3b33a3d6197450c653dcd3a97",
+      "pool": "0xa8bd80422c04bb5afe21edac91b44b21c42473f2",
+      "created_block": 50912776,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x2379372875753b7e4e15186900d641dd589b4c77",
+      "pool": "0x6900c75116feb65c3a3c80be83f3daf6b4ec7447",
+      "created_block": 50912834,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x437b890ad71c61517f913ced10157068b7ab16e2",
+      "pool": "0xee2d40817b0898c633be39ff89b74ba0e921ac04",
+      "created_block": 50912879,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xd3386f8958d56b408a055cdc7aebff274bb12722",
+      "pool": "0x35c8adb9e7530e4d40150c9cbf319411a49661aa",
+      "created_block": 50912905,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x281f3a29f62ca23ee323823754f08e4970c12814",
+      "pool": "0xd4ee435430745ecd9b80b23dc16acb180b3df438",
+      "created_block": 50913326,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xca155e4f1d1ed6b203800d0626e3473b924e6da5",
+      "pool": "0xddcecd0b28b806ffae56a559861066e0bdb3fe86",
+      "created_block": 50914496,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x1bc86aff6394021b4293c1ce56b3e0f5f785323a",
+      "pool": "0x3f78865a564031d2c4d39fcc945cb796ab2d57bc",
+      "created_block": 50915568,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x96e1f154957d5fa119fc74587f1be62d6aa4876f",
+      "pool": "0x480d30c0f4e64d539a59d456c05f00b963fc196c",
+      "created_block": 50917014,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x4804629054da6f378e42776de0de27d452d7c636",
+      "pool": "0x5ac5859432eaeb6d3026044bda9624481559fa17",
+      "created_block": 50917749,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb200000000000000000000f065aacb72155cc001",
+      "pool": "0x983f3f983cb69d84621c415186423dd3981223f5",
+      "created_block": 50919638,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb2000000000000000000004884b426556b92883d",
+      "pool": "0x5237817130dfc43f176a9146d3ae1be85cbacafb",
+      "created_block": 50919910,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x75e5f2f8fd1821a771184ac710b1628a674aa881",
+      "pool": "0x48388d733ed74d92be956d1469a7435cf945e887",
+      "created_block": 50920024,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x2f7fe4c30b07331298bab547175108bf3aa3e448",
+      "pool": "0x2d1dfbc954402b5fc3e89a3d0f269043f7014075",
+      "created_block": 50920941,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb200000000000000000000d9192b6b456483c2e8",
+      "pool": "0x7f030e5fd657795c0937a3e8af2929fd90da91c7",
+      "created_block": 50920297,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb200000000000000000000ab99cfa739e253872b",
+      "pool": "0xd73cbecc0f62c7c1704332ed119514d6d84dc607",
+      "created_block": 50921094,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xa9e01e77f961909535fe8fc9742411368c5329bc",
+      "pool": "0x4f887efc0acec951eb5367685bd2d7fafc9fcc70",
+      "created_block": 50921202,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x3cc2ca15804fda5ac2033dae7b7a582fe4cebfc4",
+      "pool": "0xd14b502ebdad9a5b3aec09fe8e72fab50035b477",
+      "created_block": 50921866,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x99f5e6a770eca5e631950851785c2a25e947a3bc",
+      "pool": "0x3e881b7b9bf6728bc320040068cef792ef963450",
+      "created_block": 50922886,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x3e554e1d7d809955e540c96e363c37ae5ee1b17f",
+      "pool": "0x46ec14a4dffa151769e2f9f09a0457a17009e664",
+      "created_block": 50922919,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x9eb4d30600f26d53faaabe442f75436d5424c3ba",
+      "pool": "0xfaa52c3d617a4693aadbd35a435ad10b27088fbf",
+      "created_block": 50924173,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb2000000000000000000001e800a7f5189430cd0",
+      "pool": "0xad6a86333c579d5bbd150f28e74651006fa87b3b",
+      "created_block": 50924485,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x0686bc274b94a10a599a0e6e3e04c386cf382046",
+      "pool": "0x56e21ce470673cd450fc39b6dd293bbcc064ac8b",
+      "created_block": 50924498,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb200000000000000000000397293cb8cda9a10c5",
+      "pool": "0x26fa54cdfc64faacb5364c09de7ac2f72308052d",
+      "created_block": 50924856,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x59f9c617dc193b79579f68a7856c7687d7bf429c",
+      "pool": "0xaaed2ba896bce790851324fccc1a735bc9c3eab8",
+      "created_block": 50925110,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x07d33e48805625bf886c6e7de2193e3fc9fc0237",
+      "pool": "0x688f13d95748dc66e8b73679965cffb2da890ba0",
+      "created_block": 50925553,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xe3a04474d04f6bd7a3b3e0a7e331d7ec57da1038",
+      "pool": "0x1f2820bedaa4fcb6038600701cd05093e075cd82",
+      "created_block": 50925683,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xcf3e34b310087e06c7ba662aaf2e29c45634c431",
+      "pool": "0x61c19e1cb9f60ee7ed697ff9d30feaf4871d81e0",
+      "created_block": 50925816,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x149ffef902f9be186282a42c01663b8b2bb6de12",
+      "pool": "0x0d43118c4c3a43e2fe8ba45a01b0fb5853f10061",
+      "created_block": 50925946,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xc2085287da20a5a8ee4fa9366d0130d3b704c685",
+      "pool": "0x1b31033aa635d17ed19a78e82de1bc9debfbdaa3",
+      "created_block": 50926076,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xc53773790bf49b6bdab0355a4917ece6bc61b0f8",
+      "pool": "0x6bf06212651a5f1992dbbbf180e63b1c65d54f79",
+      "created_block": 50926207,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x5f223c6b19e20b362ab42667f549bdbacf063e29",
+      "pool": "0xaf0a3a47e6e0c3c44808593160fbec592b5ac76f",
+      "created_block": 50926336,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x8c4ce5caf5d195bcbd6b81505a79eea888a01e08",
+      "pool": "0x885ab191a4a8e7fa326749c3b5cd82a2d061c420",
+      "created_block": 50926464,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x22cddcc52aacba1fcc13a3ee8be55d9bf8efb81a",
+      "pool": "0xf10c61db0a931e018d02f9d88f3aabf27424b695",
+      "created_block": 50926593,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xb6686a05af6f39bbe8e4155565f83854ddcc3f6b",
+      "pool": "0xb1c715f42b2edee56e27cc66b59e902feb79b4ab",
+      "created_block": 50926723,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf76f286d00b6865de124b0214769486cb9176eba",
+      "pool": "0x4d8d8abc3e41439e91a627e490af4bf6b626f235",
+      "created_block": 50926855,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x4755bbecdb56af55b74fa91bbeacf457b38c63b2",
+      "pool": "0x211e797fed74ef3550b2fe2fae5f209cd34ca43e",
+      "created_block": 50926984,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xbab1c7cf4d7e6867c47a6a95c2a7debd77b079d6",
+      "pool": "0x4dfcca3fe4148f475a0418d873ce0a2d051126cb",
+      "created_block": 50927114,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x38dd2bd2f22ba26b6b533f69c01294377c5c8530",
+      "pool": "0x47749bf1d5cd44ab610a393736926c3df3ac7fca",
+      "created_block": 50927243,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x2e7a4b5d2db6ded36d42972066a3fdad1c3f47d5",
+      "pool": "0xa577926df3f0bee9d40e58aaae6c160cd40ce7cc",
+      "created_block": 50927373,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x3d9eaa16ee7501dd92e94568d99aa7d947a363ff",
+      "pool": "0xfe1929090d423e4b4b3c7ee38bdc7e9e0bfb1638",
+      "created_block": 50927504,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x673d24e101b921bf183c85c68d0017558a3e6bff",
+      "pool": "0x98a725c6aa821187979e1e85fa871cb58451edd0",
+      "created_block": 50927634,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xbe12a63e6d900bfba9cec32a180cb2575c597ffc",
+      "pool": "0xc573f4876ef480104e4863f7443b94bde019a239",
+      "created_block": 50927785,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0xf4d6882347acec405d9065378d695e8e5c678040",
+      "pool": "0xc2a75c24b705aae80d18bfc63d0f41e5a5d62277",
+      "created_block": 50929631,
+      "day": "2026-09-05"
+    },
+    {
+      "token": "0x5e0e2da09c1e9c1f9ce90398c0319f6e12484078",
+      "pool": "0xd095fce9847fb4ff555e6241c61f93aeb5b27e2c",
+      "created_block": 51886894,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x1ffa92fb3b8359da98d1adfec81e63be84a2c8e4",
+      "pool": "0x0eef3810e56c371db0371b5969fc297be6bb6c21",
+      "created_block": 51888670,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xa063a5dae8f1d84ed991ddae91b3f4e0d80003c4",
+      "pool": "0x9b97e947884ecccf6a11cef47bcec1d61ebc04cb",
+      "created_block": 51890975,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x68027a44c5a2469df5c6103873b666966af3f81e",
+      "pool": "0x4fe909fa4fe9698156ca08dac4f5bc790d428c84",
+      "created_block": 51891135,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x494a2a694a9a7b272b0ff8250b38c9ef6f6e8bfc",
+      "pool": "0x31d3141e8597db4e3cee3cd2e96240d79973641f",
+      "created_block": 51891207,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x9300e0868b3bdcb8f51431d96984bfa598a117a3",
+      "pool": "0xe3b732a2205e0850919227df2df1e8a745159390",
+      "created_block": 51891294,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x169f9caf94d51e01bd5592c3ccc202aaeee86e47",
+      "pool": "0x5ef761e0bf4eb246f66170a01aecbd81d053037b",
+      "created_block": 51891380,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xfe718db55f90cb28c46d73c53dbcbbbed1a94c45",
+      "pool": "0x55a71407f82a5789f3cb178d8a0cb1b950372ec4",
+      "created_block": 51891448,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xe99fdf29a2813a0c677500e432a3b4a17fe90f1f",
+      "pool": "0xf9d8ae79df84596390ccb92b06ea997006f3b9ab",
+      "created_block": 51891481,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xc86ae54ad714a509fed42705e61bac00a0e2baef",
+      "pool": "0x70964a9b4169118f0f6c1687e86e50ac91ff30a9",
+      "created_block": 51891567,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xc0a77fa3bcae7696cdad693ead896a8502e20cd8",
+      "pool": "0xf4c5fc7d153e4a64c602ceeaf8ebaad5ff85a8ea",
+      "created_block": 51893571,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x0e94f507246c2120e5ec5fbc54144f0095de1c14",
+      "pool": "0xe109dad1e4b91fd6de70435d3ebcd46df0cb5607",
+      "created_block": 51895423,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x792055169c963cd755280e2306fe515c364649ff",
+      "pool": "0x427ebfeaf50606d32707c4bae754268252f4b84e",
+      "created_block": 51896984,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xd5760f251a02dd2cbeaef4a49e4c3977cd5b4c6a",
+      "pool": "0xf15cff878b7e7d77024afbe8a85e2e59d2f36495",
+      "created_block": 51897357,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x41199e5d3d06b97fe8df593d656ee2507b741237",
+      "pool": "0xb779f3ac7b2bc22bfdd8bfa99169d76a53007bb2",
+      "created_block": 51905225,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x07b3d902783c3c12b077508c3b5c00113d1291d0",
+      "pool": "0x70928b899adf5977acaed7159b713e2983d9d9f5",
+      "created_block": 51912197,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x9717f462a65f42697212056ebde09ac380889580",
+      "pool": "0x7224753bb2f4972c6e956fe81909d3c81b346c3a",
+      "created_block": 51907244,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xd37510e9e426349e9d1f68d91b82bf2b33bc4111",
+      "pool": "0x586c1bdb6deadc27075b6ae53b2ce9134ee333df",
+      "created_block": 51907692,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x30890b4fc5e164454e467a5912151c31a7f79996",
+      "pool": "0xf69b6e1ae1e4c43bea36b3801d91e6bee24bf672",
+      "created_block": 51909232,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xff5f76e8966ff3c3e255101652823408c6e77b06",
+      "pool": "0xfb4dc88e296d5300a42ccc3b28ca65327ccc0e01",
+      "created_block": 51910137,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xd2f8e69680de6ac0bd04603e4687f739b5b5dff2",
+      "pool": "0xcea92138fa3612eae28cb7ce63db3792a0925ce2",
+      "created_block": 51911441,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x70af2a3e63b92b64dec786586ec4ca729d21a72f",
+      "pool": "0xcec559011fd4f88c8b1a0b5c8615d3f85a9a44ef",
+      "created_block": 51916574,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x173d83c3a6db796002eac3b290fa1b4a09d65d97",
+      "pool": "0x9b2225dbe90de4e71462313b0442e6daf761a971",
+      "created_block": 51917758,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xc606e7392521d8e9b454fb064c2fd56f6e5a2ce1",
+      "pool": "0x61e1b345116b0e58c15042abeeb32c8c51c66de2",
+      "created_block": 51918200,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xada8024b16384f1e8564b99fb823b2ae1772238d",
+      "pool": "0xf577f457907895bca12815848bf529bde7760364",
+      "created_block": 51919138,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x017630b337d185e28fbbef5c844ef9f1294a8841",
+      "pool": "0x59896659f66d6f8c9710686723f885364be0e7bc",
+      "created_block": 51919423,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x03e4e65abbbe6cc6d3352b9f665077458c0bbff9",
+      "pool": "0x01d14f1818642bb46cfaaf44752fb7edc8db341d",
+      "created_block": 51920503,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x33845a8672f1ca822cd55496bad5c90ef8ac44ac",
+      "pool": "0xc5d4ede23bb17d2c48bc8ba28e5d5508a18c04c9",
+      "created_block": 51920610,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x0492b94d523ea2e9a3a8f082649698469af0a674",
+      "pool": "0x7e20d4247ab7d94e46e0f603b7b7a054efae29c3",
+      "created_block": 51921525,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x2c78066f5213f87d41dab4bcd364229a604f012c",
+      "pool": "0x85a123a7367d2d5f8e3599200fa8118e2c490002",
+      "created_block": 51922598,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x8a693f1e8380c699013559cb090bbe868658e6e6",
+      "pool": "0xf448d35a7121ebd0f7f15a88c222233c1bbe1082",
+      "created_block": 51923477,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0x0ee363310a1ca8ea30e41062bd0980cab374d012",
+      "pool": "0xe9cb34b25f36fe11feae26b80564159537146bdb",
+      "created_block": 51924524,
+      "day": "2026-09-28"
+    },
+    {
+      "token": "0xf32fe5180163d71e23f329d7a94827ed480ca963",
+      "pool": "0x894fb1933b7b5689a787ec34f304c609741440a5",
+      "created_block": 51924681,
+      "day": "2026-09-28"
+    }
+  ],
+  "traded": [
+    {
+      "token": "0x31c2c14134e6e3b7ef9478297f199331133fc2d8",
+      "pool": "0x89eaac039a6c20ea58a350aa33e959888a5a2ebc",
+      "created_block": 50889336,
+      "day": "2026-09-05",
+      "symbol": "wtSPYM",
+      "pair": "0x7796fc53B75960A9762Ba267c19F5da9868B7853",
+      "dex": "hydrex",
+      "quote": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "quote_symbol": "USDC",
+      "created_ms": 1773077951000,
+      "launch_day": "2026-03-09",
+      "is_launch_day": false,
+      "liq": 92395,
+      "vol24h": 8295,
+      "fdv": 30609
+    },
+    {
+      "token": "0xb2000000000000000000007b9fcbd005511acbd5",
+      "pool": "0xe08e2eda9ce04009274cf6e6543f9a234bd910d2",
+      "created_block": 50891198,
+      "day": "2026-09-05",
+      "symbol": "SPCXc",
+      "pair": "0x63d8d458d63d18a7a5941575105f5c6521170854d85c141de96afdeaaa803776",
+      "dex": "uniswap",
+      "quote": "0xB200000000000000000000f065aAcB72155cC001",
+      "quote_symbol": "MOONBASE",
+      "created_ms": 1788479879000,
+      "launch_day": "2026-09-03",
+      "is_launch_day": false,
+      "liq": 0,
+      "vol24h": 0,
+      "fdv": null
+    },
+    {
+      "token": "0xb200000000000000000000f065aacb72155cc001",
+      "pool": "0x983f3f983cb69d84621c415186423dd3981223f5",
+      "created_block": 50919638,
+      "day": "2026-09-05",
+      "symbol": "SPCXc",
+      "pair": "0x63d8d458d63d18a7a5941575105f5c6521170854d85c141de96afdeaaa803776",
+      "dex": "uniswap",
+      "quote": "0xB200000000000000000000f065aAcB72155cC001",
+      "quote_symbol": "MOONBASE",
+      "created_ms": 1788479879000,
+      "launch_day": "2026-09-03",
+      "is_launch_day": false,
+      "liq": 0,
+      "vol24h": 0,
+      "fdv": null
+    },
+    {
+      "token": "0xb2000000000000000000004884b426556b92883d",
+      "pool": "0x5237817130dfc43f176a9146d3ae1be85cbacafb",
+      "created_block": 50919910,
+      "day": "2026-09-05",
+      "symbol": "MSTRc",
+      "pair": "0x17ecfe141bada18d94b2c41a2bbaffde8726309a6b4340e1ad7a6910bc7cdf8d",
+      "dex": "uniswap",
+      "quote": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "quote_symbol": "USDC",
+      "created_ms": 1788544073000,
+      "launch_day": "2026-09-04",
+      "is_launch_day": false,
+      "liq": 2948,
+      "vol24h": 1,
+      "fdv": 2052036
+    },
+    {
+      "token": "0xb200000000000000000000d9192b6b456483c2e8",
+      "pool": "0x7f030e5fd657795c0937a3e8af2929fd90da91c7",
+      "created_block": 50920297,
+      "day": "2026-09-05",
+      "symbol": "AMZNc",
+      "pair": "0x893d654ad170fe1c68ac919814423d1e795d780c841b9aa4e8df2cdef79bc635",
+      "dex": "uniswap",
+      "quote": "0x0000000000000000000000000000000000000000",
+      "quote_symbol": "ETH",
+      "created_ms": 1788540117000,
+      "launch_day": "2026-09-04",
+      "is_launch_day": false,
+      "liq": 508,
+      "vol24h": 39,
+      "fdv": 2431871
+    },
+    {
+      "token": "0xb200000000000000000000ab99cfa739e253872b",
+      "pool": "0xd73cbecc0f62c7c1704332ed119514d6d84dc607",
+      "created_block": 50921094,
+      "day": "2026-09-05",
+      "symbol": "BLUE",
+      "pair": "0xcda6dc0ec17d9665a3f18d4613a24dee0ab892de2f9aa9af714e6426def704dd",
+      "dex": "uniswap",
+      "quote": "0xB200000000000000000000Ab99cFa739E253872B",
+      "quote_symbol": "MSFTc",
+      "created_ms": 1788544221000,
+      "launch_day": "2026-09-04",
+      "is_launch_day": false,
+      "liq": 0,
+      "vol24h": 0,
+      "fdv": null
+    },
+    {
+      "token": "0xb2000000000000000000001e800a7f5189430cd0",
+      "pool": "0xad6a86333c579d5bbd150f28e74651006fa87b3b",
+      "created_block": 50924485,
+      "day": "2026-09-05",
+      "symbol": "TSLAc",
+      "pair": "0xfef59908e654b1104455835f03327bb951fd10597c9106cf6624d17a2ad39f5b",
+      "dex": "uniswap",
+      "quote": "0xB200000000000000000000CfCD1d711EEf213b01",
+      "quote_symbol": "STC",
+      "created_ms": 1788481345000,
+      "launch_day": "2026-09-04",
+      "is_launch_day": false,
+      "liq": 0,
+      "vol24h": 0,
+      "fdv": null
+    },
+    {
+      "token": "0xb200000000000000000000397293cb8cda9a10c5",
+      "pool": "0x26fa54cdfc64faacb5364c09de7ac2f72308052d",
+      "created_block": 50924856,
+      "day": "2026-09-05",
+      "symbol": "SNDKc",
+      "pair": "0x26fa54cdfc64fAacb5364c09De7Ac2F72308052D",
+      "dex": "uniswap",
+      "quote": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "quote_symbol": "USDC",
+      "created_ms": 1788639059000,
+      "launch_day": "2026-09-05",
+      "is_launch_day": true,
+      "liq": 2790,
+      "vol24h": 10,
+      "fdv": 1509519
+    },
+    {
+      "token": "0x07b3d902783c3c12b077508c3b5c00113d1291d0",
+      "pool": "0x70928b899adf5977acaed7159b713e2983d9d9f5",
+      "created_block": 51912197,
+      "day": "2026-09-28",
+      "symbol": "XDP",
+      "pair": "0x6c6564baa24b9899ef6c14ec171082ccce1eb06ee4e462cca40cf858e4afa4b5",
+      "dex": "uniswap",
+      "quote": "0x0000000000000000000000000000000000000000",
+      "quote_symbol": "ETH",
+      "created_ms": 1790597931000,
+      "launch_day": "2026-09-28",
+      "is_launch_day": true,
+      "liq": 242,
+      "vol24h": 144,
+      "fdv": 256139494
+    }
+  ],
+  "launches": [
+    {
+      "token": "0xb200000000000000000000397293cb8cda9a10c5",
+      "pool": "0x26fa54cdfc64faacb5364c09de7ac2f72308052d",
+      "created_block": 50924856,
+      "day": "2026-09-05",
+      "symbol": "SNDKc",
+      "pair": "0x26fa54cdfc64fAacb5364c09De7Ac2F72308052D",
+      "dex": "uniswap",
+      "quote": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "quote_symbol": "USDC",
+      "created_ms": 1788639059000,
+      "launch_day": "2026-09-05",
+      "is_launch_day": true,
+      "liq": 2790,
+      "vol24h": 10,
+      "fdv": 1509519
+    },
+    {
+      "token": "0x07b3d902783c3c12b077508c3b5c00113d1291d0",
+      "pool": "0x70928b899adf5977acaed7159b713e2983d9d9f5",
+      "created_block": 51912197,
+      "day": "2026-09-28",
+      "symbol": "XDP",
+      "pair": "0x6c6564baa24b9899ef6c14ec171082ccce1eb06ee4e462cca40cf858e4afa4b5",
+      "dex": "uniswap",
+      "quote": "0x0000000000000000000000000000000000000000",
+      "quote_symbol": "ETH",
+      "created_ms": 1790597931000,
+      "launch_day": "2026-09-28",
+      "is_launch_day": true,
+      "liq": 242,
+      "vol24h": 144,
+      "fdv": 256139494
+    }
+  ]
+}

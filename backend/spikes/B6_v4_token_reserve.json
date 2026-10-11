@@ -1,0 +1,61 @@
+{
+ "checks": [
+  {
+   "token": "0x54d406ab77547de65c524dabf74526db54b74e93",
+   "pools": 1,
+   "transfers_in_window": 2742,
+   "at_block": 52460370,
+   "expected_from_transfers": "1621656671772340843581476872",
+   "actual_balance_of": "1621656671772340843581476872",
+   "difference": "0",
+   "relative_error": 0.0,
+   "exact": true
+  },
+  {
+   "token": "0x5dacbe420d09809b26d014269f07289ed05912da",
+   "pools": 1,
+   "transfers_in_window": 2733,
+   "at_block": 52459911,
+   "expected_from_transfers": "1621656625802130114940616595",
+   "actual_balance_of": "1621656625802130114940616595",
+   "difference": "0",
+   "relative_error": 0.0,
+   "exact": true
+  },
+  {
+   "token": "0x8907840461b6b72706d2d3a5c6bbbdefa01811d7",
+   "pools": 1,
+   "transfers_in_window": 2732,
+   "at_block": 52459826,
+   "expected_from_transfers": "1621656718644278463518864590",
+   "actual_balance_of": "1621656718644278463518864590",
+   "difference": "0",
+   "relative_error": 0.0,
+   "exact": true
+  },
+  {
+   "token": "0xc55440ff271dd87492edd8d24260f18aedf312b8",
+   "pools": 1,
+   "transfers_in_window": 2732,
+   "at_block": 52456221,
+   "expected_from_transfers": "1621656718644690428391702530",
+   "actual_balance_of": "1621656718644690428391702530",
+   "difference": "0",
+   "relative_error": 0.0,
+   "exact": true
+  },
+  {
+   "token": "0x177a54be9cff4f8f407db001626bc62c1421b646",
+   "pools": 1,
+   "transfers_in_window": 2103,
+   "at_block": 52460237,
+   "expected_from_transfers": "1622796166420595388692435287",
+   "actual_balance_of": "1622796166420595388692435287",
+   "difference": "0",
+   "relative_error": 0.0,
+   "exact": true
+  }
+ ],
+ "exact_count": 5,
+ "single_pool_count": 5
+}

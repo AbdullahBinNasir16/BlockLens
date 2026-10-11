@@ -1,0 +1,51 @@
+{
+ "tenderly": {
+  "max_span": 1000,
+  "note": "capped above 1,000: {'code': -32602, 'message': 'invalid params', 'data': 'Block range too large for public access: maximum 1000 b",
+  "reachable": true,
+  "calls_per_token_90d": 3888
+ },
+ "official": {
+  "max_span": 0,
+  "note": "capped above 0: Client error '429 Too Many Requests' for url 'https://mainnet.base.org'\nFor more information check: https://de",
+  "reachable": true,
+  "calls_per_token_90d": null
+ },
+ "publicnode": {
+  "max_span": 10000,
+  "note": "capped above 10,000: Client error '403 Forbidden' for url 'https://base-rpc.publicnode.com'\nFor more information check: https://dev",
+  "reachable": true,
+  "calls_per_token_90d": 389
+ },
+ "llamarpc": {
+  "reachable": false,
+  "error": "Server error '525 <none>' for url 'https://base.llamarpc.com'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/"
+ },
+ "drpc": {
+  "max_span": 0,
+  "note": "capped above 0: Client error '400 Bad Request' for url 'https://base.drpc.org'\nFor more information check: https://developer.m",
+  "reachable": true,
+  "calls_per_token_90d": null
+ },
+ "blockpi": {
+  "reachable": false,
+  "error": "Server error '521 <none>' for url 'https://base.blockpi.network/v1/rpc/public'\nFor more information check: https://developer.mozilla.org/en-"
+ },
+ "1rpc": {
+  "reachable": false,
+  "error": "Server error '503 Service Unavailable' for url 'https://1rpc.io/base'\nFor more information check: https://developer.mozilla.org/en-US/docs/W"
+ },
+ "meowrpc": {
+  "max_span": 0,
+  "note": "capped above 0: {'code': -32000, 'message': 'The method eth_getLogs is not supported.'}",
+  "reachable": true,
+  "calls_per_token_90d": null
+ },
+ "blockscout_token_transfers": {
+  "ok": false,
+  "error": "Client error '403 Forbidden' for url 'https://base.blockscout.com/api/v2/addresses/0x4e829f8a5213c42535ab84aa40bd4adcce9cba02/token-transfers?type=ERC-20'\nFor more information check: https://developer"
+ },
+ "blockscout_counters": {
+  "error": "Client error '403 Forbidden' for url 'https://base.blockscout.com/api/v2/addresses/0x4e829f8a5213c42535ab84aa40bd4adcce9cba02/counters'\nFor more information che"
+ }
+}
