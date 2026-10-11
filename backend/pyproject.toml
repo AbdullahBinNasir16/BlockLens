@@ -1,0 +1,44 @@
+[project]
+name = "blocklens-backend"
+version = "0.1.0"
+description = "BlockLens Phase 1 — ingestion and store for Base"
+requires-python = ">=3.12"
+
+# Pinned to what actually resolved on 2026-10-11, not to what the docs
+# suggested. Re-pin by running: .venv/Scripts/python -m pip list --format=freeze
+dependencies = [
+    "SQLAlchemy==2.1.4",
+    "alembic==1.20.0",
+    "httpx==0.28.1",
+    "psycopg[binary]==3.3.6",
+    # Phase 3. At ~30k nodes the graph fits in memory comfortably; this is
+    # not a scale that justifies a graph database.
+    "networkx==3.4.2",
+    # Phase 4. Pinned to what resolved on Python 3.14; the versions the
+    # docs suggest have no wheels for it yet.
+    "scikit-learn==1.9.1",
+    "numpy==2.5.4",
+    "scipy==1.18.1",
+    # Phase 7: the API layer and the shipped model artefact.
+    "fastapi==0.118.0",
+    "uvicorn==0.37.0",
+    "joblib==1.5.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    "error::DeprecationWarning",
+    # third-party: Starlette's TestClient on this anyio version, not our code
+    "ignore:The anyio.abc.BlockingPortal:DeprecationWarning",
+    # third-party: joblib 1.5.2 unpickling on NumPy 2.5
+    "ignore:Setting the shape on a NumPy array:DeprecationWarning",
+]
+
+[tool.setuptools.packages.find]
+include = ["blocklens*"]

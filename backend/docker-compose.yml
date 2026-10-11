@@ -1,0 +1,53 @@
+# PostgreSQL 16 with TimescaleDB, as the brief specifies.
+#
+# The development machine this was built on cannot run it: Docker Desktop
+# needs rights this account does not have, so the store runs on a portable
+# PostgreSQL 16.10 at 127.0.0.1:5433 instead, and the hypertable migration
+# is guarded so it is skipped there. Both paths produce the same schema and
+# the same query results; only pair_snapshot's physical layout differs.
+# See DECISIONS.md, 2026-10-11.
+#
+#   docker compose up -d
+#   DATABASE_URL=postgresql+psycopg://blocklens:blocklens@127.0.0.1:5433/blocklens \
+#     python -m alembic upgrade head
+
+services:
+  db:
+    image: timescale/timescaledb:2.17.2-pg16
+    container_name: blocklens-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: blocklens
+      POSTGRES_PASSWORD: blocklens
+      POSTGRES_DB: blocklens
+      # Ingestion is write-heavy in bursts and read-heavy in analysis.
+      TIMESCALEDB_TELEMETRY: "off"
+    command:
+      - postgres
+      - -c
+      - shared_preload_libraries=timescaledb
+      - -c
+      - max_connections=50
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - work_mem=32MB
+      # A backfill writes tens of thousands of rows in a few transactions;
+      # the default WAL settings checkpoint far too often for that.
+      - -c
+      - max_wal_size=2GB
+      - -c
+      - checkpoint_timeout=15min
+    ports:
+      # 5433, not 5432: a local PostgreSQL may already hold the default.
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blocklens -d blocklens"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  pgdata:
