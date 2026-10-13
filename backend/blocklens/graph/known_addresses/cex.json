@@ -1,0 +1,6 @@
+{
+  "note": "Centralised exchange hot wallets. Funding from one of these breaks the trace completely: the exchange's internal ledger is not on chain, so two wallets funded from the same hot wallet are not evidence of one actor.",
+  "coverage_warning": "THIS LIST IS EFFECTIVELY EMPTY, AND THAT IS THE HONEST STATE. Attributing a Base address to a named exchange needs a labelled source (Etherscan tags, Arkham, Nansen) and every one of those is paid or blocked in this environment - Basescan is paid, Blockscout returns 403 (spikes B2 and B3). Rather than guess at addresses and present guesses as curated data, the list is left unpopulated and the consequence is measured: wallets a real exchange funded will land in another category, which overstates 'cluster' and 'fresh'. funding.py's high-degree flagging is what catches them in practice - an unlisted address funding thousands of wallets is almost certainly an exchange or a disperser - and every flagged address is reported for review instead of silently creating edges.",
+  "added": "2026-10-13",
+  "addresses": []
+}

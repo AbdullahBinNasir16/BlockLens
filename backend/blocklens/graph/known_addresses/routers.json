@@ -1,0 +1,67 @@
+{
+  "note": "Addresses that must never create a funding edge. A wallet 'funded by' the Uniswap router is an artefact of how a swap settles, not a relationship with anyone. Entries here are excluded from edge construction entirely, and are also used as cut points when connected components are taken.",
+  "coverage_warning": "This list is incomplete by construction - new routers and aggregators deploy constantly. It is a first pass, not the mechanism relied on: funding.py flags any address funding more than HIGH_DEGREE_FUNDER wallets and refuses it an edge whether or not it appears here. That empirical check is what actually protects the graph; this list only makes the common cases legible.",
+  "added": "2026-10-13",
+  "addresses": [
+    {
+      "address": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+      "label": "Uniswap V4 PoolManager",
+      "source": "verified on-chain in the Part A spike; holds every V4 pool's funds, and appears as the counterparty on every V4 swap",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x2626664c2603336e57b271c5c0b26f421741e481",
+      "label": "Uniswap SwapRouter02 (Base)",
+      "source": "Uniswap deployment docs; appearance as a transfer counterparty in the ingested data",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x6ff5693b99212da76ad316178a184ab56d299b43",
+      "label": "Uniswap UniversalRouter (Base)",
+      "source": "Uniswap deployment docs",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x000000000022d473030f116ddee9f6b43ac78ba3",
+      "label": "Permit2",
+      "source": "canonical single deployment across chains",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0xcf77a3ba9a5ca399b7c97c74d54e5b1beb874e43",
+      "label": "Aerodrome Router",
+      "source": "Aerodrome docs; Aerodrome is the deepest non-Uniswap venue on Base",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x420dd381b31aef6683db6b902084cb0ffece40da",
+      "label": "Aerodrome PoolFactory",
+      "source": "verified on-chain in the Part A spike",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x33128a8fc17869897dce68ed026d694621f6fdfd",
+      "label": "Uniswap V3 Factory (Base)",
+      "source": "verified on-chain in the Part A spike",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae",
+      "label": "LI.FI / Jumper diamond",
+      "source": "flagged empirically as funding 143 wallets across 16 tokens in the ingested data, then identified; a cross-chain aggregator, so edges from it are settlement artefacts",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+      "label": "Uniswap Universal Router (older deployment)",
+      "source": "Uniswap deployment docs",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x6b2c0c7be2048daa9b5527982c29f48062b34d58",
+      "label": "OKX DEX aggregator router (Base)",
+      "source": "OKX published router address",
+      "added": "2026-10-13"
+    }
+  ]
+}

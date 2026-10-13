@@ -1,0 +1,164 @@
+{
+ "note": "Contracts receiving tokens in the first 5 minutes of more than 2% of Phase 5 sampled launches: launchpad lockers, fee collectors, routers. Never an early cohort, never a funder. Wallets without code on many launches are bots and are deliberately not listed.",
+ "added": "2026-10-19",
+ "method": "frequency over token_sample + eth_getCode",
+ "launches_considered": 1066,
+ "addresses": [
+  {
+   "address": "0x01aa002d4419dd7d8b469da8134a21cdc7cb093d",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 34
+  },
+  {
+   "address": "0x0469a4bd3724dc86c9542f4694c976da13c450c0",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 67
+  },
+  {
+   "address": "0x1331f0788f9c08c8f38d52c7a1152250a9de00be",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 83
+  },
+  {
+   "address": "0x49fb9c16b9b2a19452633573603c837673fd7e04",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 77
+  },
+  {
+   "address": "0x63242a4ea82847b20e506b63b0e2e2eff0cc6cb0",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 33
+  },
+  {
+   "address": "0x63d2dfea64b3433f4071a98665bcd7ca14d93496",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 205
+  },
+  {
+   "address": "0x660eaaedebc968f8f3694354fa8ec0b4c5ba8d12",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 182
+  },
+  {
+   "address": "0x6ff5693b99212da76ad316178a184ab56d299b43",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 377
+  },
+  {
+   "address": "0x729f562a1dbef4b488df8b6585666b9151f01645",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 44
+  },
+  {
+   "address": "0x7747f8d2a76bd6345cc29622a946a929647f2359",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 50
+  },
+  {
+   "address": "0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 27
+  },
+  {
+   "address": "0xbdf938149ac6a781f94faa0ed45e6a0e984c6544",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 55
+  },
+  {
+   "address": "0xbf4195ab0b03e1eb3345dd1e83bed7650b1ed123",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 50
+  },
+  {
+   "address": "0xc479b79e53c1065e5e56a6da78e9d634b4ae1e5d",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 50
+  },
+  {
+   "address": "0xc51b211fe1f47982b27a35ad56de634d7391c206",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 25
+  },
+  {
+   "address": "0xc8d077444625eb300a427a6dfb2b1dbf9b159040",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 177
+  },
+  {
+   "address": "0xca1a2fb7f3179d887504966b25d1606978adcd42",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 22
+  },
+  {
+   "address": "0xcfbacd1af196ae360039c1d62b784e8447149d17",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 29
+  },
+  {
+   "address": "0xd152f549545093347a162dce210e7293f1452150",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 56
+  },
+  {
+   "address": "0xd59ce43e53d69f190e15d9822fb4540dccc91178",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 109
+  },
+  {
+   "address": "0xd87b6f1b9fcb9deb0baf5661ffd9775ab5e94a55",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 65
+  },
+  {
+   "address": "0xd8ba9d1a99fc21f0eca24e9b85737c28a194a4e2",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 201
+  },
+  {
+   "address": "0xdc5d8200a030798bc6227240f68b4dd9542686ef",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 334
+  },
+  {
+   "address": "0xe85a59c628f7d27878aceb4bf3b35733630083a9",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 202
+  },
+  {
+   "address": "0xef22e6a8e7857c52614bf956d0a6527af73a4d97",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 24
+  },
+  {
+   "address": "0xf3622742b1e446d92e45e22923ef11c2fcd55d68",
+   "label": "launchpad/infrastructure contract",
+   "source": "phase6 infra",
+   "launches": 58
+  }
+ ]
+}

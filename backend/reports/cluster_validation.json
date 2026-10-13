@@ -1,0 +1,103 @@
+{
+ "generated": "2026-10-13T17:24:06.600368+00:00",
+ "graph": {
+  "funding_nodes": 14654,
+  "funding_edges": 14525,
+  "co_purchase_nodes": 2994,
+  "co_purchase_edges": 96676,
+  "nodes_total": 17599,
+  "in_memory_still_appropriate": true
+ },
+ "layer1_clusters": 134,
+ "cluster_size_distribution": {
+  "2": 74,
+  "3": 15,
+  "4": 7,
+  "5": 7,
+  "6": 5,
+  "7": 5,
+  "8": 1,
+  "9": 3,
+  "10": 2,
+  "11": 3,
+  "13": 1,
+  "19": 1,
+  "21": 1,
+  "26": 1,
+  "33": 1,
+  "57": 1,
+  "101": 1,
+  "949": 1,
+  "1166": 1,
+  "2039": 1,
+  "4419": 1,
+  "5402": 1
+ },
+ "measurements": {
+  "buys_only": {
+   "real": {
+    "cluster_pairs": 40,
+    "cluster_co_moves": 3,
+    "cluster_rate": 0.075,
+    "random_pairs": 20000,
+    "random_co_moves": 413,
+    "random_rate": 0.02065,
+    "lift": 3.632,
+    "expected_co_moves_at_baseline": 0.83,
+    "p_value": 0.04939310506025369,
+    "note": "buys_only"
+   },
+   "shuffled_control": {
+    "cluster_pairs": 378,
+    "cluster_co_moves": 2,
+    "cluster_rate": 0.005291,
+    "random_pairs": 20000,
+    "random_co_moves": 413,
+    "random_rate": 0.02065,
+    "lift": 0.256,
+    "expected_co_moves_at_baseline": 7.81,
+    "p_value": 0.9966322258001676,
+    "note": "buys_only, degree-preserving shuffle"
+   },
+   "control_collapse_ratio": 0.071,
+   "verdict": "clusters co-move far more than chance, and the control collapses",
+   "wallets_with_activity": 3231
+  },
+  "buy_or_sell": {
+   "real": {
+    "cluster_pairs": 155,
+    "cluster_co_moves": 12,
+    "cluster_rate": 0.077419,
+    "random_pairs": 20000,
+    "random_co_moves": 332,
+    "random_rate": 0.0166,
+    "lift": 4.664,
+    "expected_co_moves_at_baseline": 2.57,
+    "p_value": 1.2683682477819233e-05,
+    "note": "buy_or_sell"
+   },
+   "shuffled_control": {
+    "cluster_pairs": 2000,
+    "cluster_co_moves": 6,
+    "cluster_rate": 0.003,
+    "random_pairs": 20000,
+    "random_co_moves": 344,
+    "random_rate": 0.0172,
+    "lift": 0.174,
+    "expected_co_moves_at_baseline": 34.4,
+    "p_value": 0.9999999995684159,
+    "note": "buy_or_sell, degree-preserving shuffle"
+   },
+   "control_collapse_ratio": 0.037,
+   "verdict": "clusters co-move far more than chance, and the control collapses",
+   "wallets_with_activity": 3594
+  }
+ },
+ "positive_control": {
+  "funder": "0xd152f549545093347a162dce210e7293f1452150",
+  "fundees": 40,
+  "recovered_in_one_component": 41,
+  "expected": 41,
+  "passed": true
+ }
+}

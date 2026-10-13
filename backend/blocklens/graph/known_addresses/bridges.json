@@ -1,0 +1,25 @@
+{
+  "note": "Bridge contracts. A wallet first funded through a bridge arrived from another chain, and the trace stops there: we cannot follow a bridge to its origin and do not claim to.",
+  "coverage_warning": "The L2 predeploys below are canonical and certain. Third-party bridges (Across, Stargate, Hop, deBridge and the rest) are not enumerated here, so a wallet funded through one of those will not be classified as 'bridge'. That is a measured gap, reported in the funding distribution rather than hidden.",
+  "added": "2026-10-13",
+  "addresses": [
+    {
+      "address": "0x4200000000000000000000000000000000000010",
+      "label": "L2StandardBridge (Base predeploy)",
+      "source": "OP Stack predeploy, fixed address on every OP chain",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x4200000000000000000000000000000000000007",
+      "label": "L2CrossDomainMessenger (Base predeploy)",
+      "source": "OP Stack predeploy, fixed address on every OP chain",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x4200000000000000000000000000000000000016",
+      "label": "L2ToL1MessagePasser (Base predeploy)",
+      "source": "OP Stack predeploy, fixed address on every OP chain",
+      "added": "2026-10-13"
+    }
+  ]
+}

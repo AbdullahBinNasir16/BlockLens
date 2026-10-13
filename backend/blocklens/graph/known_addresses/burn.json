@@ -1,0 +1,18 @@
+{
+  "note": "Sinks. A transfer to one of these is a destruction, not a relationship, so it must not create an edge in either direction.",
+  "added": "2026-10-13",
+  "addresses": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "label": "zero address",
+      "source": "ERC-20 mint and burn convention",
+      "added": "2026-10-13"
+    },
+    {
+      "address": "0x000000000000000000000000000000000000dead",
+      "label": "dead address",
+      "source": "widely used burn sink",
+      "added": "2026-10-13"
+    }
+  ]
+}
