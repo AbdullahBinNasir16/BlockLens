@@ -1,0 +1,38 @@
+{
+ "note": "The reserve method checked two independent ways at three blocks: a net sum of Phase 1's stored transfers against balanceOf read at the same block. Substitutes for a block explorer, which is paid (Basescan) or 403 (Blockscout) on this chain - and unlike a screenshot, this is re-runnable.",
+ "token_address": "0x54d406ab77547de65c524dabf74526db54b74e93",
+ "pool_id": "0xc52d634369cf04e1a0860aec86bfce1bff80d8ba458ebcbff1b4566caba086eb",
+ "holder": "0x498581ff718922c3f8e6a244956af099b2652b2b",
+ "window": {
+  "from_block": 52417170,
+  "to_block": 52460370
+ },
+ "transfers_in_window": 2742,
+ "checks": [
+  {
+   "at": "first move",
+   "block": 52417170,
+   "from_transfers": "24317557938082062880411",
+   "from_balance_of": "24317557938082062880411",
+   "difference": "0",
+   "exact": true
+  },
+  {
+   "at": "mid history",
+   "block": 52419421,
+   "from_transfers": "24285006921433246513010",
+   "from_balance_of": "24285006921433246513010",
+   "difference": "0",
+   "exact": true
+  },
+  {
+   "at": "window end",
+   "block": 52460370,
+   "from_transfers": "1621656671772340843581476872",
+   "from_balance_of": "1621656671772340843581476872",
+   "difference": "0",
+   "exact": true
+  }
+ ],
+ "distinct_values": 3
+}
