@@ -1,0 +1,253 @@
+/* ============================================================
+   Live trending screener (Base)
+   ============================================================ */
+
+.bl-table--live {
+  min-width: 1380px;
+}
+.bl-table--live td {
+  padding: 10px 10px;
+  font-size: 14px;
+}
+.bl-table--live th {
+  padding: 10px 10px;
+}
+.bl-table--live .bl-tokencell__n {
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* sortable headers */
+.bl-sortth {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: color var(--fast) var(--ease);
+}
+.bl-sortth:hover,
+.bl-sortth[data-on='true'] {
+  color: var(--ink);
+}
+.bl-sortth__a {
+  display: inline-block;
+  width: 0.8em;
+}
+
+/* status in the header */
+.bl-live {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.bl-live__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.bl-live__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: var(--ink-4);
+}
+.bl-live__state[data-status='live'] .bl-live__dot {
+  background: var(--pos);
+  animation: bl-live-pulse 1.8s var(--ease) infinite;
+}
+.bl-live__state[data-status='loading'] .bl-live__dot,
+.bl-live__state[data-status='limited'] .bl-live__dot {
+  background: var(--warn);
+}
+.bl-live__state[data-status='error'] .bl-live__dot {
+  background: var(--neg);
+}
+@keyframes bl-live-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pos) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* search */
+.bl-livesearch {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 99px;
+  color: var(--ink-4);
+  min-width: 230px;
+}
+.bl-livesearch:focus-within {
+  border-color: var(--ink-3);
+}
+.bl-livesearch input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  width: 100%;
+}
+
+/* cells */
+.bl-live__quote {
+  color: var(--ink-4);
+  font-size: 12px;
+  margin-left: -4px;
+}
+.bl-live__price {
+  transition: background 600ms var(--ease);
+}
+.bl-live__price[data-flash='up'] {
+  background: var(--pos-soft);
+  transition: none;
+}
+.bl-live__price[data-flash='down'] {
+  background: var(--neg-soft);
+  transition: none;
+}
+.bl-live__pending {
+  color: var(--ink-5);
+  letter-spacing: 0.1em;
+}
+.bl-live__empty {
+  text-align: center;
+  padding: 48px 12px !important;
+}
+.bl-live__more {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+@media (max-width: 720px) {
+  .bl-livesearch {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   Unresearched token — honest empty state with live market data
+   ============================================================ */
+
+.bl-unres__ident {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.bl-unres__sym {
+  color: var(--ink-4);
+  font-size: 0.55em;
+  letter-spacing: 0;
+}
+.bl-unres__addr {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-3);
+  word-break: break-all;
+}
+.bl-unres__notice {
+  margin: 26px 0 8px;
+  padding: 20px 24px;
+  border: 1px solid var(--ink);
+  border-radius: 18px;
+  max-width: 78ch;
+}
+.bl-unres__lede {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+.bl-unres__sec {
+  margin-top: 34px;
+}
+.bl-unres__sech {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.bl-unres__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 22px 28px;
+}
+.bl-unres__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+}
+
+/* ============================================================
+   Fresh launches — live feed scored at minute 5
+   ============================================================ */
+
+.bl-launch__model {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px 40px;
+  margin: 24px 0 6px;
+  padding: 20px 24px;
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  background: var(--paper-raised);
+}
+.bl-launch__q {
+  font-size: 17px;
+  margin: 4px 0 10px;
+}
+.bl-launch__val {
+  display: grid;
+  gap: 6px;
+  padding-left: 16px;
+  list-style: disc;
+}
+.bl-launch__val b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.bl-risk {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.bl-risk__bar {
+  width: 64px;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--paper-sunken);
+  overflow: hidden;
+  display: inline-block;
+}
+.bl-risk__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+}
+.bl-launch__fwd {
+  margin: 18px 0 6px;
+  padding: 18px 24px 20px;
+  border: 1px dashed var(--rule-strong);
+  border-radius: 18px;
+}
