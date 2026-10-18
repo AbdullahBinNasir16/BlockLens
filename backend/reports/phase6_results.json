@@ -1,0 +1,376 @@
+{
+ "generated": "2026-10-19T02:11:19.907796+00:00",
+ "deviation": "evaluated on CAL (random cohort, Jan-Apr): the pre-registered EVAL set has 0 EXTRACTED and 3 BUYER_LOSS tokens",
+ "counts": {
+  "TRAIN": {
+   "tokens": 336,
+   "families": 321,
+   "t1": {
+    "1": 9,
+    "0": 319,
+    "null": 8
+   },
+   "t2": {
+    "1": 109,
+    "0": 227
+   }
+  },
+  "CAL": {
+   "tokens": 179,
+   "families": 148,
+   "t1": {
+    "0": 155,
+    "null": 11,
+    "1": 13
+   },
+   "t2": {
+    "1": 64,
+    "0": 115
+   }
+  },
+  "EVAL": {
+   "tokens": 78,
+   "families": 44,
+   "t1": {
+    "0": 78
+   },
+   "t2": {
+    "0": 75,
+    "1": 3
+   }
+  }
+ },
+ "T1": {
+  "positives_in_train": 9,
+  "model": "not fitted: too few training positives",
+  "rule checker (Phase 5)": {
+   "n": 168,
+   "positives": 13,
+   "pr_auc": 0.1251,
+   "roc_auc": 0.6375,
+   "precision_at_10": 0.0,
+   "precision_at_25": 0.2,
+   "precision_at_50": 0.16
+  },
+  "early-concentration checker": {
+   "n": 168,
+   "positives": 13,
+   "pr_auc": 0.073,
+   "roc_auc": 0.4136,
+   "precision_at_10": 0.0,
+   "precision_at_25": 0.0,
+   "precision_at_50": 0.04
+  }
+ },
+ "T2": {
+  "prevalence_train": 0.3244,
+  "prevalence_cal": 0.3575,
+  "logistic_C": 1.0,
+  "models": {
+   "rule checker (Phase 5)": {
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.3651,
+    "roc_auc": 0.4978,
+    "precision_at_10": 0.3,
+    "precision_at_25": 0.32,
+    "precision_at_50": 0.42
+   },
+   "early-concentration checker": {
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.3704,
+    "roc_auc": 0.5325,
+    "precision_at_10": 0.3,
+    "precision_at_25": 0.36,
+    "precision_at_50": 0.36
+   },
+   "logistic: all": {
+    "features": 23,
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.6435,
+    "roc_auc": 0.7372,
+    "precision_at_10": 0.8,
+    "precision_at_25": 0.8,
+    "precision_at_50": 0.56,
+    "brier": 0.194,
+    "brier_base_rate": 0.2297
+   },
+   "logistic: timing": {
+    "features": 16,
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.6077,
+    "roc_auc": 0.6921,
+    "precision_at_10": 0.9,
+    "precision_at_25": 0.76,
+    "precision_at_50": 0.5,
+    "brier": 0.2008,
+    "brier_base_rate": 0.2297
+   },
+   "logistic: graph": {
+    "features": 7,
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.4509,
+    "roc_auc": 0.5866,
+    "precision_at_10": 0.7,
+    "precision_at_25": 0.64,
+    "precision_at_50": 0.42,
+    "brier": 0.2273,
+    "brier_base_rate": 0.2297
+   },
+   "boosting: all": {
+    "features": 23,
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.8331,
+    "roc_auc": 0.8832,
+    "precision_at_10": 0.9,
+    "precision_at_25": 0.92,
+    "precision_at_50": 0.84,
+    "brier": 0.1273,
+    "brier_base_rate": 0.2297
+   },
+   "boosting: timing": {
+    "features": 16,
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.8279,
+    "roc_auc": 0.8817,
+    "precision_at_10": 1.0,
+    "precision_at_25": 0.88,
+    "precision_at_50": 0.8,
+    "brier": 0.1333,
+    "brier_base_rate": 0.2297
+   },
+   "boosting: graph": {
+    "features": 7,
+    "n": 179,
+    "positives": 64,
+    "pr_auc": 0.5431,
+    "roc_auc": 0.6689,
+    "precision_at_10": 0.7,
+    "precision_at_25": 0.6,
+    "precision_at_50": 0.54,
+    "brier": 0.2104,
+    "brier_base_rate": 0.2297
+   }
+  },
+  "bootstrap": {
+   "resamples": 2000,
+   "families": 148,
+   "pr_auc_ci": {
+    "rule checker (Phase 5)": [
+     0.259,
+     0.4883
+    ],
+    "early-concentration checker": [
+     0.2833,
+     0.4748
+    ],
+    "logistic: all": [
+     0.5306,
+     0.7688
+    ],
+    "logistic: timing": [
+     0.4867,
+     0.7372
+    ],
+    "logistic: graph": [
+     0.3292,
+     0.5948
+    ],
+    "boosting: all": [
+     0.7314,
+     0.9108
+    ],
+    "boosting: timing": [
+     0.7274,
+     0.904
+    ],
+    "boosting: graph": [
+     0.4047,
+     0.6775
+    ]
+   },
+   "difference_ci": {
+    "boosting: all - early-concentration checker": [
+     0.3577,
+     0.55
+    ],
+    "logistic: all - early-concentration checker": [
+     0.1713,
+     0.3785
+    ],
+    "boosting: all - rule checker (Phase 5)": [
+     0.3694,
+     0.5679
+    ],
+    "boosting: all - boosting: timing": [
+     -0.0282,
+     0.0333
+    ],
+    "logistic: all - logistic: timing": [
+     -0.0163,
+     0.0837
+    ],
+    "boosting: graph - early-concentration checker": [
+     0.0529,
+     0.2947
+    ]
+   },
+   "difference_share_above_zero": {
+    "boosting: all - early-concentration checker": 1.0,
+    "logistic: all - early-concentration checker": 1.0,
+    "boosting: all - rule checker (Phase 5)": 1.0,
+    "boosting: all - boosting: timing": 0.644,
+    "logistic: all - logistic: timing": 0.9105,
+    "boosting: graph - early-concentration checker": 0.997
+   }
+  },
+  "boosting: graph null": {
+   "mean": 0.3749,
+   "p95": 0.4434
+  },
+  "logistic: graph null": {
+   "mean": 0.3732,
+   "p95": 0.438
+  },
+  "permutation_importance": {
+   "logistic: all": [
+    {
+     "feature": "t_log_price_drift",
+     "mean": 0.2302,
+     "std": 0.0333
+    },
+    {
+     "feature": "t_same_block_buyers",
+     "mean": 0.0872,
+     "std": 0.018
+    },
+    {
+     "feature": "t_swaps",
+     "mean": 0.0582,
+     "std": 0.024
+    },
+    {
+     "feature": "g_buyers_funded_by_deployer",
+     "mean": 0.0531,
+     "std": 0.0234
+    },
+    {
+     "feature": "t_first_buy_delay_s",
+     "mean": 0.0253,
+     "std": 0.0097
+    },
+    {
+     "feature": "r_deployer_bought",
+     "mean": 0.0211,
+     "std": 0.0159
+    },
+    {
+     "feature": "t_is_v4",
+     "mean": 0.0127,
+     "std": 0.0089
+    },
+    {
+     "feature": "t_unique_sellers",
+     "mean": 0.0064,
+     "std": 0.0075
+    },
+    {
+     "feature": "t_unique_buyers",
+     "mean": 0.0026,
+     "std": 0.0063
+    },
+    {
+     "feature": "t_sell_buy_ratio",
+     "mean": 0.0022,
+     "std": 0.0114
+    }
+   ],
+   "boosting: all": [
+    {
+     "feature": "t_log_price_drift",
+     "mean": 0.3354,
+     "std": 0.0392
+    },
+    {
+     "feature": "t_reserve_vs_peak",
+     "mean": 0.1165,
+     "std": 0.0298
+    },
+    {
+     "feature": "t_swaps",
+     "mean": 0.1018,
+     "std": 0.0215
+    },
+    {
+     "feature": "t_first_buy_delay_s",
+     "mean": 0.0731,
+     "std": 0.0158
+    },
+    {
+     "feature": "t_top_buyer_share",
+     "mean": 0.0216,
+     "std": 0.0093
+    },
+    {
+     "feature": "g_buyers_with_funder",
+     "mean": 0.0209,
+     "std": 0.009
+    },
+    {
+     "feature": "t_share_buys_first_minute",
+     "mean": 0.0183,
+     "std": 0.0074
+    },
+    {
+     "feature": "t_buys",
+     "mean": 0.0143,
+     "std": 0.0103
+    },
+    {
+     "feature": "t_unique_buyers",
+     "mean": 0.0125,
+     "std": 0.0069
+    },
+    {
+     "feature": "g_prior_tokens_mean",
+     "mean": 0.0071,
+     "std": 0.0054
+    }
+   ]
+  },
+  "by_launch_type": {
+   "launchpad": {
+    "tokens": 175,
+    "loss": 63
+   },
+   "self-deployed": {
+    "tokens": 4,
+    "loss": 1
+   }
+  },
+  "post_hoc": {
+   "note": "computed after results were seen",
+   "single_feature_pr_auc": {
+    "t_log_price_drift": 0.5753,
+    "t_reserve_vs_peak": 0.5368,
+    "t_swaps": 0.3851,
+    "t_first_buy_delay_s": 0.3501
+   },
+   "boosting_without_price_drift_pr_auc": 0.6528,
+   "full_minus_price_drift_ci": [
+    0.1622,
+    0.3438
+   ],
+   "nodrift_minus_price_drift_ci": [
+    -0.0647,
+    0.2068
+   ]
+  }
+ }
+}

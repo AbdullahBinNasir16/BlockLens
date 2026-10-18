@@ -1,0 +1,67 @@
+{
+ "version": "buyer-loss-v1",
+ "feature_set": "t5-2026-10",
+ "features": [
+  "g_buyers_funded_by_deployer",
+  "g_buyers_with_funder",
+  "g_copurchase_tie_share",
+  "g_dispersers",
+  "g_largest_component_share",
+  "g_mean_funders_per_buyer",
+  "g_prior_tokens_mean",
+  "r_deployer_bought",
+  "r_mint_in_window",
+  "t_buys",
+  "t_first_buy_delay_s",
+  "t_is_v4",
+  "t_log_price_drift",
+  "t_median_buy_delay_s",
+  "t_reserve_vs_peak",
+  "t_same_block_buyers",
+  "t_sell_buy_ratio",
+  "t_sells",
+  "t_share_buys_first_minute",
+  "t_swaps",
+  "t_top_buyer_share",
+  "t_unique_buyers",
+  "t_unique_sellers"
+ ],
+ "trained": "2026-10-19T02:21:14.657619+00:00",
+ "trained_on": {
+  "tokens": 593,
+  "losses": 176,
+  "launches": [
+   "2026-01-20",
+   "2026-07-16"
+  ]
+ },
+ "target": "a buy at the price 5 minutes after launch is worth <= 50% six hours after launch",
+ "applies_to": "Base Uniswap V3/V4 pools, scored once, at launch + 5 minutes, only if traded by then; not for RUG risk (see launch type)",
+ "validation": {
+  "in_period": {
+   "set": "random cohort Jan 20 - Apr 19 2026",
+   "tokens": 179,
+   "pr_auc": 0.8331,
+   "base_rate": 0.3575,
+   "rule_checker_pr_auc": 0.3704
+  },
+  "out_of_time": {
+   "set": "trained before Mar 1, tested Mar 1 - Apr 17 2026",
+   "tokens": 57,
+   "pr_auc": 0.758,
+   "rule_checker_pr_auc": 0.331
+  },
+  "regime_check": {
+   "set": "May - Jul 2026",
+   "tokens": 78,
+   "losses": 3,
+   "flagged_at_0_5": 5,
+   "losses_caught": 3
+  }
+ },
+ "launch_type_signal": {
+  "self_deployed_rug_rate_eval": "109 of 113",
+  "launchpad_rug_rate_eval": "0 of 74",
+  "source": "reports/model_card_v2.md"
+ }
+}
