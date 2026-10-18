@@ -1,0 +1,1444 @@
+{
+ "generated": "2026-10-18T11:24:46.433206+00:00",
+ "chain": "base",
+ "rule_version": "v1-2026-10",
+ "A1_censoring": {
+  "definition": "rug = pool holdings of the token <= 10% of running peak, measured from transfers inside launch + 24h",
+  "all_labelled": {
+   "RUG_tokens": 28,
+   "RUG_rugged_inside_window": 28,
+   "RUG_alive_at_window_end": 0,
+   "RUG_rug_minute": {
+    "n": 28,
+    "min": 0.0,
+    "p25": 0.0,
+    "median": 15.43,
+    "p75": 17.33,
+    "max": 285.8
+   },
+   "RUG_last_trade_minute": {
+    "n": 28,
+    "min": 6.77,
+    "p25": 15.45,
+    "median": 17.33,
+    "p75": 21.15,
+    "max": 1028.67
+   },
+   "FAILED_tokens": 45,
+   "FAILED_last_trade_minute": {
+    "n": 45,
+    "min": 0.0,
+    "p25": 0.2,
+    "median": 4.27,
+    "p75": 84.63,
+    "max": 1410.93
+   },
+   "label_drop_hour_RUG": {
+    "n": 28,
+    "min": 6.0,
+    "p25": 6.0,
+    "median": 6.0,
+    "p75": 6.0,
+    "max": 582.0
+   }
+  },
+  "in_model": {
+   "RUG_tokens": 20,
+   "RUG_rugged_inside_window": 20,
+   "RUG_alive_at_window_end": 0,
+   "RUG_rug_minute": {
+    "n": 20,
+    "min": 0.0,
+    "p25": 0.0,
+    "median": 6.82,
+    "p75": 15.73,
+    "max": 181.5
+   },
+   "RUG_last_trade_minute": {
+    "n": 20,
+    "min": 6.77,
+    "p25": 7.82,
+    "median": 17.47,
+    "p75": 21.15,
+    "max": 271.97
+   },
+   "FAILED_tokens": 24,
+   "FAILED_last_trade_minute": {
+    "n": 24,
+    "min": 0.5,
+    "p25": 2.03,
+    "median": 8.45,
+    "p75": 214.23,
+    "max": 1410.93
+   },
+   "label_drop_hour_RUG": {
+    "n": 20,
+    "min": 6.0,
+    "p25": 6.0,
+    "median": 6.0,
+    "p75": 6.0,
+    "max": 6.0
+   }
+  },
+  "survival_by_minute": [
+   {
+    "minute": 1,
+    "RUG": 20,
+    "RUG_with_features": 12,
+    "RUG_total": 28,
+    "FAILED": 27,
+    "FAILED_with_features": 22,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 2,
+    "RUG": 20,
+    "RUG_with_features": 12,
+    "RUG_total": 28,
+    "FAILED": 23,
+    "FAILED_with_features": 18,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 5,
+    "RUG": 20,
+    "RUG_with_features": 12,
+    "RUG_total": 28,
+    "FAILED": 18,
+    "FAILED_with_features": 13,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 10,
+    "RUG": 15,
+    "RUG_with_features": 7,
+    "RUG_total": 28,
+    "FAILED": 15,
+    "FAILED_with_features": 10,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 15,
+    "RUG": 15,
+    "RUG_with_features": 7,
+    "RUG_total": 28,
+    "FAILED": 13,
+    "FAILED_with_features": 10,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 30,
+    "RUG": 3,
+    "RUG_with_features": 2,
+    "RUG_total": 28,
+    "FAILED": 12,
+    "FAILED_with_features": 10,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 60,
+    "RUG": 2,
+    "RUG_with_features": 1,
+    "RUG_total": 28,
+    "FAILED": 10,
+    "FAILED_with_features": 9,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 180,
+    "RUG": 2,
+    "RUG_with_features": 1,
+    "RUG_total": 28,
+    "FAILED": 7,
+    "FAILED_with_features": 6,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 360,
+    "RUG": 0,
+    "RUG_with_features": 0,
+    "RUG_total": 28,
+    "FAILED": 4,
+    "FAILED_with_features": 3,
+    "FAILED_total": 45
+   },
+   {
+    "minute": 1440,
+    "RUG": 0,
+    "RUG_with_features": 0,
+    "RUG_total": 28,
+    "FAILED": 0,
+    "FAILED_with_features": 0,
+    "FAILED_total": 45
+   }
+  ],
+  "tokens": [
+   {
+    "token": "0x93c0244b1cda111ba54a7d5f4a61021c1c8d6b49",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:30:59+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.0,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0xbb5284bf933bcec335659a9224933ecf0fa93b07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:31:51+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 310,
+    "rug_minute": 0.0,
+    "last_trade_minute": 20.3,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0x1afae510b40cba5ac87ac4345fe01f733ccb59cb",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:33:23+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 95,
+    "rug_minute": 17.3,
+    "last_trade_minute": 17.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x2cf4ca91d6603d8eac7315186186d9beca2429b2",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:33:45+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.0,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0xf46c9ef84931b1688ecbe204110fbf8b1cb9394e",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:35:45+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.0,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0x2b6a710511fe2bfa08adcf66805a980a0032fb7f",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:38:31+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 111,
+    "rug_minute": 16.9,
+    "last_trade_minute": 16.9,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xefb20254f261f21a8ad96d44275bc1f6417a9591",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:40:35+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 111,
+    "rug_minute": 19.1,
+    "last_trade_minute": 19.1,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0xd929321c28239360e91ed0013010a96a7aa350d8",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:43:43+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 110,
+    "rug_minute": 16.7,
+    "last_trade_minute": 16.7,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xa94a2fe2cec5da8f4499d4c1e1495d6aff06fb07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:45:25+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 690,
+    "rug_minute": 0.0,
+    "last_trade_minute": 1218.6,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0xe6b1f2a74c697978ce148e364889a88908676f5f",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:46:01+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.0,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0xf9f5953467a205e1f888486cfccbaf64915e2b39",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:52:33+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 94,
+    "rug_minute": 17.3,
+    "last_trade_minute": 17.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xabdef99d7bc860c11f21a25037e219dd54f5bb07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:54:15+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 286,
+    "rug_minute": 14.8,
+    "last_trade_minute": 14.8,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0xa7d2cdf5b639cdf7f892b51344c81a29ff12eba3",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:54:51+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 224,
+    "rug_minute": 25.6,
+    "last_trade_minute": 1028.7,
+    "label_drop_hour": 582.0
+   },
+   {
+    "token": "0x1788fb8705069515c966b24607bb1b6d61299b07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:56:05+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 23,
+    "rug_minute": null,
+    "last_trade_minute": 1021.7,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x23e97ab09cb52036a3af36b5daace8d8a5cd136b",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:56:19+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.0,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0x48792166d341b570a4804b3eaaee5159e6ce672a",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T11:57:43+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.2,
+    "label_drop_hour": 2046.0
+   },
+   {
+    "token": "0x52935607add85be1eeb504024c47dce8d2c7fea6",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:57:45+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 112,
+    "rug_minute": 16.8,
+    "last_trade_minute": 16.8,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x90fb4ebc0764caffa2e7e0cceacc077f74771ed7",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T11:58:33+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.2,
+    "label_drop_hour": 2046.0
+   },
+   {
+    "token": "0xf98bd574f37b3da3813680f997c3e69a362c423e",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:59:09+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 4201,
+    "rug_minute": 285.8,
+    "last_trade_minute": 285.8,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x34d4f24365255572d5c1d077db46b7ffbab7c53b",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T11:59:31+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.1,
+    "label_drop_hour": 2046.0
+   },
+   {
+    "token": "0x3364ba9b21723985443a541a25ba3f1c074d0ba3",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T11:59:43+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 278,
+    "rug_minute": 37.8,
+    "last_trade_minute": 1384.9,
+    "label_drop_hour": 108.0
+   },
+   {
+    "token": "0xd6e65144068bf90c91a61bf5597b43fb658c1b07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T12:00:59+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 426,
+    "rug_minute": 0.0,
+    "last_trade_minute": 19.5,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0x542a3c5532079f59fea82cfb81d3a0d03e7ec8a1",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T12:01:59+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.1,
+    "label_drop_hour": 2046.0
+   },
+   {
+    "token": "0x972c79ccf8ee21aa8aafb38eaa00f6299ec074e5",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T12:02:55+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 110,
+    "rug_minute": 16.8,
+    "last_trade_minute": 16.8,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x185bd4012e38c2ef6f200a7842f88e68eeac97c2",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T12:03:13+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.3,
+    "label_drop_hour": 2046.0
+   },
+   {
+    "token": "0xdf3c9bfc70d7ac8e93a71f14395f2c8d2d3a5329",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T12:04:15+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.1,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x129611757cb058cb687edf103ab6cb83bd87133a",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T12:05:29+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.1,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xbfaa310f6b54d5578cb1b15859b28bb105f1bf3c",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-06-27T12:06:35+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 5,
+    "rug_minute": null,
+    "last_trade_minute": 13.1,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0x05799318552eb51a8df8312c6098282a9f4e46a8",
+    "label": "FAILED",
+    "dex": "uniswap-v3",
+    "launch": "2026-06-27T12:07:07+05:00",
+    "wallet_rows": 0,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.2,
+    "label_drop_hour": 2046.0
+   },
+   {
+    "token": "0xb2000000000000000000002200ed89d420b4a001",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T10:49:35+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 1.0,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xac250fa69b91e89fed1de83edf5b88260ca48714",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T10:49:47+05:00",
+    "wallet_rows": 100,
+    "trades_in_window": 132,
+    "rug_minute": 15.5,
+    "last_trade_minute": 15.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb20000000000000000000048ec33b30345c89f01",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T10:51:11+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 4,
+    "rug_minute": null,
+    "last_trade_minute": 4.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xd4bbe8da5f4db4698b5fb60fbaa1ec5d5f70db07",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T10:52:29+05:00",
+    "wallet_rows": 4,
+    "trades_in_window": 694,
+    "rug_minute": 0.0,
+    "last_trade_minute": 19.7,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x55d5e6e8c5e752d6fa00b10f9e7f4a830af8905e",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T10:53:49+05:00",
+    "wallet_rows": 5,
+    "trades_in_window": 8,
+    "rug_minute": 6.8,
+    "last_trade_minute": 6.8,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x65fd69caf209ddd3a23dc2a176d178e458787777",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T10:57:05+05:00",
+    "wallet_rows": 3,
+    "trades_in_window": 1374,
+    "rug_minute": 0.0,
+    "last_trade_minute": 32.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x3caf693049168625a8b97b11e34729511016cb07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T10:57:15+05:00",
+    "wallet_rows": 5,
+    "trades_in_window": 10,
+    "rug_minute": 716.0,
+    "last_trade_minute": 1295.4,
+    "label_drop_hour": 132.0
+   },
+   {
+    "token": "0x7db93b6c49f8d0b4eebfe2532a8a734de49dcb07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:01:05+05:00",
+    "wallet_rows": 10,
+    "trades_in_window": 36,
+    "rug_minute": 346.9,
+    "last_trade_minute": 1410.9,
+    "label_drop_hour": 42.0
+   },
+   {
+    "token": "0x49d11861c8b83c8c6227e3ca4d8071a038480b07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:01:15+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 3,
+    "rug_minute": null,
+    "last_trade_minute": 35.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xe95c86f9ee0cc8d5750435bf5814c5ab124d8453",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:01:49+05:00",
+    "wallet_rows": 5,
+    "trades_in_window": 286,
+    "rug_minute": 0.0,
+    "last_trade_minute": 8.1,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb200000000000000000000746cefa69a42e67201",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:02:17+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 5,
+    "rug_minute": null,
+    "last_trade_minute": 1.7,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x8079ef982feaacc2fcd40b0856cdc5835e804d5a",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:03:35+05:00",
+    "wallet_rows": 100,
+    "trades_in_window": 150,
+    "rug_minute": 17.5,
+    "last_trade_minute": 17.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xd52ce6dc2e3091d22e133ffaef9194de29894110",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:03:39+05:00",
+    "wallet_rows": 5,
+    "trades_in_window": 8,
+    "rug_minute": 7.0,
+    "last_trade_minute": 7.0,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb20000000000000000000069bddcb65f4afbef01",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:04:35+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 1.9,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x36f1e76bc22d3a8f7163faf4f0621e36a6f01b07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:04:51+05:00",
+    "wallet_rows": 9,
+    "trades_in_window": 22,
+    "rug_minute": null,
+    "last_trade_minute": 1241.8,
+    "label_drop_hour": 60.0
+   },
+   {
+    "token": "0xe23b60df9dae1e54e81fc802fd0e085f4f7e0b07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:05:39+05:00",
+    "wallet_rows": 46,
+    "trades_in_window": 271,
+    "rug_minute": 143.7,
+    "last_trade_minute": 1382.8,
+    "label_drop_hour": 222.0
+   },
+   {
+    "token": "0xb200000000000000000000d186bb261beaa4e4f5",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:06:57+05:00",
+    "wallet_rows": 9,
+    "trades_in_window": 14,
+    "rug_minute": 36.3,
+    "last_trade_minute": 272.0,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb200000000000000000000e09b9ac65c5563cb01",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:07:45+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 3,
+    "rug_minute": null,
+    "last_trade_minute": 214.7,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0x5594615bbb32527a55b92f8b5daba5870a0e15c3",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:07:53+05:00",
+    "wallet_rows": 3,
+    "trades_in_window": 4,
+    "rug_minute": 181.5,
+    "last_trade_minute": 181.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xfe629c907838e5b65a00283a1e14e7969969f400",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:08:39+05:00",
+    "wallet_rows": 106,
+    "trades_in_window": 134,
+    "rug_minute": 16.5,
+    "last_trade_minute": 16.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb20000000000000000000031f2fae3f26f510301",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:09:29+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 84.6,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x64c70a215b077cc15adaf6ec847755b022138453",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:10:25+05:00",
+    "wallet_rows": 4,
+    "trades_in_window": 721,
+    "rug_minute": 0.0,
+    "last_trade_minute": 20.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb2000000000000000000007d512bb362ac67e001",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:10:31+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 3,
+    "rug_minute": null,
+    "last_trade_minute": 4.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xcb07dd08381ab6af0c42296b02c05fa96c7fdb07",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:12:39+05:00",
+    "wallet_rows": 4,
+    "trades_in_window": 758,
+    "rug_minute": 0.0,
+    "last_trade_minute": 21.1,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xbfbb1ca7b3b4f8d403eb00ff1b359af35b66e175",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:13:43+05:00",
+    "wallet_rows": 5,
+    "trades_in_window": 8,
+    "rug_minute": 6.9,
+    "last_trade_minute": 6.9,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb200000000000000000000bc66586a0fec6a1801",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:20:03+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 24,
+    "rug_minute": null,
+    "last_trade_minute": 214.1,
+    "label_drop_hour": null
+   },
+   {
+    "token": "0xb2000000000000000000004a0593f3e88b5a2001",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:20:33+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 1.0,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb2000000000000000000005e3ff7923aefaba001",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:22:11+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 3,
+    "rug_minute": null,
+    "last_trade_minute": 2.1,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb200000000000000000000f3b99cfd1e07ed7401",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:22:59+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 3,
+    "rug_minute": null,
+    "last_trade_minute": 2.2,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x697b2a842736c96c2e631f1a1ba3092c48647356",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:23:01+05:00",
+    "wallet_rows": 101,
+    "trades_in_window": 146,
+    "rug_minute": 17.4,
+    "last_trade_minute": 17.4,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb200000000000000000000341dee9d6fa5561101",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:23:29+05:00",
+    "wallet_rows": 2,
+    "trades_in_window": 3,
+    "rug_minute": null,
+    "last_trade_minute": 166.2,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x3571721875fdb77afe26f59ebe83e0ee275a335f",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:23:45+05:00",
+    "wallet_rows": 5,
+    "trades_in_window": 8,
+    "rug_minute": 6.8,
+    "last_trade_minute": 6.8,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb2000000000000000000004ca1b305fdc7ceaf01",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:25:09+05:00",
+    "wallet_rows": 2,
+    "trades_in_window": 3,
+    "rug_minute": null,
+    "last_trade_minute": 9.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x306e2fc93b50fe44997decc7253140d3416998d3",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:28:11+05:00",
+    "wallet_rows": 97,
+    "trades_in_window": 133,
+    "rug_minute": 15.4,
+    "last_trade_minute": 15.4,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb200000000000000000000c8d084dd7e13ef3301",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:29:29+05:00",
+    "wallet_rows": 3,
+    "trades_in_window": 9,
+    "rug_minute": null,
+    "last_trade_minute": 9.4,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xed3be7f81064fe90879d9da057c60b5cc9507777",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:29:57+05:00",
+    "wallet_rows": 3,
+    "trades_in_window": 1359,
+    "rug_minute": 0.0,
+    "last_trade_minute": 32.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xd2f46c90b76b6da9b995b3ae288d663697b08453",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:31:25+05:00",
+    "wallet_rows": 4,
+    "trades_in_window": 704,
+    "rug_minute": 0.0,
+    "last_trade_minute": 20.0,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x5d3b66e9fd7158d2c34dfacb6b9410456c075b07",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:32:33+05:00",
+    "wallet_rows": 2,
+    "trades_in_window": 19,
+    "rug_minute": null,
+    "last_trade_minute": 1142.0,
+    "label_drop_hour": 12.0
+   },
+   {
+    "token": "0x3f5d5b07881c8f2e151680867d4e1edc518bb6ed",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:33:39+05:00",
+    "wallet_rows": 5,
+    "trades_in_window": 8,
+    "rug_minute": 7.0,
+    "last_trade_minute": 7.0,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0x82c4e76d977bc27e2652c8ab5c7a6e9d4a22db07",
+    "label": "RUG",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:34:15+05:00",
+    "wallet_rows": 4,
+    "trades_in_window": 766,
+    "rug_minute": 0.0,
+    "last_trade_minute": 21.3,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb2000000000000000000005b3d54358836f42e01",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:34:49+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 7.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb200000000000000000000e4ab76f3657caa9a01",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:35:17+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.8,
+    "label_drop_hour": 66.0
+   },
+   {
+    "token": "0xb200000000000000000000558fc90aa7fd9f0401",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:36:29+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 0.5,
+    "label_drop_hour": 6.0
+   },
+   {
+    "token": "0xb2000000000000000000007342057c16e6752201",
+    "label": "FAILED",
+    "dex": "uniswap-v4",
+    "launch": "2026-07-10T11:39:41+05:00",
+    "wallet_rows": 1,
+    "trades_in_window": 2,
+    "rug_minute": null,
+    "last_trade_minute": 3.0,
+    "label_drop_hour": 6.0
+   }
+  ],
+  "number_1_phase4_timing_all_tokens": [
+   {
+    "feature_set": "timing only, all tokens",
+    "model": "logistic",
+    "n_features": 14,
+    "auc_mean": 0.7932,
+    "auc_std": 0.1544,
+    "ap_mean": 0.9583,
+    "ap_std": 0.0287,
+    "folds": 5,
+    "fold_aucs": [
+     0.5783,
+     0.9381,
+     0.7161,
+     0.7339,
+     0.9996
+    ]
+   },
+   {
+    "feature_set": "timing only, all tokens",
+    "model": "boosting",
+    "n_features": 14,
+    "auc_mean": 0.97,
+    "auc_std": 0.027,
+    "ap_mean": 0.9974,
+    "ap_std": 0.0018,
+    "folds": 5,
+    "fold_aucs": [
+     0.9361,
+     0.9915,
+     0.9833,
+     0.9393,
+     1.0
+    ]
+   }
+  ],
+  "number_2_timing_rugs_alive_at_window_end": {
+   "positive_tokens": 0,
+   "result": "not estimable: no rug in the feature set was still alive at the end of its feature window"
+  },
+  "token_level_single_variable_auc": {
+   "last_trade_minute_in_window (lower = RUG)": 0.4354,
+   "mean_wallet_entry_delay (lower = RUG)": 0.5437,
+   "spearman_last_trade_vs_mean_entry_delay": 0.7446
+  }
+ },
+ "A3_cross_token": {
+  "overlap": {
+   "feature_rows": 667,
+   "distinct_wallets": 416,
+   "wallets_on_2plus_tokens": 158,
+   "rows_from_those_wallets": 409,
+   "rows_share": 0.6132,
+   "rows_with_identical_base_vector_across_tokens": 407,
+   "max_tokens_per_wallet": 15
+  },
+  "components": {
+   "tokens": 44,
+   "components": 16,
+   "largest_component_sizes": [
+    26,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1
+   ],
+   "components_with_both_classes": 1
+  },
+  "timing_grouped_by_token": [
+   {
+    "feature_set": "timing only, all tokens",
+    "model": "logistic",
+    "n_features": 14,
+    "auc_mean": 0.7932,
+    "auc_std": 0.1544,
+    "ap_mean": 0.9583,
+    "ap_std": 0.0287,
+    "folds": 5,
+    "fold_aucs": [
+     0.5783,
+     0.9381,
+     0.7161,
+     0.7339,
+     0.9996
+    ]
+   },
+   {
+    "feature_set": "timing only, all tokens",
+    "model": "boosting",
+    "n_features": 14,
+    "auc_mean": 0.97,
+    "auc_std": 0.027,
+    "ap_mean": 0.9974,
+    "ap_std": 0.0018,
+    "folds": 5,
+    "fold_aucs": [
+     0.9361,
+     0.9915,
+     0.9833,
+     0.9393,
+     1.0
+    ]
+   }
+  ],
+  "timing_grouped_by_component": [
+   {
+    "feature_set": "timing, folds by shared-wallet component",
+    "model": "logistic",
+    "n_features": 14,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   },
+   {
+    "feature_set": "timing, folds by shared-wallet component",
+    "model": "boosting",
+    "n_features": 14,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   }
+  ],
+  "structure_grouped_by_component": [
+   {
+    "feature_set": "structure, folds by component",
+    "model": "logistic",
+    "n_features": 7,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   },
+   {
+    "feature_set": "structure, folds by component",
+    "model": "boosting",
+    "n_features": 7,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   }
+  ],
+  "both_grouped_by_component": [
+   {
+    "feature_set": "both, folds by component",
+    "model": "logistic",
+    "n_features": 21,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   },
+   {
+    "feature_set": "both, folds by component",
+    "model": "boosting",
+    "n_features": 21,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   }
+  ],
+  "per_token_timing_grouped_by_token": [
+   {
+    "feature_set": "per-token timing, folds by token",
+    "model": "logistic",
+    "n_features": 3,
+    "auc_mean": 0.7341,
+    "auc_std": 0.167,
+    "ap_mean": 0.9491,
+    "ap_std": 0.0266,
+    "folds": 5,
+    "fold_aucs": [
+     0.5507,
+     0.8504,
+     0.7195,
+     0.5645,
+     0.9857
+    ]
+   },
+   {
+    "feature_set": "per-token timing, folds by token",
+    "model": "boosting",
+    "n_features": 3,
+    "auc_mean": 0.8197,
+    "auc_std": 0.1105,
+    "ap_mean": 0.9637,
+    "ap_std": 0.007,
+    "folds": 5,
+    "fold_aucs": [
+     0.6596,
+     0.8749,
+     0.8589,
+     0.7326,
+     0.9723
+    ]
+   }
+  ],
+  "per_token_timing_grouped_by_component": [
+   {
+    "feature_set": "per-token timing, folds by component",
+    "model": "logistic",
+    "n_features": 3,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   },
+   {
+    "feature_set": "per-token timing, folds by component",
+    "model": "boosting",
+    "n_features": 3,
+    "auc_mean": NaN,
+    "auc_std": 0.0,
+    "ap_mean": NaN,
+    "ap_std": 0.0,
+    "folds": 5,
+    "fold_aucs": [
+     NaN,
+     NaN,
+     NaN,
+     NaN,
+     NaN
+    ]
+   }
+  ],
+  "preview_5min_window_alive_at_5": {
+   "tokens": 25,
+   "rug_tokens": 12,
+   "components": 7,
+   "results": [
+    {
+     "feature_set": "per-token timing @5min, alive@5, by component",
+     "model": "logistic",
+     "n_features": 3,
+     "auc_mean": NaN,
+     "auc_std": 0.0,
+     "ap_mean": NaN,
+     "ap_std": 0.0,
+     "folds": 5,
+     "fold_aucs": [
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+     ]
+    },
+    {
+     "feature_set": "per-token timing @5min, alive@5, by component",
+     "model": "boosting",
+     "n_features": 3,
+     "auc_mean": NaN,
+     "auc_std": 0.0,
+     "ap_mean": NaN,
+     "ap_std": 0.0,
+     "folds": 5,
+     "fold_aucs": [
+      NaN,
+      NaN,
+      NaN,
+      NaN,
+      NaN
+     ]
+    }
+   ]
+  }
+ },
+ "A3_split": {
+  "phase4_groupkfold_fold_dates": [
+   {
+    "fold": 0,
+    "train_launch_min": "2026-07-10T10:49:35+05:00",
+    "train_launch_max": "2026-07-10T11:39:41+05:00",
+    "test_launch_min": "2026-07-10T10:51:11+05:00",
+    "test_launch_max": "2026-07-10T11:33:39+05:00",
+    "test_tokens": 10
+   },
+   {
+    "fold": 1,
+    "train_launch_min": "2026-07-10T10:49:35+05:00",
+    "train_launch_max": "2026-07-10T11:39:41+05:00",
+    "test_launch_min": "2026-07-10T11:02:17+05:00",
+    "test_launch_max": "2026-07-10T11:34:49+05:00",
+    "test_tokens": 10
+   },
+   {
+    "fold": 2,
+    "train_launch_min": "2026-07-10T10:51:11+05:00",
+    "train_launch_max": "2026-07-10T11:35:17+05:00",
+    "test_launch_min": "2026-07-10T10:49:35+05:00",
+    "test_launch_max": "2026-07-10T11:39:41+05:00",
+    "test_tokens": 11
+   },
+   {
+    "fold": 3,
+    "train_launch_min": "2026-07-10T10:49:35+05:00",
+    "train_launch_max": "2026-07-10T11:39:41+05:00",
+    "test_launch_min": "2026-07-10T10:57:15+05:00",
+    "test_launch_max": "2026-07-10T11:35:17+05:00",
+    "test_tokens": 11
+   },
+   {
+    "fold": 4,
+    "train_launch_min": "2026-07-10T10:49:35+05:00",
+    "train_launch_max": "2026-07-10T11:39:41+05:00",
+    "test_launch_min": "2026-07-10T11:05:39+05:00",
+    "test_launch_max": "2026-07-10T11:28:11+05:00",
+    "test_tokens": 2
+   }
+  ],
+  "temporal_holdout": {
+   "timing": {
+    "logistic": {
+     "train_tokens": 29,
+     "test_tokens": 15,
+     "train_launch_min": "2026-07-10T10:49:35+05:00",
+     "train_launch_max": "2026-07-10T11:34:15+05:00",
+     "test_launch_min": "2026-07-10T11:02:17+05:00",
+     "test_launch_max": "2026-07-10T11:39:41+05:00",
+     "train_pos_tokens": 20,
+     "test_pos_tokens": 0,
+     "auc": null,
+     "ap": null,
+     "note": "one side has a single class"
+    },
+    "boosting": {
+     "train_tokens": 29,
+     "test_tokens": 15,
+     "train_launch_min": "2026-07-10T10:49:35+05:00",
+     "train_launch_max": "2026-07-10T11:34:15+05:00",
+     "test_launch_min": "2026-07-10T11:02:17+05:00",
+     "test_launch_max": "2026-07-10T11:39:41+05:00",
+     "train_pos_tokens": 20,
+     "test_pos_tokens": 0,
+     "auc": null,
+     "ap": null,
+     "note": "one side has a single class"
+    }
+   },
+   "structure": {
+    "logistic": {
+     "train_tokens": 29,
+     "test_tokens": 15,
+     "train_launch_min": "2026-07-10T10:49:35+05:00",
+     "train_launch_max": "2026-07-10T11:34:15+05:00",
+     "test_launch_min": "2026-07-10T11:02:17+05:00",
+     "test_launch_max": "2026-07-10T11:39:41+05:00",
+     "train_pos_tokens": 20,
+     "test_pos_tokens": 0,
+     "auc": null,
+     "ap": null,
+     "note": "one side has a single class"
+    },
+    "boosting": {
+     "train_tokens": 29,
+     "test_tokens": 15,
+     "train_launch_min": "2026-07-10T10:49:35+05:00",
+     "train_launch_max": "2026-07-10T11:34:15+05:00",
+     "test_launch_min": "2026-07-10T11:02:17+05:00",
+     "test_launch_max": "2026-07-10T11:39:41+05:00",
+     "train_pos_tokens": 20,
+     "test_pos_tokens": 0,
+     "auc": null,
+     "ap": null,
+     "note": "one side has a single class"
+    }
+   },
+   "per_token_timing": {
+    "logistic": {
+     "train_tokens": 29,
+     "test_tokens": 15,
+     "train_launch_min": "2026-07-10T10:49:35+05:00",
+     "train_launch_max": "2026-07-10T11:34:15+05:00",
+     "test_launch_min": "2026-07-10T11:02:17+05:00",
+     "test_launch_max": "2026-07-10T11:39:41+05:00",
+     "train_pos_tokens": 20,
+     "test_pos_tokens": 0,
+     "auc": null,
+     "ap": null,
+     "note": "one side has a single class"
+    },
+    "boosting": {
+     "train_tokens": 29,
+     "test_tokens": 15,
+     "train_launch_min": "2026-07-10T10:49:35+05:00",
+     "train_launch_max": "2026-07-10T11:34:15+05:00",
+     "test_launch_min": "2026-07-10T11:02:17+05:00",
+     "test_launch_max": "2026-07-10T11:39:41+05:00",
+     "train_pos_tokens": 20,
+     "test_pos_tokens": 0,
+     "auc": null,
+     "ap": null,
+     "note": "one side has a single class"
+    }
+   }
+  }
+ },
+ "A3_static": {
+  "feature_rows_with_cutoff_not_launch_plus_24h": 0,
+  "feature_rows_checked": 667,
+  "features_named_after_label_fields": []
+ }
+}
