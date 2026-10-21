@@ -1,0 +1,352 @@
+{
+  "generated_at": "2026-10-21T13:22:50.946287+00:00",
+  "launches": [
+    "2026-10-19T07:32:19+05:00",
+    "2026-10-21T12:14:03+05:00"
+  ],
+  "timely_resolved_scored": 850,
+  "pre_registered": {
+    "protocol": "DECISIONS.md, Phase 9 (pre-registered 2026-10-19)",
+    "floor": 100,
+    "cap": 10.0,
+    "policies": {
+      "headline": {
+        "AGENT": {
+          "trades": 315,
+          "mean": 0.4925,
+          "median": -0.03,
+          "hit_rate": 0.0698,
+          "total": 155.1332,
+          "capped": 16
+        },
+        "CONTROL": {
+          "trades": 832,
+          "mean": -0.3342,
+          "median": -1.0,
+          "hit_rate": 0.0337,
+          "total": -278.0192,
+          "capped": 17
+        },
+        "AVOIDED": {
+          "trades": 517,
+          "mean": -0.8378,
+          "median": -1.0,
+          "hit_rate": 0.0116,
+          "total": -433.1524,
+          "capped": 1
+        },
+        "agent_minus_control_ci": [
+          0.5531,
+          1.095
+        ],
+        "reportable": true
+      },
+      "low": {
+        "AGENT": {
+          "trades": 315,
+          "mean": 0.5117,
+          "median": -0.01,
+          "hit_rate": 0.1016,
+          "total": 161.1978,
+          "capped": 16
+        },
+        "CONTROL": {
+          "trades": 832,
+          "mean": -0.3251,
+          "median": -1.0,
+          "hit_rate": 0.0469,
+          "total": -270.4526,
+          "capped": 17
+        },
+        "AVOIDED": {
+          "trades": 517,
+          "mean": -0.8349,
+          "median": -1.0,
+          "hit_rate": 0.0135,
+          "total": -431.6504,
+          "capped": 1
+        }
+      },
+      "high": {
+        "AGENT": {
+          "trades": 315,
+          "mean": 0.4251,
+          "median": -0.1,
+          "hit_rate": 0.0667,
+          "total": 133.9071,
+          "capped": 16
+        },
+        "CONTROL": {
+          "trades": 832,
+          "mean": -0.366,
+          "median": -1.0,
+          "hit_rate": 0.0312,
+          "total": -304.5024,
+          "capped": 17
+        },
+        "AVOIDED": {
+          "trades": 517,
+          "mean": -0.848,
+          "median": -1.0,
+          "hit_rate": 0.0097,
+          "total": -438.4094,
+          "capped": 1
+        }
+      }
+    }
+  },
+  "post_hoc": {
+    "by_cap": {
+      "cap_10": {
+        "AGENT": {
+          "trades": 315,
+          "mean": 0.4925,
+          "median": -0.03,
+          "hit_rate": 0.0698,
+          "total": 155.1332,
+          "at_cap": 16
+        },
+        "CONTROL": {
+          "trades": 832,
+          "mean": -0.3342,
+          "median": -1.0,
+          "hit_rate": 0.0337,
+          "total": -278.0192,
+          "at_cap": 17
+        },
+        "LAUNCHPAD": {
+          "trades": 337,
+          "mean": 0.4701,
+          "median": -0.03,
+          "hit_rate": 0.0742,
+          "total": 158.4124,
+          "at_cap": 17
+        },
+        "LAUNCHPAD_REJECTED": {
+          "trades": 22,
+          "mean": 0.1491,
+          "median": -0.1983,
+          "hit_rate": 0.1364,
+          "total": 3.2793,
+          "at_cap": 1
+        },
+        "SELF_DEPLOYED": {
+          "trades": 495,
+          "mean": -0.8817,
+          "median": -1.0,
+          "hit_rate": 0.0061,
+          "total": -436.4317,
+          "at_cap": 0
+        },
+        "agent_minus_control_ci": [
+          0.576,
+          1.111
+        ],
+        "agent_minus_launchpad_ci": [
+          -0.3103,
+          0.3628
+        ]
+      },
+      "cap_5": {
+        "AGENT": {
+          "trades": 315,
+          "mean": 0.2343,
+          "median": -0.03,
+          "hit_rate": 0.0698,
+          "total": 73.8103,
+          "at_cap": 18
+        },
+        "CONTROL": {
+          "trades": 832,
+          "mean": -0.4379,
+          "median": -1.0,
+          "hit_rate": 0.0337,
+          "total": -364.3421,
+          "at_cap": 19
+        },
+        "LAUNCHPAD": {
+          "trades": 337,
+          "mean": 0.2139,
+          "median": -0.03,
+          "hit_rate": 0.0742,
+          "total": 72.0895,
+          "at_cap": 19
+        },
+        "LAUNCHPAD_REJECTED": {
+          "trades": 22,
+          "mean": -0.0782,
+          "median": -0.1983,
+          "hit_rate": 0.1364,
+          "total": -1.7207,
+          "at_cap": 1
+        },
+        "SELF_DEPLOYED": {
+          "trades": 495,
+          "mean": -0.8817,
+          "median": -1.0,
+          "hit_rate": 0.0061,
+          "total": -436.4317,
+          "at_cap": 0
+        },
+        "agent_minus_control_ci": [
+          0.5306,
+          0.8259
+        ],
+        "agent_minus_launchpad_ci": [
+          -0.1598,
+          0.2026
+        ]
+      },
+      "cap_2": {
+        "AGENT": {
+          "trades": 315,
+          "mean": 0.06,
+          "median": -0.03,
+          "hit_rate": 0.0698,
+          "total": 18.9079,
+          "at_cap": 19
+        },
+        "CONTROL": {
+          "trades": 832,
+          "mean": -0.5081,
+          "median": -1.0,
+          "hit_rate": 0.0337,
+          "total": -422.7019,
+          "at_cap": 21
+        },
+        "LAUNCHPAD": {
+          "trades": 337,
+          "mean": 0.0421,
+          "median": -0.03,
+          "hit_rate": 0.0742,
+          "total": 14.1871,
+          "at_cap": 20
+        },
+        "LAUNCHPAD_REJECTED": {
+          "trades": 22,
+          "mean": -0.2146,
+          "median": -0.1983,
+          "hit_rate": 0.1364,
+          "total": -4.7207,
+          "at_cap": 1
+        },
+        "SELF_DEPLOYED": {
+          "trades": 495,
+          "mean": -0.8826,
+          "median": -1.0,
+          "hit_rate": 0.0061,
+          "total": -436.8891,
+          "at_cap": 1
+        },
+        "agent_minus_control_ci": [
+          0.4997,
+          0.6419
+        ],
+        "agent_minus_launchpad_ci": [
+          -0.0622,
+          0.1003
+        ]
+      },
+      "cap_1": {
+        "AGENT": {
+          "trades": 315,
+          "mean": -0.0008,
+          "median": -0.03,
+          "hit_rate": 0.0698,
+          "total": -0.2447,
+          "at_cap": 20
+        },
+        "CONTROL": {
+          "trades": 832,
+          "mean": -0.5343,
+          "median": -1.0,
+          "hit_rate": 0.0337,
+          "total": -444.5044,
+          "at_cap": 24
+        },
+        "LAUNCHPAD": {
+          "trades": 337,
+          "mean": -0.0177,
+          "median": -0.03,
+          "hit_rate": 0.0742,
+          "total": -5.9654,
+          "at_cap": 21
+        },
+        "LAUNCHPAD_REJECTED": {
+          "trades": 22,
+          "mean": -0.26,
+          "median": -0.1983,
+          "hit_rate": 0.1364,
+          "total": -5.7207,
+          "at_cap": 1
+        },
+        "SELF_DEPLOYED": {
+          "trades": 495,
+          "mean": -0.8859,
+          "median": -1.0,
+          "hit_rate": 0.0061,
+          "total": -438.539,
+          "at_cap": 3
+        },
+        "agent_minus_control_ci": [
+          0.4833,
+          0.5827
+        ],
+        "agent_minus_launchpad_ci": [
+          -0.0328,
+          0.0668
+        ]
+      }
+    },
+    "capped_trades_dropped": {
+      "AGENT": {
+        "trades": 299,
+        "mean": -0.0163,
+        "median": -0.03,
+        "hit_rate": 0.0201,
+        "total": -4.8668,
+        "at_cap": null
+      },
+      "CONTROL": {
+        "trades": 815,
+        "mean": -0.5497,
+        "median": -1.0,
+        "hit_rate": 0.0135,
+        "total": -448.0192,
+        "at_cap": null
+      },
+      "LAUNCHPAD": {
+        "trades": 320,
+        "mean": -0.0362,
+        "median": -0.03,
+        "hit_rate": 0.025,
+        "total": -11.5876,
+        "at_cap": null
+      },
+      "LAUNCHPAD_REJECTED": {
+        "trades": 21,
+        "mean": -0.32,
+        "median": -0.2017,
+        "hit_rate": 0.0952,
+        "total": -6.7207,
+        "at_cap": null
+      },
+      "SELF_DEPLOYED": {
+        "trades": 495,
+        "mean": -0.8817,
+        "median": -1.0,
+        "hit_rate": 0.0061,
+        "total": -436.4317,
+        "at_cap": null
+      },
+      "agent_minus_control_ci": [
+        0.4659,
+        0.6122
+      ],
+      "agent_minus_launchpad_ci": [
+        -0.0638,
+        0.1036
+      ]
+    }
+  }
+}
