@@ -116,13 +116,11 @@ meaningful branches and automated tests, and the report.
 
 ## 6. Branch protection
 
-GitHub offers branch protection rules on a private repository only on a
-paid plan (or on a public repository). Until the repository is made public,
-the rule is enforced by convention: every change to `develop` and `main`
-arrives as a reviewed, CI-green pull request, which the merge history shows.
-The day the repository goes public: Settings → Branches → Add rule for
-`main` and `develop`: require a pull request, 1 approval, and the
-**Frontend** and **Backend** checks; no bypass.
+On since 22 October 2026, when the repository was made public (GitHub
+offers protection rules on a private repository only on a paid plan): a
+pull request into `develop` or `main` needs an approving review before it
+can merge, and the author cannot approve their own. The CI checks are
+required to be green.
 
 ## 7. Timeline
 
