@@ -6,30 +6,69 @@ The project treated every assumption about its data sources as a claim to be mea
 
 Domain knowledge came from three places: the Uniswap V3 and V4 designs~\cite{uniswapv4}, which decide how pools, reserves and prices can be read; the academic literature on scam tokens and rug pulls on Ethereum DEXes~\cite{xia2021,mazorra2022,cernera2023}; and the evaluation literature for rare-event classification~\cite{saito2015,king2001,platt1999} and model explanation~\cite{lundberg2017,lundberg2020}.
 
-\section{Existing Solutions / Products}
+\section{Concepts the System Rests On}
+\label{sec:concepts}
+The panel asked for evidence of understanding rather than description. These are the mechanisms the system is built on, each with the measurement that established how it behaves on Base.
+
 \begin{description}
-  \item[Aggregators: DexScreener, GeckoTerminal.] Index pools across chains and show price, volume, liquidity and holders. No judgement; DexScreener's ``new token'' feeds carried zero Base tokens in a 60-row sample, so they are not even a discovery source for this chain.
-  \item[Static checkers: GoPlus, Token Sniffer, RugCheck.] Read contract code and ownership: honeypot simulation, taxes, mintability, owner privileges, top-holder share. Valuable, free, and blind to the behavioural signals that decide most Base outcomes: whether liquidity is locked by a launchpad factory, and what the first five minutes of trading looked like.
-  \item[Wallet intelligence: Nansen, Arkham, Bubblemaps.] Label and cluster wallets, including funding provenance. Paid, closed, and not designed to judge a launch at minute 5.
-  \item[Academic work.] Xia et al.~\cite{xia2021} characterise scam tokens on Uniswap and detect them from trading and contract features; Mazorra et al.~\cite{mazorra2022} classify rug pulls from token and liquidity features; Cernera et al.~\cite{cernera2023} measure token spam, rug pulls and sniper bots at scale. All predate Uniswap V4's singleton design, which holds every pool's funds in one contract and breaks per-pool reserve reads.
+  \item[Pools, reserves and price.] A token launches when someone creates a liquidity pool pairing it with a quote asset (on Base, almost always WETH; of the first 2,064 swaps ingested, one was stablecoin-quoted). The pool holds a \emph{reserve} of each asset, and the price is their ratio (constant-product on V2-style pools, tick-based concentrated liquidity on V3 and V4, where \code{slot0} holds the current \code{sqrtPriceX96}). Prices in the store are kept as ratios against each token's own quote asset and used only to compare a token with its own peak, because a dollar price needs an ETH/USD series the project does not yet have.
+  \item[Liquidity provider tokens and locks.] Whoever adds liquidity receives a claim on the pool (an LP token, or an NFT position on V3/V4) and can withdraw it. A ``rug pull'' in its dominant form is exactly that withdrawal: the token reserve collapses to zero in one transaction. \emph{Launchpad} factories (the 26 contracts in \code{known_addresses/launchpad.json}) mint the token and supply its liquidity in a single transaction and keep or burn the position, so the deployer has nothing to withdraw. Measured: 109 of 113 self-deployed launches in the held-out cohort were pulled; 0 of 74 launchpad launches were.
+  \item[The three ways a launch loses its buyers' money.] Liquidity withdrawal (above); a supply dump, where early holders sell into later buyers (Phase 6 found this \emph{extraction} pattern in only 3.7\% of failed launches, against 93.1\% organic decay); and a honeypot, where the contract blocks selling (detected by simulation, which is GoPlus's job and not duplicated here).
+  \item[Uniswap V4's singleton.] V3 deploys one contract per pool; V4 keeps every pool inside one \code{PoolManager} and identifies a pool by a 32-byte id. Three consequences were measured: V4 is about 95\% of Base launches (95 of 99 candidates in one window); a pool cannot be keyed by address, which broke two queries before tests caught them; and a per-pool quote reserve cannot be read from the singleton, which holds 4,211 WETH across all pools at once. The token side can be read exactly, because the singleton holds a given token only on account of that token's pools, and this was verified to the wei against stored transfers for five tokens.
+  \item[Events, logs and topics.] Discovery and backfill read the chain's event logs: V4 \code{Initialize} and V3 \code{PoolCreated} for new pools, ERC-20 \code{Transfer} and the venue's \code{Swap} for activity. Topic hashes are computed with the project's own keccak and self-tested against the canonical \code{Transfer} topic rather than copied. Every free Base node caps \code{eth_getLogs} between 10 and 1,000 blocks (measured across six providers), which decides the whole cost model.
+  \item[Archive state reads.] \code{eth_call} at a historical block returns the state as it was then. The free gateway answers at least 365 days back, so a reserve can be \emph{read} at 90 daily points in 43 s instead of \emph{reconstructed} from 3,888 log calls, and each reading is exact rather than a cumulative sum that one missed window would bias forever.
+  \item[Blocks as the clock.] Base produces a block every 2.00 s exactly (measured over 43,200 blocks), so block numbers are timestamps: ``minute 5'' is block $b+150$, ``hour 6'' is $b+10{,}800$. Age is decided by block, never by an aggregator's timestamp, after one token arrived with a block from three days ago and a timestamp from 369 days ago.
+  \item[Sniping, bundling and dispersers.] Bots buy in the launch block or within seconds (\code{t_same_block_buyers}, \code{t_first_buy_delay_s}); one address funding thousands of wallets across a handful of tokens is a disperser (airdrop or farm), which the graph module tells from infrastructure by wallets-per-token (1,080 for a disperser against 15 for the V4 \code{PoolManager}).
+  \item[Lookahead.] A feature computed at minute 5 must only see rows from before minute 5. The write gate enforces this structurally (\code{as_of_ts} on every batch), and the Phase 5 audit showed what happens without it: a model that ``predicted'' rugs from a 24-hour window in which every rug had already happened.
+\end{description}
+
+\section{Existing Solutions / Products}
+\label{sec:existing}
+Each tool is described by what it reads and how it decides, from its public documentation and, where it is free, from using it. Two of them are wired into BlockLens itself.
+
+\begin{description}
+  \item[GoPlus Security (token security API).] Free, keyless, covers Base. Reads the token contract and its pools and returns structured flags: whether a sell is blocked (\emph{honeypot}, found by simulating a buy and a sell), buy and sell tax, whether the supply is mintable, whether ownership can be reclaimed or is hidden, whether the contract is a proxy or pausable, holder count, the top holders and their shares, and the LP holders with whether each position is locked. It is a \emph{static and simulation} check of the contract as it is now. BlockLens calls it for every token on the Trending and token pages (\code{fetchHolders}) and shows its holder count, top-10 share and honeypot flag with its name beside them. What it cannot do: judge the first five minutes of trading, say whether liquidity was \emph{minted and locked at launch} as a launch type, give a probability, or keep score of itself.
+  \item[Token Sniffer (Solidus Labs).] A contract scanner that scores a token from an automated audit: known-scam code similarity, honeypot and fee checks, mint and ownership privileges, liquidity amount and lock status where it can read it. Strong on Ethereum and BSC; a score, not a probability; no forward record.
+  \item[Honeypot checkers (honeypot.is and similar).] Simulate a buy and a sell against the live pool and report whether the sell succeeds and at what tax. A single question, answered well; BlockLens relies on GoPlus for the same question instead of re-implementing it.
+  \item[RugCheck.] Solana-focused: mint and freeze authority, top-holder concentration, whether the LP is locked or burned. Not applicable to Base, but the ``is the LP locked'' idea is the same one launch type captures on Base.
+  \item[DexScreener.] Indexes DEX pairs across chains and serves price, liquidity, volume, transactions, pair age and paid promotion status. No judgement. Measured: its ``new token'' and ``boosted'' feeds returned 60 rows with zero Base tokens, and it had indexed 20 of 99 launches that chain-event discovery found in the same window, so it is a display source, not a discovery source, for this chain. BlockLens uses it for symbols, liquidity and the pair table.
+  \item[GeckoTerminal (CoinGecko).] Pool-level data and trending lists per network; BlockLens's Trending page reads its Base pool rankings. Metadata only.
+  \item[Bubblemaps.] Draws holders as bubbles and groups wallets that transferred between each other, which shows concentration and insider clusters visually. Free for basic use on EVM chains. It is a \emph{picture} of the holder graph; BlockLens's Phase 3 built the same kind of graph and then measured, at full power, that its features add nothing to the two signals on this population, which is a result rather than a visualisation.
+  \item[Nansen, Arkham.] Paid wallet labelling (``smart money'', exchange and fund attribution) and entity tracking. Closed data; the labels need an indexing API that no keyless source provides, which is why BlockLens's CEX list is empty by design rather than guessed.
+  \item[DEXTools.] Pair charts and a listing score; paid tiers for the detail. No launch-time verdict.
+  \item[Academic detectors.] Xia et al.~\cite{xia2021} characterised scam tokens on Uniswap V2 and trained a classifier on pool and trading features; Mazorra et al.~\cite{mazorra2022} detected rug pulls from token and liquidity features with gradient boosting; Cernera et al.~\cite{cernera2023} measured token spam, one-day rug pulls and sniper bots on Ethereum and BSC. All three are offline analyses of past launches; none runs live, explains a score, or logs predictions forward, and all predate V4's singleton.
 \end{description}
 
 \section{Comparison of Existing Solutions}
+\label{sec:compare}
 \begin{table}[H]
-\centering\small
-\footnotesize\begin{tabular}{p{0.2\textwidth}cccccc}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.4\textwidth}cccccccc}
 \toprule
- & Free & Live at launch & Judgement & Explains & Scores itself forward & Base V4\\
+Feature & \rotatebox{90}{GoPlus} & \rotatebox{90}{Token Sniffer} & \rotatebox{90}{DexScreener} & \rotatebox{90}{GeckoTerminal} & \rotatebox{90}{Bubblemaps} & \rotatebox{90}{Nansen / Arkham} & \rotatebox{90}{Academic} & \rotatebox{90}{\textbf{BlockLens}}\\
 \midrule
-DexScreener / GeckoTerminal & \checkmark & partial & -- & -- & -- & \checkmark\\
-GoPlus / Token Sniffer & \checkmark & \checkmark & static & partial & -- & partial\\
-Nansen / Arkham & -- & -- & labels & -- & -- & partial\\
-Academic detectors & n/a & -- & \checkmark & partial & -- & --\\
-\textbf{BlockLens} & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Free, no API key & $\bullet$ & $\circ$ & $\bullet$ & $\bullet$ & $\circ$ & -- & n/a & $\bullet$\\
+Covers Base, including Uniswap V4 pools & $\bullet$ & $\circ$ & $\bullet$ & $\bullet$ & $\circ$ & $\circ$ & -- & $\bullet$\\
+Discovers launches from chain events (before aggregators) & -- & -- & -- & -- & -- & -- & $\circ$ & $\bullet$\\
+Static contract checks (honeypot, tax, mint, owner) & $\bullet$ & $\bullet$ & $\circ$ & $\circ$ & -- & -- & $\circ$ & via GoPlus\\
+Launch type: liquidity minted and locked at launch & $\circ$ & $\circ$ & -- & -- & -- & -- & -- & $\bullet$\\
+Behavioural features of the first five minutes & -- & -- & -- & -- & -- & -- & $\circ$ & $\bullet$\\
+A verdict at launch + 5 min, while a buyer can act & -- & -- & -- & -- & -- & -- & -- & $\bullet$\\
+Probability from a model with published validation & -- & -- & -- & -- & -- & -- & $\bullet$ & $\bullet$\\
+Exact per-score explanation & -- & $\circ$ & -- & -- & -- & -- & $\circ$ & $\bullet$\\
+Pre-registered forward record of its own accuracy & -- & -- & -- & -- & -- & -- & -- & $\bullet$\\
+Paper-trading test of the signal & -- & -- & -- & -- & -- & -- & -- & $\bullet$\\
+Holder / wallet graph & $\circ$ & -- & -- & -- & $\bullet$ & $\bullet$ & $\bullet$ & $\circ$ (research only)\\
+Push alerts & -- & -- & $\circ$ & -- & -- & $\bullet$ & -- & $\bullet$\\
+Open method and code & -- & -- & -- & -- & -- & -- & $\bullet$ & $\bullet$\\
 \bottomrule
 \end{tabular}
-\caption{Existing solutions against the criteria this project set itself.}
+\caption{Feature comparison. $\bullet$ provided; $\circ$ partial, or paid, or chain-limited; -- absent. Sources: each tool's public documentation and interface in October 2026; for GoPlus and DexScreener, their use inside BlockLens; for DexScreener's discovery, the measurement in \codex{backend/spikes/FINDINGS.md}.}
+\label{tab:matrix}
 \end{table}
+
+Read down the BlockLens column, the product is not ``a better checker'': the static checks are deliberately delegated to GoPlus, which does them well. What no other tool in the table does is the middle block: watch the chain itself, judge the launch at the moment it can still be acted on from what the first five minutes show, and keep a public record of how right that judgement was.
 
 \section{Limitations and Gaps}
 Nothing free judges a Base launch at the moment it can still be acted on, says why, and keeps a public record of its own accuracy. The published detectors were trained on populations where rug and non-rug launches look structurally alike; on Base in 2026 the population is dominated by launchpad launches that mint and lock liquidity in one transaction, so their features and even their labels do not transfer unchanged. Two further gaps are practical: no keyless source exists for wallet funding provenance, and the public explorers that older write-ups treat as free fallbacks (Blockscout, Envio) now refuse keyless requests.
@@ -46,6 +85,22 @@ The project is a complex computing problem in the sense of the Washington Accord
   \item \textbf{Infrequent and novel.} V4 is 95\% of Base launches and postdates the literature.
   \item \textbf{Beyond standard practice.} The product carries its validation record with every response, pre-registers its forward test and paper agent, and reports its own negative results.
 \end{itemize}
+
+\section{Contribution}
+\label{sec:contribution}
+What this project adds, each with the artefact that proves it:
+\begin{enumerate}
+  \item \textbf{A measured cost model for free Base data}, correcting four published assumptions (DexScreener discovery, Blockscout and Envio as keyless fallbacks, the log-range cap as an Alchemy quirk). \code{backend/spikes/FINDINGS.md}, \code{B_FINDINGS.md}.
+  \item \textbf{Chain-event discovery and a lookahead-proof ingestion store}, resumable, budgeted, idempotent: 159 complete windows at 44 calls each, re-ingest byte-identical. \code{blocklens/ingest}, \code{store/write.py}, \code{test_write_gate.py}.
+  \item \textbf{An explicit, swept outcome label} with a method for Uniswap V4's singleton (token-side reserve, verified to the wei). \code{label/rules.py}, \code{reports/label_sensitivity.md}.
+  \item \textbf{A leakage and censoring audit} that withdrew the project's own first model, and a sampling design (random cohort, case-control strata, operator families) that fixed it. \code{reports/leakage_audit.md}, \code{reports/sampling_design.md}.
+  \item \textbf{Two validated launch-time signals} on 1,066 launches: launch type (109/113 vs 0/74) and buyer-loss risk (PR-AUC 0.83 vs 0.37; 0.76 vs 0.33 out of time). \code{reports/model_card_v2.md}, \code{model_card_phase6.md}.
+  \item \textbf{A negative result on wallet-graph features}, tested at full power at token and wallet level, reported rather than hidden. \code{model_card_v2.md} Part D.
+  \item \textbf{A live scorer and API} that judges every new Base pool within a minute of its five-minute mark and serves every score with its validation record. \code{live/scorer.py}, \code{api/app.py}.
+  \item \textbf{Exact score explanations} by tree SHAP on the frozen model, asserted additive by test. \code{live/explain.py}, \code{test_explain.py}.
+  \item \textbf{A pre-registered forward test and paper agent}, protocol written before any outcome, with 850 resolved predictions and a passed floor. \code{live/resolver.py}, \code{reports/paper_agent.md}.
+  \item \textbf{A delivery pipeline} with unit, API, audit and end-to-end tests on every pull request and scanned images on every merge. \code{.github/workflows/}.
+\end{enumerate}
 
 \section{Technical Challenges}
 \begin{itemize}

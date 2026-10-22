@@ -19,6 +19,7 @@ M11 & Hosting & the compose stack on a cloud VM with \code{restart: unless-stopp
 \bottomrule
 \end{tabular}
 \caption{FYP-2 modules.}
+\label{tab:fyp2}
 \end{table}
 
 \section{Remaining Iterations}
@@ -38,21 +39,60 @@ Unit tests for every new pure function; API tests for every new endpoint on the 
 The images CD already publishes run on any Docker host. M11 provisions a small VM, pulls \code{docker-compose.prod.yml}, sets the environment (database URL, optional Telegram credentials) and registers the Render-style deploy hook as a repository secret so a merge to \code{main} redeploys. The staging tag from \code{develop} runs on the same host under a second compose project for pre-release checks.
 
 \section{Tentative Timeline}
+\label{sec:roadmap}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth}
+\begin{tikzpicture}[font=\small, x=1.55cm, y=0.62cm]
+  % months Oct 2026 .. May 2027 -> x = 0..8
+  \foreach \m/\i in {Oct/0, Nov/1, Dec/2, Jan/3, Feb/4, Mar/5, Apr/6, May/7} {
+    \draw[gray!40] (\i,0.5) -- (\i,-13.5);
+    \node[anchor=south] at (\i+0.5,0.6) {\m};
+  }
+  \draw[gray!40] (8,0.5) -- (8,-13.5);
+  \node[anchor=south east, font=\scriptsize] at (4,1.3) {2026 $|$ 2027};
+  \newcommand{\gbar}[5]{\node[anchor=east] at (-0.1,#1) {#2}; \fill[#5] (#3,#1-0.3) rectangle (#4,#1+0.3);}
+  \gbar{-1}{Research Phases 1--7 (done)}{0}{0.65}{black!70}
+  \gbar{-2}{Forward test and paper agent (running)}{0.6}{8}{black!35}
+  \gbar{-3}{CI/CD, product rework, report draft (done)}{0.65}{0.75}{black!70}
+  \gbar{-4}{Branch protection, release v0.1.0}{0.75}{1}{black!50}
+  \gbar{-5}{M7 one investigation flow}{1}{1.8}{black!50}
+  \gbar{-6}{M11 hosting trial}{1.2}{2.2}{black!50}
+  \gbar{-7}{FYP-1 final report}{2}{2.8}{black!50}
+  \gbar{-8}{M9 early-buyer screener + ETH/USD series}{3}{5}{black!50}
+  \gbar{-9}{M8 persistence}{3.5}{4.5}{black!50}
+  \gbar{-10}{M10 model v2 and its forward record}{5}{6.8}{black!50}
+  \gbar{-11}{M11 production hosting}{5.5}{7}{black!50}
+  \gbar{-12}{FYP-2 final report and demonstration}{6.8}{7.9}{black!50}
+  % milestones
+  \foreach \x/\l in {0.72/mid eval, 2.8/FYP-1 final, 7.9/FYP-2 final} {
+    \draw[thick] (\x,0.4) -- (\x,-12.6);
+    \node[font=\scriptsize, anchor=south, fill=white, inner sep=1pt] at (\x,-12.6) {\l};
+  }
+  \node[font=\scriptsize, anchor=west] at (0,-13.3) {26 Oct: first 7-day forward results. Mid-evaluation and final dates to be aligned with the official FYP calendar.};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Roadmap to the end of FYP-2. Dark bars are done, the long grey bar is the forward test that runs throughout.}
+\label{fig:gantt}
+\end{figure}
+
 \begin{table}[H]
 \centering\small
-\begin{tabular}{p{0.26\textwidth}p{0.64\textwidth}}
+\begin{tabular}{p{0.24\textwidth}p{0.68\textwidth}}
 \toprule
-When & Milestone\\
+When & Milestone and definition of done\\
 \midrule
-26 Oct 2026 & first 7-day liquidity results on the forward record\\
-before the mid evaluation & \code{develop} $\to$ \code{main}, release \code{v0.1.0}; branch protection on; this report\\
-Nov--Dec 2026 & M7; hosting trial; buyer-loss forward floor expected; FYP-1 final report\\
-Jan--Feb 2027 & M9 screener; M8 persistence\\
-Mar--Apr 2027 & M10 model v2 and its forward record; M11 production hosting\\
+26 Oct 2026 & first 7-day liquidity results on the forward record; shown on Fresh Launches\\
+before the mid evaluation & pull requests \#1--\#5 merged; branch protection on; release \code{v0.1.0}; this report submitted\\
+Nov 2026 & M7 merged: any address resolves to the token page; case studies reachable as such\\
+Nov--Dec 2026 & M11 trial: the compose stack on a host with a public URL; buyer-loss forward floor expected to be reached\\
+Dec 2026 & FYP-1 final report\\
+Jan--Feb 2027 & M9: screener over stored early buyers with dollar PnL; generated corpus deleted; M8 persistence\\
+Mar--Apr 2027 & M10: model v2 trained on the forward record with its own pre-registered record; M11 production hosting with uptime on Model Health\\
 May 2027 & FYP-2 final report and demonstration\\
 \bottomrule
 \end{tabular}
-\caption{Tentative timeline. \todo{Align with the official FYP calendar.}}
+\caption{Roadmap milestones.}
 \end{table}
 
 \section{Expected Final Deliverables}

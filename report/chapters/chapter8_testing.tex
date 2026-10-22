@@ -116,6 +116,8 @@ Scoring a 38-hour backlog delayed live launches & launches past their 6-hour mar
 Stacked pull requests ran no CI (trigger limited to \code{main}/\code{develop}) & CI runs on every pull request and on feature branches\\
 Playwright strict-mode locator collisions (two ``Open Workspace'' links; name in table and sidebar) & locators scoped to the navigation and the table\\
 \code{pip-audit} in CI flagged twelve known vulnerabilities in Starlette 0.48, pinned by FastAPI 0.118 & FastAPI upgraded to 0.159 (Starlette 1.9); suite unchanged; re-audit clean. The gate found a real issue on its first run\\
+Six launchpad V4 pools were scored from an all-zero feature row: their trades settle without ERC-20 transfers, which the transfer-based backfill cannot decode & guard in the scorer: trades seen but none decodable $\to$ not scored, with the reason shown; recorded in \code{DECISIONS.md}; a backfill change is left to the research pipeline\\
+Health page folded every status into ``scored'' because the word is a substring of every ``not scored'' status & exact match for ``scored''; a test now asserts every scorer status maps to a named reason\\
 \bottomrule
 \end{tabular}
 \caption{Defects found and corrected.}

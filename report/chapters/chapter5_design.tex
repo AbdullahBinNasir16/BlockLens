@@ -61,6 +61,7 @@ Delivery & Workflows, Dockerfiles, nginx config, compose, Playwright config.\\
 \bottomrule
 \end{tabular}
 \caption{Architectural components.}
+\label{tab:components}
 \end{table}
 
 \section{Interfaces and Dependencies}
@@ -113,6 +114,7 @@ Images on GHCR, compose for deployment & Works on a free private repository; the
 \end{table}
 
 \section{Design Evolution}
+\label{sec:evolution}
 The proposal described a twelve-section ``intelligence profile'' per project (fundamentals, developer, on-chain, wallets, KOLs, GitHub, social, roadmap, narrative, risk, assessment), a cross-project wallet screener, a KOL directory and a trading portfolio, with wallet-graph features as the central predictive idea. Since then:
 \begin{enumerate}
   \item The data research showed that the wallet-graph features carry no predictive value on this population once leakage and censoring are controlled, and that launch type and the first five minutes of trading carry all the signal that can be measured. The product's core moved from profiling a project to judging a launch.
@@ -168,6 +170,7 @@ The store has sixteen tables under Alembic migrations (ten revisions). The inges
   \draw[->] (0,-8.1) -- node[above]{resolve due rows at hour 6, days 1/7/30/90} (6.4,-8.1);
 \end{tikzpicture}\end{adjustbox}
 \caption{Sequence of one scorer tick (every 60 s).}
+\label{fig:seq}
 \end{figure}
 
 \begin{figure}[H]
@@ -187,4 +190,5 @@ The store has sixteen tables under Alembic migrations (ten revisions). The inges
   \draw[->] (e2e) -- (merge); \draw[->] (merge) -- (img); \draw[->] (img) -- (scan); \draw[->] (scan) -- (dep);
 \end{tikzpicture}\end{adjustbox}
 \caption{The delivery pipeline.}
+\label{fig:cicd}
 \end{figure}

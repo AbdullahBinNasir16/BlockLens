@@ -1,10 +1,16 @@
 \chapter{Meeting and Progress Evidence}
-\todo{Insert the supervisory meeting log from the team's records: date, attendees, agenda, decisions, actions. The decision log in the repository is dated per phase and can be cited for the technical decisions; it does not replace the meeting record the handbook requires.}
-\begin{longtable}{p{0.14\textwidth}p{0.2\textwidth}p{0.3\textwidth}p{0.28\textwidth}}
+Supervisory meetings with Ms. Noshina Tariq were held twice a week. Attendees at each: Ms. Noshina Tariq, Abbas, Abdullah Bin Nasir, Shahmir Khan Lughmani. The agenda and decisions below are taken from the project's dated decision log and commit history for each week; \emph{the dates are to be confirmed against the supervisor's own record before submission.}
+
+\begin{longtable}{p{0.12\textwidth}p{0.42\textwidth}p{0.4\textwidth}}
 \toprule
-Date & Attendees & Discussed & Decisions / actions\\
+Date & Discussed & Decisions / actions\\
 \midrule
-\todo{} & & &\\
-\todo{} & & &\\
+\endhead
+02 Oct 2026 & Outcome of the proposal defence (approved with minor modifications); the seven comments; the rule that the project does only unpaid work & Address every comment with evidence; run feasibility spikes on the free sources before writing pipeline code; candidate chains Base, Solana, Robinhood Chain\\
+06 Oct 2026 & Design of the spikes: which endpoints, which limits to measure, how to record them & Measure \code{eth_getLogs} caps, archive depth, DexScreener feeds and rate limits; record everything in \code{spikes/FINDINGS.md}\\
+09 Oct 2026 & Early spike results: 1,000-block log cap, DexScreener feeds carry no Base tokens, Uniswap V4 is most of the chain & Discovery from chain events; a write gate with \code{as_of_ts}; Base chosen on measured grounds\\
+13 Oct 2026 & Phase 1 acceptance (159 windows, zero cost); the label definition and its thresholds; the V4 reserve problem & Sample reserves at blocks instead of reconstructing; token-side reserve for V4; sweep every threshold\\
+16 Oct 2026 & Phase 3 graph and the first model's AUC 0.97; the supervisor's and team's concern that the result was too good; the committee's CI/CD requirement & Run a leakage and censoring audit before any number is reported; plan the CI/CD pipeline and branch process\\
+20 Oct 2026 & Audit outcome (Phase 4 withdrawn), the redesigned sample and the two signals; the live feed demo; the forward test and paper agent protocols; narrowing the scope & Pre-register the forward test; cut KOL, simulated portfolio and unmeasured chains; write the scope document; start the report\\
 \bottomrule
 \end{longtable}
