@@ -1,0 +1,46 @@
+\chapter{Repository and Contribution Evidence}
+\label{app:repo}
+\section{Pull requests}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.05\textwidth}p{0.47\textwidth}p{0.18\textwidth}p{0.18\textwidth}}
+\toprule
+\# & Title & Base & CI\\
+\midrule
+1 & CI/CD pipeline, unit tests, containers and FYP scope & \code{develop} & Frontend 44\,s pass; Backend 2\,m\,20\,s pass\\
+2 & Phase 10 backend: score explanations, alerts, paper book, health, product state & \#1 & Frontend pass; Backend pass\\
+3 & Product rework: anatomy, push, paper book, model health, persistence; cuts per scope & \#2 & Frontend pass; Backend pass\\
+4 & CI hardening: end-to-end tests, audits, coverage floors, staging tag, image scan & \#3 & Frontend, Backend, End to end pass; Audit failed on Starlette 0.48, fixed by upgrade\\
+\bottomrule
+\end{tabular}
+\caption{Pull requests at the time of writing.}
+\end{table}
+\section{Branch model}
+\begin{lstlisting}
+main      <- release pull requests from develop; CD publishes :latest and releases on v* tags
+develop   <- squash-merged feature pull requests; CD publishes :develop (staging)
+feature/* <- one piece of work each; CI on every push and pull request
+\end{lstlisting}
+\section{Screenshots}
+\begin{figure}[H]\centering\includegraphics[width=\textwidth]{figures/portfolio.png}\caption{Paper Agent page (empty state on a fresh store; the live deployment shows the 850-trade book).}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=\textwidth]{figures/model.png}\caption{Model Health page.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=\textwidth]{figures/new.png}\caption{New Investigation: any Base address; the three case studies offered as such.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=\textwidth]{figures/watchlist.png}\caption{Watchlist held by the API.}\end{figure}
+\section{Workflow runs}
+The latest run of each workflow per branch, from \codex{gh run list} on 22 October 2026. Every run is reachable at \code{github.com/AbdullahBinNasir16/BlockLens/actions/runs/<id>}.
+\begin{table}[H]
+\centering\small
+\begin{tabular}{llllr}
+\toprule
+When (UTC) & Workflow & Branch & Result & Run id\\
+\midrule
+2026-10-22 13:54 & Report & \code{feature/fyp1-report} & success & 39791108583\\
+2026-10-22 13:54 & CI & \code{feature/fyp1-report} & success & 39791108559\\
+2026-10-22 13:52 & CI & \code{feature/ci-hardening} & success & 39790738944\\
+2026-10-22 13:19 & CI & \code{feature/product-rework} & success & 39785885839\\
+2026-10-22 13:19 & CI & \code{feature/phase10-backend} & success & 39785881719\\
+2026-10-22 13:19 & CI & \code{feature/ci-cd-pipeline} & success & 39785882889\\
+\bottomrule
+\end{tabular}
+\caption{Workflow runs. The CI workflow on the hardening branch had failed once on the dependency audit (Starlette 0.48) and passed after the upgrade.}
+\end{table}

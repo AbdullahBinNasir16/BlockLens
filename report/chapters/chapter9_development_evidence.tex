@@ -1,0 +1,95 @@
+\chapter{Project Management and Development Evidence}
+\label{ch:pm}
+
+\section{Work Completed}
+Modules M1 to M6 (Section~\ref{sec:scope}) are implemented, tested and running; the forward test and paper agent have produced their first reportable result; the CI/CD pipeline runs on every pull request and publishes images; the product has been narrowed to what the research defends; this report exists under version control and is compiled by the pipeline.
+
+\section{Work Remaining}
+Branch protection to be switched on by the repository owner; the first 7-day liquidity results of the forward test (due 26 October 2026); hosting of the compose stack on a server; the FYP-2 modules M7--M11 (Chapter~\ref{ch:plan}); the proposal action register and meeting records to be completed from the team's own forms.
+
+\section{Individual Responsibilities}
+\begin{itemize}
+  \item \textbf{Abdullah Bin Nasir:} data research (feasibility spikes, ingestion, labels, graph, sampling, models), the live scorer, forward validation and paper agent protocols, the decision log, the front-end prototype and design system.
+  \item \textbf{Shahmir Khan Lughmani:} delivery engineering (CI/CD, containers, test strategy and the unit, API and end-to-end suites), the Phase 10 API features (explanations, alerts, health, product state), the product rework and scope document, this report.
+  \item \textbf{Abbas:} \todo{area of responsibility; no commits under this name appear in the repository history, so it must be stated and evidenced here.}
+\end{itemize}
+
+\section{Contribution of Each Team Member}
+\label{sec:contrib-members}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.3\textwidth}rp{0.47\textwidth}}
+\toprule
+Member & Commits & Principal artefacts\\
+\midrule
+Abdullah Bin Nasir & 24 & \code{backend/blocklens/{ingest,label,graph,sampling,model,live}}, \code{scripts/}, \code{reports/}, \code{DECISIONS.md} Phases 1--9, \code{src/} prototype\\
+Shahmir Khan Lughmani & 12+ & \code{.github/}, \code{Dockerfile}s, \code{docker-compose.prod.yml}, \code{e2e/}, \code{src/**/*.test.ts}, \code{live/explain.py}, \code{alerts.py}, \code{health.py}, Phase 10 API and migration, \code{src/routes/{Portfolio,ModelHealth,Watchlist,History}}, \code{docs/FYP1_SCOPE.md}, \code{CONTRIBUTING.md}, \code{report/}\\
+Abbas & 0 & \todo{artefacts, if any; or state the non-code contribution}\\
+\bottomrule
+\end{tabular}
+\caption{Contributions by member, from \codex{git shortlog} on 22 October 2026.}
+\label{tab:members}
+\end{table}
+
+\section{Repository and Version Control Evidence}
+Repository: \code{github.com/AbdullahBinNasir16/BlockLens} (private; the panel has access). Branches: \code{main} (release), \code{develop} (integration), \code{feature/ci-cd-pipeline}, \code{feature/phase10-backend}, \code{feature/product-rework}, \code{feature/ci-hardening}, each with a pull request that CI checks. Commit messages follow conventional prefixes with a body that says why. Pull requests use the template in \code{.github/pull_request_template.md}. Appendix~\ref{app:repo} lists the pull requests and CI runs.
+
+\section{Milestones and Commit Evidence}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{llp{0.53\textwidth}}
+\toprule
+Date & Commits & Milestone\\
+\midrule
+09--10 Sep 2026 & 9 & front-end prototype: design system, landing, shell, profiles, screener, directory, portfolio\\
+11 Oct & 3 & feasibility spikes; Phase 1 package, schema, ingestion\\
+13 Oct & 3 & labels; Phase 3 graph; Phase 4 model\\
+18 Oct & 5 & leakage audit; sampling design; Phase 5 retrain; buyer-loss model\\
+19 Oct & 2 & live scorer, resolver, FastAPI; Fresh Launches\\
+21 Oct & 2 & paper agent passes its floor; README, backend guide, decision log\\
+22 Oct & 12 & CI/CD, tests, containers, scope; Phase 10 backend; product rework; CI hardening; report\\
+\bottomrule
+\end{tabular}
+\caption{Milestones and commit counts from the git history.}
+\end{table}
+
+\section{Tools and Tool-Assisted Development}
+\label{sec:tools}
+Development tools: VS Code, git and the GitHub CLI, uv and pip, npm, Docker (in CI), PostgreSQL 16, TinyTeX. Process tools: GitHub pull requests, Actions, Dependabot, GHCR, Trivy.
+
+\textbf{AI assistance, disclosed.} An AI coding assistant (Claude Code, Anthropic) was used during development as a pair-programming and drafting tool, under the team's direction: to draft code and tests that the team then ran, reviewed and committed; to draft documentation from the repository's own records; and to draft this report from \code{DECISIONS.md}, the model cards and the code. Every measurement in the report was produced by the project's own scripts; every design decision was taken by the team and is recorded with its evidence. Commits made with the assistant carry a co-author trailer so the history is honest about it. The team considers this the same category of tool as a compiler or a linter: it speeds the work and does not stand in for understanding it, which the viva will test.
+
+\section{External Components and Dependencies}
+Keyless public endpoints (Tenderly gateway, DexScreener, GeckoTerminal, GoPlus, optionally Telegram) and the open-source libraries listed in Chapter~\ref{ch:design}, pinned in \code{backend/pyproject.toml} and \code{package-lock.json} and audited on every pull request. The project's own model artefact (\code{buyer_loss_v1.joblib}) is versioned in the repository with its metadata. Third-party marks (token and chain logos, X profile pictures) are used only to identify the projects they belong to.
+
+\section{Risks and Mitigation}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.34\textwidth}p{0.1\textwidth}p{0.40\textwidth}}
+\toprule
+Risk & Likelihood & Mitigation\\
+\midrule
+A free endpoint changes its limits or goes keyed & high (two already did) & measured fallbacks (\code{rpc_fallback_url}); GoPlus replaced Blockscout; budgets keep usage polite\\
+Forward test interrupted (one machine) & high & auto-start task; late launches logged as missed, never scored; hosting in FYP-2\\
+Regime shift degrades calibration & medium & Model Health tracks the self-deployed share; retrain on the forward record (M10)\\
+Buyer-loss forward floor not reached before evaluation & medium & the page reports counts and says ``too early''; the launch-type half is already decisive\\
+Scope creep back toward unmeasurable features & medium & \code{docs/FYP1_SCOPE.md}; every number labelled Sourced / Sample\\
+Dependency vulnerability & medium & audits on PRs, Trivy on images, Dependabot weekly\\
+Key person risk (research in one member's head) & medium & the decision log and model cards; this report; shared ownership of the live code through PRs\\
+\bottomrule
+\end{tabular}
+\caption{Risks and mitigations.}
+\end{table}
+
+\section{Security and Privacy Considerations}
+No secrets in the repository; the only credential the system can hold (a Telegram bot token) is read from the environment and never logged. All inbound addresses are validated server-side. The write gate and append-only prediction log make tampering with the forward record a visible change in git and in the database. The system stores only public chain data and groups pseudonymous addresses; it holds no personal data, and the product's own state (watchlist, history) is local to one deployment.
+
+\section{Current Limitations}
+\begin{itemize}
+  \item One chain, one DEX family (Uniswap V3/V4).
+  \item The forward test depends on a single machine until hosted.
+  \item The wallet screener still runs over a generated corpus, labelled as such, until M9.
+  \item No accounts: one watchlist per deployment.
+  \item The buyer-loss model should not be used on launchpad tokens as a rug predictor (its answer there is always ``not pulled'', which is true and useless); the page reads liquidity-pull risk from launch type.
+  \item Prices in the store are ratios against each token's quote asset; dollar PnL needs an ETH/USD series (M9).
+\end{itemize}

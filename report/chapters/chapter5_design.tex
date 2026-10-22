@@ -1,0 +1,194 @@
+\chapter{System Design}
+\label{ch:design}
+
+\section{System Architecture}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth}\begin{tikzpicture}[font=\small, box/.style={draw, rounded corners, align=center, minimum height=0.9cm, inner sep=5pt}, ext/.style={box, dashed}, >={Stealth}]
+  % external sources
+  \node[ext] (rpc) at (0,6) {Base RPC\\(Tenderly public gateway)};
+  \node[ext] (ds) at (4.6,6) {DexScreener};
+  \node[ext] (gt) at (8.2,6) {GeckoTerminal\\GoPlus};
+  \node[ext] (tg) at (12,6) {Telegram Bot API};
+  % backend
+  \node[box, minimum width=3.6cm] (ingest) at (0,3.6) {Ingest\\discover, backfill,\\budget, write gate};
+  \node[box, minimum width=3.4cm] (label) at (4.1,3.6) {Label \& sample\\rules, archive reads,\\families};
+  \node[box, minimum width=3.2cm] (model) at (8,3.6) {Model\\features, training,\\\code{buyer_loss_v1}};
+  \node[box, minimum width=3.6cm] (live) at (12,3.6) {Live\\scorer, explain,\\resolver, alerts};
+  \node[box, minimum width=5.2cm] (db) at (2.6,1.2) {PostgreSQL 16 (+TimescaleDB)\\16 tables, Alembic migrations};
+  \node[box, minimum width=5.2cm] (api) at (9.6,1.2) {FastAPI service\\feed, token, explain, stream,\\paper book, health, watchlist, history};
+  % frontend
+  \node[box, minimum width=11cm] (web) at (6,-1.3) {React + TypeScript web app (Vite)\\Fresh Launches, token page, Paper Agent, Model Health, Trending, Watchlist, History, case studies};
+  \node[box, minimum width=11cm] (ci) at (6,-3.2) {GitHub Actions: CI (typecheck, unit, API, audit, e2e) $\cdot$ CD (GHCR images, release, Trivy, deploy hook)};
+  \draw[->] (rpc) -- (ingest);
+  \draw[->] (rpc) -- (label);
+  \draw[->] (rpc) -- (live);
+  \draw[->] (ds) -- (ingest);
+  \draw[->] (ingest) -- (db);
+  \draw[->] (label) -- (db);
+  \draw[<->] (model) -- (db);
+  \draw[<->] (live) -- (db);
+  \draw[->] (model) -- (live);
+  \draw[->] (live) -- (api);
+  \draw[<->] (api) -- (db);
+  \draw[->] (live) -- (tg);
+  \draw[<->] (api) -- (web);
+  \draw[->] (ds) to[out=-90,in=90] (web.north);
+  \draw[->] (gt) to[out=-90,in=90] ($(web.north)+(3,0)$);
+  \draw[->, dotted] (ci) -- (web);
+\end{tikzpicture}\end{adjustbox}
+\caption{System architecture. Dashed boxes are external, keyless public sources; the browser reaches them through the same-origin proxy (Vite in development, nginx in the container).}
+\label{fig:arch}
+\end{figure}
+
+\section{Architectural Components}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.2\textwidth}p{0.70\textwidth}}
+\toprule
+Component & Responsibility and key files\\
+\midrule
+Ingest & Pool discovery from chain events; windowed backfill with checkpoints; DexScreener enrichment and pair snapshots; token-bucket budgets. \code{ingest/chain.py}, \code{dexscreener.py}, \code{budget.py}, \code{sources.py}, \code{evm.py}.\\
+Store & The schema (\code{store/models.py}), engine and sessions (\code{db.py}) and the write gate (\code{write.py}), the only module that writes rows.\\
+Label & Archive sampling of reserves and prices (\code{label/sample.py}); the definition (\code{rules.py}): named criteria, thresholds, one readable expression; day-0 extraction (\code{extraction.py}).\\
+Sampling & Random cohort windows, case-control pre-screen, operator families, the minute-5 cutoff (\code{sampling/design.py}).\\
+Graph & Funding and co-purchase edges, Louvain communities, 95 propagated features; kept as a research module (\code{graph/}).\\
+Model & 23 token-level features at minute 5 (\code{model/token_features.py}); leakage audit; rule checkers; training scripts; the shipped artefact with its metadata.\\
+Live & The scorer loop (\code{live/scorer.py}); the explainer (\code{explain.py}); the forward resolver and paper agent (\code{resolver.py}); alerts (\code{alerts.py}); health (\code{health.py}).\\
+API & FastAPI application (\code{api/app.py}) with a per-request session dependency; SSE stream.\\
+Web app & Routes under \code{src/routes/}, live readers under \code{src/lib/live/}, pure libraries under \code{src/lib/}, the case-study data under \code{src/data/}.\\
+Delivery & Workflows, Dockerfiles, nginx config, compose, Playwright config.\\
+\bottomrule
+\end{tabular}
+\caption{Architectural components.}
+\label{tab:components}
+\end{table}
+
+\section{Interfaces and Dependencies}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.3\textwidth}p{0.60\textwidth}}
+\toprule
+Endpoint & Returns\\
+\midrule
+\code{GET /api/health} & scorer status, last error, alert channel state\\
+\code{GET /api/model} & model metadata and validation record\\
+\code{GET /api/launches} & last six hours of tracked pools, the forward record, the validation record\\
+\code{GET /api/token/{address}} & tracked flag, the launch with its anatomy, the validation record\\
+\code{GET /api/explain} & method, base rate, feature labels\\
+\code{GET /api/forward} & the pre-registered forward record\\
+\code{GET /api/paper-agent/trades} & the paper agent's book, newest first\\
+\code{GET /api/model/health} & volume by reason per day, drift, delay, outages, totals\\
+\code{GET /api/stream} & server-sent events: \code{hello}, then \code{scored}\\
+\code{GET/POST /api/watchlist}, \code{DELETE /api/watchlist/{address}} & the watchlist\\
+\code{GET/POST /api/history} & investigations, newest first\\
+\bottomrule
+\end{tabular}
+\caption{The API surface.}
+\end{table}
+
+External dependencies, all keyless: the Tenderly public gateway for Base (JSON-RPC: \code{eth_getLogs} at 1,000-block spans, archive \code{eth_call}, batched), DexScreener (symbols, liquidity, price), GeckoTerminal (trending pools), GoPlus (holders, flags), and optionally Telegram's Bot API. Runtime libraries: SQLAlchemy 2, Alembic, httpx, psycopg, scikit-learn, numpy, scipy, networkx, FastAPI, uvicorn, joblib, shap; React 18, React Router 6, Vite 5; pytest, vitest, Playwright.
+
+\section{Architecture Decisions and Rationale}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.3\textwidth}p{0.60\textwidth}}
+\toprule
+Decision & Rationale (full argument in \code{DECISIONS.md})\\
+\midrule
+One chain, Base, free sources only & Complete first-24h history of a token in 44 keyless calls; Solana's per-token volume is 10--100$\times$ worse; what is paid on Base is Etherscan, not Base.\\
+Discovery from chain events & DexScreener's feeds carried zero Base tokens; a launch is on chain long before any aggregator sees it.\\
+One write gate with \code{as_of_ts} & Makes lookahead impossible before anything computes features; it caught a real bug (enrichment erasing decimals) in tests.\\
+Labels sampled at blocks & 90--232 calls per token instead of 3,888, and each sample is exact rather than a cumulative sum that one missed window biases forever.\\
+Token-side reserve, uniformly & V4's singleton has no readable per-pool quote reserve; the token side separates a withdrawal from a sell-off by sign.\\
+5-minute window with survival & Every genuine rug was alive at minute 5; a 24-hour window censors the outcome into the features.\\
+Operator families as the unit & 20 RUG tokens were one operation; splitting by token would have leaked.\\
+Only two signals in the product & They are the two the research defends; the graph features add nothing at full power.\\
+Exact explanations by tree SHAP & Additive, exact for the ensemble, and the frozen artefact is untouched, so the forward test stands.\\
+SSE rather than WebSockets & One-way, trivially proxied, reconnects natively in the browser.\\
+Single-user state without accounts & Two tables, no owner column; accounts later are a column and a filter.\\
+Images on GHCR, compose for deployment & Works on a free private repository; the same images run on any host with Docker.\\
+\bottomrule
+\end{tabular}
+\caption{Architecture decisions.}
+\end{table}
+
+\section{Design Evolution}
+\label{sec:evolution}
+The proposal described a twelve-section ``intelligence profile'' per project (fundamentals, developer, on-chain, wallets, KOLs, GitHub, social, roadmap, narrative, risk, assessment), a cross-project wallet screener, a KOL directory and a trading portfolio, with wallet-graph features as the central predictive idea. Since then:
+\begin{enumerate}
+  \item The data research showed that the wallet-graph features carry no predictive value on this population once leakage and censoring are controlled, and that launch type and the first five minutes of trading carry all the signal that can be measured. The product's core moved from profiling a project to judging a launch.
+  \item Every section that could only be populated with invented numbers, or with paid data, was cut: KOLs, social, narrative, the hand-authored wallet field and the simulated portfolio. The profiles stay as labelled case studies in eight sections.
+  \item Three features the proposal did not have were added because the signal needed them to be trustworthy: exact score explanations, a pre-registered forward record with a paper agent, and a monitoring page.
+  \item The chain selector was reduced to Base.
+\end{enumerate}
+Each change is dated and argued in \code{DECISIONS.md} and summarised in \code{docs/FYP1_SCOPE.md}.
+
+\section{Domain Model}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth}\begin{tikzpicture}[font=\small, ent/.style={draw, rounded corners, align=left, inner sep=5pt}, >={Stealth}]
+  \node[ent] (token) at (0,0) {\textbf{Token}\\address, chain, symbol,\\decimals, created\_block};
+  \node[ent] (pair) at (5.8,0) {\textbf{Pair / Pool}\\pair\_key (address or V4 id),\\dex, quote, counterparty};
+  \node[ent] (transfer) at (0,-2.4) {\textbf{Transfer / Swap}\\block, from, to, amounts,\\direction, quote\_amount};
+  \node[ent] (wallet) at (5.8,-2.4) {\textbf{Wallet}\\address, funding\_source,\\features (95), cluster};
+  \node[ent] (label) at (11.6,0) {\textbf{TokenLabel}\\class, criteria, thresholds,\\series\_json, rule\_version};
+  \node[ent] (sample) at (11.6,-2.4) {\textbf{TokenSample}\\stratum, window, family\_id,\\screen results};
+  \node[ent] (pred) at (2.8,-5) {\textbf{LivePrediction}\\status, risk, launch\_type, features,\\explanation, outcomes at 6h/1d/7d/30d/90d};
+  \node[ent] (prod) at (9.6,-5) {\textbf{WatchlistItem / Investigation}\\address, label, note / outcome, opened\_at};
+  \draw[->] (token) -- node[above]{1..*} (pair);
+  \draw[->] (token) -- node[left]{1..*} (transfer);
+  \draw[->] (transfer) -- node[above]{from/to} (wallet);
+  \draw[->] (token) -- (label);
+  \draw[->] (token) to[out=-20,in=160] (sample);
+  \draw[->] (token) to[out=-120,in=150] (pred);
+  \draw[->, dashed] (token) to[out=-110,in=170] (prod);
+\end{tikzpicture}\end{adjustbox}
+\caption{Domain model. A token has pools, transfers and swaps; wallets are the transfer endpoints; a label and a sample row describe how the token entered the dataset and what happened to it; a live prediction is written once per launch the feed judged.}
+\end{figure}
+
+\section{Data Design}
+The store has sixteen tables under Alembic migrations (ten revisions). The ingestion tables (\code{token}, \code{pair}, \code{pair_snapshot}, \code{transfer}, \code{swap}, \code{wallet}, \code{ingest_run}, \code{budget_ledger}, \code{backfill_checkpoint}) use unconstrained \code{NUMERIC} for amounts and prices because real Base data overflowed a fixed precision on the day it was written and a dust price rounded to zero without complaint. \code{token_label} stores its observations (\code{series_json}) so every verdict can be re-derived offline; \code{rule_version} is part of its key so a changed threshold writes a new generation. \code{token_sample} carries the stratum every headline number depends on. \code{live_prediction} is append-only by construction (\code{ON CONFLICT DO NOTHING}) and holds the features and the explanation beside the prediction. \code{watchlist_item} and \code{investigation} are the product's state. Every write is an upsert on a natural key, batched at 5,000 rows, and reports inserts and updates separately so a re-run can be proved to write zero new rows.
+
+\section{Process / Behavior Design}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth}\begin{tikzpicture}[font=\small, >={Stealth}, every node/.style={align=center}]
+  \foreach \x/\n in {0/Scorer loop, 3.2/Base RPC, 6.4/Store, 9.6/Explainer, 12.8/Clients}
+    { \node[draw, rounded corners, minimum width=2.6cm] (h\n) at (\x,0) {\n}; \draw[dashed] (\x,-0.5) -- (\x,-8.6); }
+  \draw[->] (0,-1) -- node[above]{get\_logs: Initialize, PoolCreated} (3.2,-1);
+  \draw[->] (3.2,-1.5) -- node[above]{new pools} (0,-1.5);
+  \node[draw, fill=white, inner sep=3pt] at (0,-2.2) {wait until block $\geq$ created + 150 + 5};
+  \draw[->] (0,-3) -- node[above]{swap logs by minute 5} (3.2,-3);
+  \draw[->] (0,-3.6) -- node[above]{backfill first 5 min} (6.4,-3.6);
+  \draw[->] (6.4,-4.2) -- node[above]{token\_row: 23 features} (0,-4.2);
+  \node[draw, fill=white, inner sep=3pt] at (0,-4.9) {predict\_proba $\to$ risk};
+  \draw[->] (0,-5.6) -- node[above]{features} (9.6,-5.6);
+  \draw[->] (9.6,-6.1) -- node[above]{anatomy (SHAP terms)} (0,-6.1);
+  \draw[->] (0,-6.8) -- node[above]{record once: live\_prediction} (6.4,-6.8);
+  \draw[->] (0,-7.4) -- node[above]{SSE scored / Telegram} (12.8,-7.4);
+  \draw[->] (0,-8.1) -- node[above]{resolve due rows at hour 6, days 1/7/30/90} (6.4,-8.1);
+\end{tikzpicture}\end{adjustbox}
+\caption{Sequence of one scorer tick (every 60 s).}
+\label{fig:seq}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth}\begin{tikzpicture}[font=\small, >={Stealth}, stage/.style={draw, rounded corners, align=center, minimum height=0.8cm, inner sep=4pt}, node distance=0.5cm and 0.6cm]
+  \node[stage] (pr) {Pull request\\or push};
+  \node[stage, right=of pr] (fe) {Frontend\\typecheck $\cdot$ unit + coverage $\cdot$ build};
+  \node[stage, below=of fe] (be) {Backend\\pytest on PostgreSQL};
+  \node[stage, below=of be] (au) {Audit\\npm audit $\cdot$ pip-audit};
+  \node[stage, right=of fe, yshift=-1.2cm] (e2e) {End to end\\API + preview + Playwright};
+  \node[stage, right=of e2e] (merge) {Review\\squash-merge};
+  \node[stage, right=of merge] (img) {CD\\build + push images};
+  \node[stage, below=of img] (scan) {Trivy scan};
+  \node[stage, below=of scan] (dep) {Deploy hook\\(staging / production)};
+  \draw[->] (pr) -- (fe); \draw[->] (pr) |- (be); \draw[->] (pr) |- (au);
+  \draw[->] (fe) -| (e2e); \draw[->] (be) -| (e2e);
+  \draw[->] (e2e) -- (merge); \draw[->] (merge) -- (img); \draw[->] (img) -- (scan); \draw[->] (scan) -- (dep);
+\end{tikzpicture}\end{adjustbox}
+\caption{The delivery pipeline.}
+\label{fig:cicd}
+\end{figure}

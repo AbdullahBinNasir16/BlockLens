@@ -1,0 +1,99 @@
+\chapter{Remaining FYP Plan}
+\label{ch:plan}
+
+\section{Remaining Scope}
+The FYP-2 scope is the set M7--M11 of \code{docs/FYP1_SCOPE.md}: one investigation flow, richer persistence, an early-buyer screener over stored transfers, a model retrained on the forward record, and hosting. Nothing cut in FYP-1 returns unless a free, measured source for it appears.
+
+\section{Remaining Modules and Features}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.06\textwidth}p{0.3\textwidth}p{0.52\textwidth}}
+\toprule
+\# & Module & Definition of done\\
+\midrule
+M7 & One investigation flow & \code{/app/new} resolves any Base address to the token page; the case studies are reached from a ``Case studies'' link; the research animation is retired\\
+M8 & Persistence & notes on watchlist items; alert preferences; history filters; export of the forward record as CSV\\
+M9 & Early-buyer screener & ``which wallets bought tracked launches in their first six hours and what did they realise'' over the backend's transfers and swaps; \code{evaluateQuery} becomes a POST; an ETH/USD series from GeckoTerminal OHLCV for dollar PnL; the generated corpus deleted\\
+M10 & Model v2 & retrain buyer loss on the forward record once the floor is passed; a new, separately reported forward record; the old one kept\\
+M11 & Hosting & the compose stack on a cloud VM with \code{restart: unless-stopped}; the deploy hook wired; uptime shown on Model Health\\
+\bottomrule
+\end{tabular}
+\caption{FYP-2 modules.}
+\label{tab:fyp2}
+\end{table}
+
+\section{Remaining Iterations}
+\begin{itemize}
+  \item \textbf{Iteration 3} (rest of FYP-1): branch protection, 7-day forward results, M7, hosting trial (M11), final FYP-1 report.
+  \item \textbf{Iteration 4} (FYP-2, first half): M9 screener backend and ETH/USD series; M8 persistence.
+  \item \textbf{Iteration 5} (FYP-2, second half): M10 model v2 and its forward record; M11 production hosting; final report and demonstration.
+\end{itemize}
+
+\section{Implementation Plan}
+Each module is a feature branch with a pull request per deliverable, CI green, one review. M9 starts with a measured cost estimate (as every phase did), because it reads six hours of transfers per launch rather than five minutes. M10 starts with its protocol written and committed before any retraining.
+
+\section{Testing and Validation Plan}
+Unit tests for every new pure function; API tests for every new endpoint on the rolled-back session; an end-to-end case per new user path; the coverage floor ratcheted up with each pull request. M9 is validated by re-deriving Phase 6's minute-5 cohort profits from the new screener and matching them. M10 is validated only on its own forward record, by the same pre-registered protocol.
+
+\section{Deployment Plan}
+The images CD already publishes run on any Docker host. M11 provisions a small VM, pulls \code{docker-compose.prod.yml}, sets the environment (database URL, optional Telegram credentials) and registers the Render-style deploy hook as a repository secret so a merge to \code{main} redeploys. The staging tag from \code{develop} runs on the same host under a second compose project for pre-release checks.
+
+\section{Tentative Timeline}
+\label{sec:roadmap}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth}
+\begin{tikzpicture}[font=\small, x=1.55cm, y=0.62cm]
+  % months Oct 2026 .. May 2027 -> x = 0..8
+  \foreach \m/\i in {Oct/0, Nov/1, Dec/2, Jan/3, Feb/4, Mar/5, Apr/6, May/7} {
+    \draw[gray!40] (\i,0.5) -- (\i,-13.5);
+    \node[anchor=south] at (\i+0.5,0.6) {\m};
+  }
+  \draw[gray!40] (8,0.5) -- (8,-13.5);
+  \node[anchor=south east, font=\scriptsize] at (4,1.3) {2026 $|$ 2027};
+  \newcommand{\gbar}[5]{\node[anchor=east] at (-0.1,#1) {#2}; \fill[#5] (#3,#1-0.3) rectangle (#4,#1+0.3);}
+  \gbar{-1}{Research Phases 1--7 (done)}{0}{0.65}{black!70}
+  \gbar{-2}{Forward test and paper agent (running)}{0.6}{8}{black!35}
+  \gbar{-3}{CI/CD, product rework, report draft (done)}{0.65}{0.75}{black!70}
+  \gbar{-4}{Branch protection, release v0.1.0}{0.75}{1}{black!50}
+  \gbar{-5}{M7 one investigation flow}{1}{1.8}{black!50}
+  \gbar{-6}{M11 hosting trial}{1.2}{2.2}{black!50}
+  \gbar{-7}{FYP-1 final report}{2}{2.8}{black!50}
+  \gbar{-8}{M9 early-buyer screener + ETH/USD series}{3}{5}{black!50}
+  \gbar{-9}{M8 persistence}{3.5}{4.5}{black!50}
+  \gbar{-10}{M10 model v2 and its forward record}{5}{6.8}{black!50}
+  \gbar{-11}{M11 production hosting}{5.5}{7}{black!50}
+  \gbar{-12}{FYP-2 final report and demonstration}{6.8}{7.9}{black!50}
+  % milestones
+  \foreach \x/\l in {0.72/mid eval, 2.8/FYP-1 final, 7.9/FYP-2 final} {
+    \draw[thick] (\x,0.4) -- (\x,-12.6);
+    \node[font=\scriptsize, anchor=south, fill=white, inner sep=1pt] at (\x,-12.6) {\l};
+  }
+  \node[font=\scriptsize, anchor=west] at (0,-13.3) {26 Oct: first 7-day forward results. Mid-evaluation and final dates to be aligned with the official FYP calendar.};
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Roadmap to the end of FYP-2. Dark bars are done, the long grey bar is the forward test that runs throughout.}
+\label{fig:gantt}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.24\textwidth}p{0.68\textwidth}}
+\toprule
+When & Milestone and definition of done\\
+\midrule
+26 Oct 2026 & first 7-day liquidity results on the forward record; shown on Fresh Launches\\
+before the mid evaluation & pull requests \#1--\#5 merged; branch protection on; release \code{v0.1.0}; this report submitted\\
+Nov 2026 & M7 merged: any address resolves to the token page; case studies reachable as such\\
+Nov--Dec 2026 & M11 trial: the compose stack on a host with a public URL; buyer-loss forward floor expected to be reached\\
+Dec 2026 & FYP-1 final report\\
+Jan--Feb 2027 & M9: screener over stored early buyers with dollar PnL; generated corpus deleted; M8 persistence\\
+Mar--Apr 2027 & M10: model v2 trained on the forward record with its own pre-registered record; M11 production hosting with uptime on Model Health\\
+May 2027 & FYP-2 final report and demonstration\\
+\bottomrule
+\end{tabular}
+\caption{Roadmap milestones.}
+\end{table}
+
+\section{Expected Final Deliverables}
+A hosted BlockLens with its forward record running continuously; the labelled dataset and data card; model cards v2, Phase 6 and v2-forward; the screener over real early buyers; the decision log; the CI/CD pipeline with its history of green runs; and the FYP-2 report.

@@ -1,0 +1,28 @@
+# The FYP report is source under version control and is built like the
+# code: every change to report/ compiles it and keeps the PDF.
+name: Report
+
+on:
+  push:
+    paths: ["report/**", ".github/workflows/report.yml"]
+  pull_request:
+    paths: ["report/**", ".github/workflows/report.yml"]
+  workflow_dispatch:
+
+jobs:
+  pdf:
+    name: Compile the FYP report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: report
+          root_file: main.tex
+          latexmk_use_lualatex: false
+          args: -pdf -interaction=nonstopmode -halt-on-error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BlockLens-FYP1-mid-report-${{ github.sha }}
+          path: report/main.pdf
+          retention-days: 30

@@ -1,0 +1,37 @@
+\chapter{Detailed Requirements}
+\label{app:req}
+\section{Remaining detailed use cases}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.2\textwidth}p{0.70\textwidth}}
+\toprule
+\multicolumn{2}{l}{\textbf{UC2 Read a score's anatomy}}\\
+\midrule
+Main flow & 1. On Fresh Launches the user presses the why-button on a scored row (or opens a toast). 2. A drawer shows the risk, the launch type, the base rate, and one bar per driver: left (green) lowers the risk, right (red) raises it, with the feature's value in its own unit and its log-odds term. 3. The drawer links to the token page and DexScreener.\\
+Alternative & 2a. No anatomy was recorded (a launch scored before Phase 10): the drawer says so.\\
+\midrule
+\multicolumn{2}{l}{\textbf{UC4 Receive an alert}}\\
+\midrule
+Main flow & 1. A launchpad launch scores under the agent's ceiling. 2. The API emits a \code{scored} event; the open page shows a toast and, if the user enabled it, a browser notification. 3. If a bot token and chat id are configured, a Telegram message is sent with the token, counts and a DexScreener link, and a line that it is a model estimate.\\
+Alternative & 3a. The send fails: the error is recorded on \code{/api/health}; scoring continues.\\
+\midrule
+\multicolumn{2}{l}{\textbf{UC7 Read the forward record}}\\
+\midrule
+Main flow & 1. The Paper Agent page loads the book. 2. Four policies are computed from the rows: agent, buy everything, every launchpad launch, what the agent refused. 3. The hero shows the agent's mean and median, the control, the pre-registered interval and the mean without capped trades. 4. The table lists every trade, filterable and sortable; each opens its token page.\\
+Alternative & 1a. Below 100 agent trades: the interval shows ``too early''.\\
+\midrule
+\multicolumn{2}{l}{\textbf{UC8 Monitor the system}}\\
+\midrule
+Main flow & 1. Model Health loads \code{/api/model/health} and the feed. 2. Status: last scan, tracked pools, logged, scored, last error, model version. 3. Charts: launches a day stacked by reason; self-deployed share per day; forward calibration bins. 4. Outages longer than 15 minutes are listed.\\
+\bottomrule
+\end{tabular}
+\caption{Detailed use cases UC2, UC4, UC7, UC8.}
+\end{table}
+\section{Further functional requirements}
+\begin{itemize}[label={}]
+  \item \textbf{FR-6.6} Trending Tokens shall read GeckoTerminal, DexScreener and GoPlus through the same-origin proxy and back off on a rate limit.
+  \item \textbf{FR-6.7} The screener shall evaluate a query entirely from stored movements (invested, sold fraction, proceeds, remaining value, timestamps) and never from stored PnL.
+  \item \textbf{FR-6.8} Every page shall render an explicit empty or error state naming the cause when the API is unreachable.
+  \item \textbf{FR-3.6} The scorer shall persist its tracked launches so a restart resumes from its last block.
+  \item \textbf{FR-1.7} Live tokens shall enter \code{token_sample} as stratum \code{live} with an exclusion reason so research queries never pick them up.
+\end{itemize}
