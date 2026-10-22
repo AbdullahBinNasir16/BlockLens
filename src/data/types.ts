@@ -151,44 +151,6 @@ export interface Developer {
   activity: number[];
 }
 
-/* ---------------- KOLs ---------------- */
-
-export type KolFocus = 'AI' | 'Memes' | 'DeFi' | 'Infra' | 'Trading' | 'Research' | 'NFTs';
-
-/** One account in the KOL directory. A project's `Kol` list is a projection
- *  of these records, so an account's record reads the same everywhere. */
-export interface KolProfile {
-  id: string;
-  handle: string;
-  name: string;
-  followers: number;
-  /** reach weighted by engagement, 0-100 */
-  socialScore: number;
-  /** share of tracked calls that ended up, 0-100 */
-  winRate: number;
-  /** average move after a call, percent */
-  avgOutcome: number;
-  /** how often a call comes with written reasoning rather than a ticker, 0-100 */
-  thesisScore: number;
-  /** calls tracked over the last twelve months */
-  calls: number;
-  focus: KolFocus[];
-  chains: Chain[];
-}
-
-/** Deliberately minimal: a face, a score, an outcome. Nothing else is shown,
- *  so nothing else is carried. */
-export interface Kol {
-  id: string;
-  /** also locates the profile picture — /avatars/<handle>.jpg */
-  handle: string;
-  name: string;
-  /** historical win rate, 0-100 */
-  winRate: number;
-  /** average outcome across promotions, percent */
-  avgOutcome: number;
-}
-
 /* ---------------- GitHub / social ---------------- */
 
 export interface GithubData {
@@ -292,23 +254,6 @@ export interface TrendingToken {
   researched?: boolean;
 }
 
-export interface WatchlistItem {
-  id: string;
-  name: string;
-  ticker: string;
-  chain: Chain;
-  logo: string;
-  monogram: string;
-  risk: number;
-  riskLevel: RiskLevel;
-  riskDelta: number;
-  price: number;
-  change24h: number;
-  liquidity: number;
-  lastResearched: string;
-  spark: number[];
-}
-
 /* ---------------- Narrative map ---------------- */
 
 export interface NarrativeNode {
@@ -338,7 +283,6 @@ export interface ProjectDataset {
   project: Project;
   developer: Developer;
   deployerFacts: { label: string; value: string; signal: Signal }[];
-  kols: Kol[];
   github: GithubData;
   social: SocialData;
   onchain: OnChainData;
@@ -518,109 +462,4 @@ export interface ScreenerResult {
   /** the stage that removed the last candidates — drives the zero state */
   limitingStage?: FunnelStage;
   scopedWallets: number;
-}
-
-/* ============================================================
-   Portfolio — the model's own book
-
-   BlockLens runs a model that buys new launches when they clear its
-   gate. Every trade carries the scores it cleared, the thesis it was
-   bought on, and how it ended. Returns and equity are computed from the
-   trades; nothing about performance is stored.
-   ============================================================ */
-
-export type TradeKind = 'meme' | 'ai' | 'infra' | 'defi';
-
-/** What the pool is quoted in. A stock-paired launch makes the quote asset
- *  part of the joke — SEND against Amazon — so it is carried explicitly. */
-export interface TradeQuote {
-  ticker: string;
-  name: string;
-  kind: 'stock' | 'crypto' | 'stable';
-}
-
-/** A memecoin is bought on its story, so the story is written down in
- *  full: the line people repeat, what happened, why this pairing, and why
- *  the model thinks it lasts. */
-export interface Lore {
-  hook: string;
-  origin: string;
-  /** only when the quote asset is part of the story */
-  pairing?: string;
-  legs: string;
-}
-
-/** The scores a launch showed at the moment the model bought it. */
-export interface GateReading {
-  confidence: number;
-  risk: number;
-  /** USD in the pool at entry */
-  liquidity: number;
-  /** hours between the pair opening and the buy */
-  ageHours: number;
-  /** memecoins only — how strong and legible the story is, 0-100 */
-  lore?: number;
-}
-
-interface TradeBase {
-  id: string;
-  ticker: string;
-  name: string;
-  chain: Chain;
-  quote: TradeQuote;
-  /** ms epoch the pair opened */
-  launchedAt: number;
-  /** ms epoch of the buy */
-  entryAt: number;
-  /** ms epoch of the final sell; null while open */
-  exitAt: number | null;
-  entryPrice: number;
-  /** final sell price, or the current mark while open */
-  lastPrice: number;
-  /** highest multiple of entry the position reached, for the path */
-  peak: number;
-  /** USD committed */
-  size: number;
-  gate: GateReading;
-  /** why it bought — paragraphs */
-  thesis: string[];
-  /** why it sold, or, while open, what would make it sell */
-  exitNote: string;
-  /** set when the token is one BlockLens has researched */
-  projectId?: string;
-}
-
-/** A memecoin trade cannot exist without its lore — the type will not
- *  compile one. */
-export type Trade =
-  | (TradeBase & { kind: 'meme'; lore: Lore; gate: GateReading & { lore: number } })
-  | (TradeBase & { kind: Exclude<TradeKind, 'meme'>; lore?: undefined });
-
-/** A launch the model scored, whether or not it bought. */
-export interface GateCandidate {
-  risk: number;
-  confidence: number;
-  /** inside the score corner but not bought — the reason it was passed over */
-  passedOver?: 'liquidity' | 'age' | 'lore' | 'capacity';
-}
-
-export interface RuleChange {
-  at: number;
-  text: string;
-}
-
-export interface HistoryItem {
-  id: string;
-  name: string;
-  ticker: string;
-  chain: Chain;
-  logo: string;
-  monogram: string;
-  date: string;
-  time: string;
-  risk: number;
-  riskLevel: RiskLevel;
-  confidence: number;
-  category: string;
-  status: 'complete' | 'partial' | 'stale';
 }

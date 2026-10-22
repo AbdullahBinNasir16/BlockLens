@@ -1,0 +1,252 @@
+/* ============================================================
+   Live product surfaces: the score's anatomy, push toasts, the paper
+   agent's book, model health. Same rules as everywhere: paper and ink,
+   hairlines, colour only where it means something.
+   ============================================================ */
+
+/* ---------------- why: the anatomy of a score ---------------- */
+.bl-why {
+  margin-top: 14px;
+}
+.bl-why__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.bl-why__head b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.bl-why__arrow {
+  color: var(--ink-4);
+}
+.bl-why__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bl-why__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.3fr) minmax(140px, 1fr) 54px;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule-faint);
+  font-size: 14px;
+}
+.bl-why__row[data-rest='true'] {
+  color: var(--ink-3);
+  font-style: italic;
+}
+.bl-why__label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.bl-why__val {
+  color: var(--ink-3);
+  font-size: 12.5px;
+}
+.bl-why__track {
+  position: relative;
+  height: 10px;
+}
+.bl-why__mid {
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--rule-strong);
+}
+.bl-why__bar {
+  position: absolute;
+  top: 1px;
+  height: 8px;
+  background: var(--neg);
+}
+.bl-why__row[data-dir='lowers'] .bl-why__bar {
+  background: var(--pos);
+}
+.bl-why__c {
+  text-align: right;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.bl-why__foot {
+  margin-top: 10px;
+}
+.bl-why[data-compact='true'] .bl-why__row {
+  grid-template-columns: 1fr 1fr 48px;
+  font-size: 13px;
+  padding: 5px 0;
+}
+.bl-unres__why {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+.bl-whydrawer__acts {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+.bl-whybtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 3px 8px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 99px;
+  background: transparent;
+  cursor: pointer;
+}
+.bl-whybtn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.bl-whybtn__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--neg);
+}
+.bl-whybtn__dot[data-dir='lowers'] {
+  background: var(--pos);
+}
+
+/* ---------------- push toasts ---------------- */
+.bl-toasts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+.bl-toast {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 14px;
+  background: var(--paper);
+  cursor: pointer;
+  animation: bl-toast-in 320ms var(--ease);
+}
+.bl-toast[data-buy='true'] {
+  border-color: var(--pos);
+}
+.bl-toast__t {
+  font-size: 15px;
+}
+@keyframes bl-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bl-toast {
+    animation: none;
+  }
+}
+
+/* ---------------- paper agent ---------------- */
+.bl-paper__hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 18px 28px;
+  padding: 18px 0 22px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 22px;
+}
+.bl-paper__chart,
+.bl-paper__policies,
+.bl-paper__trades {
+  margin-bottom: 28px;
+}
+.bl-paper__svg,
+.bl-health__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 10px;
+}
+.bl-paper__key {
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.bl-paper__note {
+  margin-top: 14px;
+  max-width: 72ch;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ---------------- model health ---------------- */
+.bl-health__status {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 24px;
+}
+.bl-health__sec {
+  margin-bottom: 30px;
+}
+.bl-health__legend {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 13px;
+}
+.bl-health__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bl-health__legend b {
+  font-weight: 500;
+}
+.bl-health__swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+.bl-health__note {
+  margin-top: 10px;
+  max-width: 72ch;
+}
+
+/* ---------------- new investigation ---------------- */
+.bl-chainrow__note {
+  display: block;
+  max-width: 48ch;
+  align-self: center;
+}
+
+/* ---------------- sidebar recent (API-backed) ---------------- */
+.bl-recent__r[data-level='tracked'] {
+  color: var(--ink);
+}
+.bl-recent__r[data-level='profile'] {
+  color: var(--pos);
+}

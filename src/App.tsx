@@ -7,12 +7,12 @@ import { Investigating } from './routes/Investigating';
 import { ProjectIntelligence } from './routes/ProjectIntelligence';
 import { Trending } from './routes/Trending';
 import { Screener } from './routes/Screener';
-import { Kols } from './routes/Kols';
 import { Portfolio } from './routes/Portfolio';
 import { WatchlistPage } from './routes/WatchlistPage';
 import { HistoryPage } from './routes/HistoryPage';
 import { UnresearchedToken } from './routes/UnresearchedToken';
 import { Launches } from './routes/Launches';
+import { ModelHealth } from './routes/ModelHealth';
 
 function ScrollReset() {
   const { pathname } = useLocation();
@@ -38,7 +38,7 @@ export function App() {
           <Route path="trending" element={<Trending />} />
           <Route path="launches" element={<Launches />} />
           <Route path="wallets" element={<Screener />} />
-          <Route path="kols" element={<Kols />} />
+          <Route path="model" element={<ModelHealth />} />
           <Route path="portfolio" element={<Portfolio />} />
           <Route path="watchlist" element={<WatchlistPage />} />
           <Route path="history" element={<HistoryPage />} />

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { datasets, chainMeta, CHAINS } from '../data/projects';
+import { datasets, chainMeta } from '../data/projects';
 import { TokenMark, ChainMark } from '../components/primitives/TokenMark';
 
 const SAMPLES = Object.values(datasets).map((d) => d.project);
@@ -17,9 +17,8 @@ export function NewInvestigation() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setTouched(true);
-    const addr = value || SAMPLES[0].contract;
-    if (value && !valid) return;
-    nav(`/app/investigating?ca=${encodeURIComponent(addr)}&chain=${chain}`);
+    if (!valid) return;
+    nav(`/app/investigating?ca=${encodeURIComponent(value)}&chain=${chain}`);
   };
 
   return (
@@ -66,28 +65,24 @@ export function NewInvestigation() {
             <span className="bl-field__note meta">
               {touched && valid === false
                 ? 'That does not look like a contract address.'
-                : 'Paste an address from any supported chain.'}
+                : 'Paste a Base contract address. Any address works: a tracked launch shows its minute-5 signals, anything else shows live public data.'}
             </span>
           </div>
 
           <div className="bl-field">
             <label className="eyebrow">Select chain</label>
             <div className="bl-chainrow">
-              {CHAINS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  className="bl-chainbtn"
-                  data-on={chain === c}
-                  onClick={() => setChain(c)}
-                >
-                  <ChainMark chain={c} size={18} />
-                  <span className="bl-chainbtn__b">
-                    <span className="bl-chainbtn__l">{chainMeta[c].label}</span>
-                    <span className="bl-chainbtn__s meta">{chainMeta[c].short}</span>
-                  </span>
-                </button>
-              ))}
+              <button type="button" className="bl-chainbtn" data-on={chain === 'base'} onClick={() => setChain('base')}>
+                <ChainMark chain="base" size={18} />
+                <span className="bl-chainbtn__b">
+                  <span className="bl-chainbtn__l">{chainMeta.base.label}</span>
+                  <span className="bl-chainbtn__s meta">{chainMeta.base.short}</span>
+                </span>
+              </button>
+              <span className="meta bl-chainrow__note">
+                Every source, label and model in BlockLens is measured on Base. Other chains are listed as
+                future work, not offered.
+              </span>
             </div>
           </div>
 
@@ -98,7 +93,7 @@ export function NewInvestigation() {
           </div>
 
           <div className="bl-samples">
-            <span className="eyebrow">Or open one already indexed</span>
+            <span className="eyebrow">Case studies · three researched profiles</span>
             <div className="bl-samples__row">
               {SAMPLES.map((p) => (
                 <button

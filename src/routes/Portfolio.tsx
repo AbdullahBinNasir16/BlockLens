@@ -1,493 +1,343 @@
 import { useEffect, useMemo, useState } from 'react';
-import { fetchFeed, type ForwardRecord } from '../lib/live/launches';
-import type { Trade, TradeKind } from '../data/types';
-import { BOOK_NOW, INCEPTION, PORTFOLIO_NOTE, START_CAPITAL, TRADES } from '../data/portfolio';
+import { useNavigate } from 'react-router-dom';
+import { Icon } from '../components/app/Icons';
+import { EmptyNote, Stat } from '../components/primitives/Bits';
+import { bandColor, shortAddr, int } from '../lib/format';
+import { fetchFeed, riskBand, type ForwardRecord } from '../lib/live/launches';
 import {
-  DAY,
-  bookStats,
-  byKind,
-  heldDays,
-  isOpen,
-  isWin,
-  multiple,
-  tradePath,
-  tradePnl,
-  tradeReturn,
-} from '../lib/portfolio';
-import { compact, dateShort } from '../lib/format';
-import { ProvChip, SectionHead } from '../components/primitives/Bits';
-import { MiniRing } from '../components/primitives/Meters';
-import { Sparkline } from '../components/primitives/Charts';
-import { EquityChart } from '../components/portfolio/EquityChart';
-import { GateField } from '../components/portfolio/GateField';
-import { KIND_LABEL, KindTag, PairMark } from '../components/portfolio/PairMark';
-import { TradeDossier } from '../components/portfolio/TradeDossier';
+  POLICY_LABEL,
+  POLICY_RULE,
+  equityCurve,
+  fetchPaperBook,
+  picks,
+  policyStats,
+  withoutCapped,
+  type PaperBook,
+  type PaperTrade,
+  type Policy,
+} from '../lib/live/paper';
 
 /* ============================================================
-   Portfolio — the model's own book.
+   Paper Agent — the pre-registered forward record, trade by trade.
 
-   Read top to bottom it answers four questions in order: how is it doing,
-   how does it decide, what does it hold, and what has it done. Every
-   trade on the page opens the same dossier, where the model says why.
+   Nothing here is simulated. Every row is a launch the live feed scored
+   at minute 5 and resolved at hour 6, and every number on the page is
+   derived from those rows in lib/live/paper.ts. The protocol, the
+   policies and the cost were fixed before the first outcome existed
+   (DECISIONS.md, Phase 9).
    ============================================================ */
 
-const signed = (v: number, digits = 0) => `${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(digits)}`;
-const usd = (v: number) => `${v >= 0 ? '+' : '−'}$${Math.abs(Math.round(v)).toLocaleString('en-US')}`;
+type Load<T> = { state: 'loading' } | { state: 'ok'; value: T } | { state: 'error'; msg: string };
+type Filter = 'AGENT' | 'AVOIDED' | 'ALL';
 
-function firstSentence(s: string) {
-  const i = s.search(/\.\s/);
-  return i === -1 ? s : s.slice(0, i + 1);
+const pct = (x: number | undefined | null, digits = 1) =>
+  x == null ? '—' : `${x > 0 ? '+' : ''}${(x * 100).toFixed(digits)}%`;
+
+function when(iso: string): string {
+  const d = new Date(iso);
+  return `${d.toISOString().slice(5, 10)} ${d.toISOString().slice(11, 16)}`;
 }
 
-/** The first sentence of the thesis, or for a memecoin the lore's hook —
- *  the line that says why in the fewest words. */
-const why = (t: Trade) => (t.kind === 'meme' ? t.lore.hook : firstSentence(t.thesis[0]));
-
-type Outcome = 'all' | 'won' | 'lost' | 'open';
-type SortKey = 'date' | 'return' | 'size';
-
-/* returns on a log scale, so a double and a halving draw the same length */
-const MAX_LOG = Math.log2(6);
-const barHalf = (t: Trade) => Math.min(1, Math.abs(Math.log2(multiple(t))) / MAX_LOG) * 50;
-
 export function Portfolio() {
-  const stats = useMemo(bookStats, []);
-  const kinds = useMemo(byKind, []);
-  const [open, setOpen] = useState<Trade | null>(null);
+  const nav = useNavigate();
+  const [book, setBook] = useState<Load<PaperBook>>({ state: 'loading' });
+  const [forward, setForward] = useState<ForwardRecord | null>(null);
+  const [filter, setFilter] = useState<Filter>('AGENT');
+  const [sort, setSort] = useState<'time' | 'return' | 'risk'>('time');
 
-  const [kind, setKind] = useState<TradeKind | 'all'>('all');
-  const [outcome, setOutcome] = useState<Outcome>('all');
-  const [sort, setSort] = useState<SortKey>('date');
+  useEffect(() => {
+    let alive = true;
+    fetchPaperBook()
+      .then((b) => alive && setBook({ state: 'ok', value: b }))
+      .catch((e) => alive && setBook({ state: 'error', msg: String(e?.message ?? e) }));
+    fetchFeed()
+      .then((f) => alive && setForward(f.forward))
+      .catch(() => alive && setForward(null));
+    return () => {
+      alive = false;
+    };
+  }, []);
 
+  const trades = book.state === 'ok' ? book.value.trades : [];
+  const stats = useMemo(
+    () => ({
+      AGENT: policyStats(trades, 'AGENT'),
+      CONTROL: policyStats(trades, 'CONTROL'),
+      LAUNCHPAD: policyStats(trades, 'LAUNCHPAD'),
+      AVOIDED: policyStats(trades, 'AVOIDED'),
+    }),
+    [trades]
+  );
+  const uncapped = useMemo(() => policyStats(withoutCapped(trades), 'AGENT'), [trades]);
+  const curves = useMemo(
+    () => ({ AGENT: equityCurve(trades, 'AGENT'), CONTROL: equityCurve(trades, 'CONTROL') }),
+    [trades]
+  );
   const rows = useMemo(() => {
-    const f = TRADES.filter(
-      (t) =>
-        (kind === 'all' || t.kind === kind) &&
-        (outcome === 'all' ||
-          (outcome === 'open' && isOpen(t)) ||
-          (outcome === 'won' && isWin(t)) ||
-          (outcome === 'lost' && !isOpen(t) && !isWin(t)))
-    );
-    const key = (t: Trade) => (sort === 'date' ? t.entryAt : sort === 'return' ? tradeReturn(t) : t.size);
-    return f.sort((a, b) => key(b) - key(a));
-  }, [kind, outcome, sort]);
+    const r = trades.filter((t) => (filter === 'ALL' ? true : picks(t, filter)));
+    if (sort === 'return') r.sort((a, b) => (b.return ?? -9) - (a.return ?? -9));
+    else if (sort === 'risk') r.sort((a, b) => (a.risk ?? 9) - (b.risk ?? 9));
+    return r;
+  }, [trades, filter, sort]);
 
-  const positions = TRADES.filter(isOpen).sort((a, b) => b.entryAt - a.entryAt);
-  const maxKindPnl = Math.max(...kinds.map((k) => Math.abs(k.pnl)));
-  const sinceLast = Math.round((BOOK_NOW - stats.lastEntry.entryAt) / DAY);
-  const up = stats.ret >= 0;
+  const pa = forward?.paper_agent;
+  const headline = pa?.policies?.headline;
+  const reportable = !!headline?.reportable;
+  const a = stats.AGENT;
+  const c = stats.CONTROL;
 
   return (
-    <div className="bl-page bl-pf">
+    <div className="bl-page bl-paper">
       <header className="bl-page__head">
         <div>
-          <p className="eyebrow">Paper trading · Base</p>
-          <h1 className="display d2">Portfolio</h1>
+          <p className="eyebrow">Forward record · Base · Live</p>
+          <h1 className="display d2">Paper Agent</h1>
           <p className="bl-page__sub">
-            BlockLens's paper agent trades its own signal on every new Base launch, by rules fixed
-            before the first outcome, and reports what it earned. Below it is an illustrative
-            simulation of how a book is meant to read. That part is not a record.
+            BlockLens puts its own signal on the line. The agent buys a launch at minute 5 only when it is a
+            launchpad launch with buyer-loss risk under {book.state === 'ok' ? `${Math.round(book.value.max_risk * 100)}%` : '20%'},
+            sells at hour 6, and pays {book.state === 'ok' ? `${Math.round(book.value.cost * 100)}%` : '3%'} per round trip. Rules fixed before the first outcome.
           </p>
+        </div>
+        <div className="bl-page__headr bl-live">
+          <span className="bl-live__state" data-status={book.state === 'ok' ? 'live' : book.state === 'error' ? 'error' : 'loading'}>
+            <span className="bl-live__dot" />
+            {book.state === 'ok' ? 'Live' : book.state === 'error' ? 'API unreachable' : 'Loading'}
+          </span>
+          {a && <span className="meta num">{int(a.trades)} agent trades</span>}
         </div>
       </header>
 
-      <RealAgent />
+      {book.state === 'error' && (
+        <EmptyNote
+          title="The BlockLens API is not answering"
+          detail={`${book.msg}. Start it with: uvicorn blocklens.api.app:app --port 8000`}
+        />
+      )}
 
-      <div className="bl-pf__simhead">
-        <div>
-          <p className="eyebrow">Illustrative simulation — not a record</p>
-          <p className="meta">
-            Invented trades, prices and stories, written to show how the book and its reasoning are
-            meant to look. Some stories mention real companies and people; none of it happened.
-            Last simulated buy {sinceLast}d before the simulation's own clock.
-          </p>
-        </div>
-        <ProvChip live={false} note={PORTFOLIO_NOTE} />
-      </div>
+      {book.state === 'ok' && !a && (
+        <EmptyNote
+          title="No resolved trades yet"
+          detail="A trade resolves six hours after its launch. The agent's floor is 100 trades before anything is called a result."
+        />
+      )}
 
-      {/* ---------------- performance ---------------- */}
-      <section className="bl-pfhero" aria-label="Performance">
-        <div className="bl-pfhero__main">
-          <span className="eyebrow">Book value</span>
-          <span className="bl-pfhero__v num">${Math.round(stats.value).toLocaleString('en-US')}</span>
-          <span className="bl-pfhero__r num" data-up={up}>
-            {signed(stats.ret * 100, 1)}%
-            <span className="meta">
-              {' '}
-              on ${compact(START_CAPITAL)} since {dateShort(INCEPTION)}
-            </span>
-          </span>
-          <dl className="bl-pfhero__split">
-            <div>
-              <dt className="meta">Realized</dt>
-              <dd className="num" data-up={stats.realized >= 0}>
-                {usd(stats.realized)}
-              </dd>
-            </div>
-            <div>
-              <dt className="meta">Unrealized</dt>
-              <dd className="num" data-up={stats.unrealized >= 0}>
-                {usd(stats.unrealized)}
-              </dd>
-            </div>
-          </dl>
-        </div>
+      {a && c && (
+        <>
+          <section className="bl-paper__hero">
+            <Stat
+              label="Agent mean return"
+              value={pct(a.mean)}
+              sub={`median ${pct(a.median)} · hit rate ${Math.round(a.hitRate * 100)}% · after costs`}
+              tone={a.mean >= 0 ? 'var(--pos)' : 'var(--neg)'}
+            />
+            <Stat
+              label="Buy-everything control"
+              value={pct(c.mean)}
+              sub={`${int(c.trades)} trades · ${int(c.pulled)} had liquidity pulled`}
+              tone={c.mean >= 0 ? 'var(--pos)' : 'var(--neg)'}
+            />
+            <Stat
+              label="Agent − control"
+              value={headline?.agent_minus_control_ci ? `${pct(headline.agent_minus_control_ci[0], 0)} to ${pct(headline.agent_minus_control_ci[1], 0)}` : '—'}
+              sub={reportable ? '95% bootstrap interval · pre-registered test' : `too early · floor ${pa?.floor ?? 100} trades`}
+              tone={headline?.agent_minus_control_ci && headline.agent_minus_control_ci[0] > 0 ? 'var(--pos)' : undefined}
+            />
+            <Stat
+              label="Without the capped trades"
+              value={pct(uncapped?.mean)}
+              sub={`${int(a.capped)} trades hit the +${book.state === 'ok' ? Math.round(book.value.cap * 100) : 1000}% cap`}
+            />
+          </section>
 
-        <div className="bl-pfhero__win">
-          <MiniRing value={stats.winRate * 100} color="var(--pos)" size={132} stroke={4.2}>
-            <span className="bl-pfhero__wv num">{Math.round(stats.winRate * 100)}%</span>
-          </MiniRing>
-          <span className="bl-pfhero__wl">
-            <span className="eyebrow eyebrow-ink">Win rate</span>
-            <span className="meta">
-              {stats.wins} of {stats.closed} closed trades
-            </span>
-          </span>
-        </div>
-
-        <dl className="bl-pfhero__stats">
-          <div>
-            <dt className="meta">Trades</dt>
-            <dd className="num">{TRADES.length}</dd>
-          </div>
-          <div>
-            <dt className="meta">Open</dt>
-            <dd className="num">{stats.open}</dd>
-          </div>
-          <div>
-            <dt className="meta">Avg hold</dt>
-            <dd className="num">{Math.round(stats.avgHoldDays)}d</dd>
-          </div>
-          <div>
-            <dt className="meta">Max drawdown</dt>
-            <dd className="num" data-up="false">
-              −{(stats.maxDrawdown * 100).toFixed(1)}%
-            </dd>
-          </div>
-          <div>
-            <dt className="meta">Best</dt>
-            <dd className="num">
-              <button className="bl-pflink" onClick={() => setOpen(stats.best)}>
-                {stats.best.ticker} {signed(tradeReturn(stats.best) * 100)}%
-              </button>
-            </dd>
-          </div>
-          <div>
-            <dt className="meta">Worst</dt>
-            <dd className="num">
-              <button className="bl-pflink" onClick={() => setOpen(stats.worst)}>
-                {stats.worst.ticker} {signed(tradeReturn(stats.worst) * 100)}%
-              </button>
-            </dd>
-          </div>
-        </dl>
-
-        <div className="bl-pfkinds">
-          <span className="eyebrow">Where it made money</span>
-          {kinds.map((k) => (
-            <div key={k.kind} className="bl-pfkind">
-              <span className="bl-pfkind__l">{KIND_LABEL[k.kind]}</span>
-              <span className="bl-pfkind__bar" aria-hidden="true">
-                <span
-                  data-up={k.pnl >= 0}
-                  style={{ width: `${(Math.abs(k.pnl) / maxKindPnl) * 100}%` }}
-                />
-              </span>
-              <span className="bl-pfkind__v num" data-up={k.pnl >= 0}>
-                {usd(k.pnl)}
-              </span>
-              <span className="bl-pfkind__w meta">
-                {k.wins}/{k.closed} won
+          <section className="bl-paper__chart">
+            <div className="bl-unres__sech">
+              <h2 className="eyebrow">Cumulative return · one unit per trade</h2>
+              <span className="meta">
+                <span className="bl-paper__key" style={{ background: 'var(--ink)' }} /> agent ·{' '}
+                <span className="bl-paper__key" style={{ background: 'var(--ink-4)' }} /> buy everything
               </span>
             </div>
-          ))}
-        </div>
-      </section>
+            <Equity agent={curves.AGENT} control={curves.CONTROL} />
+          </section>
 
-      <EquityChart onSelect={setOpen} />
-
-      {/* ---------------- the gate ---------------- */}
-      <section className="bl-pfsec">
-        <SectionHead
-          index="01"
-          title="The gate"
-          sub="It only buys what clears every line. Most of what clears still isn’t bought."
-        />
-        <GateField onSelect={setOpen} />
-      </section>
-
-      {/* ---------------- open positions ---------------- */}
-      <section className="bl-pfsec">
-        <SectionHead
-          index="02"
-          title="Open positions"
-          sub="What it holds right now, and what would make it sell."
-        />
-        <div className="bl-pos4">
-          {positions.map((t) => {
-            const r = tradeReturn(t);
-            return (
-              <button key={t.id} className="bl-opos" onClick={() => setOpen(t)}>
-                <span className="bl-opos__top">
-                  <PairMark trade={t} size="lg" />
-                  <KindTag kind={t.kind} />
-                </span>
-                <span className="bl-opos__r num" data-up={r >= 0}>
-                  {signed(r * 100)}%
-                </span>
-                <span className="bl-opos__spark">
-                  <Sparkline
-                    values={tradePath(t)}
-                    width={240}
-                    height={46}
-                    color={r >= 0 ? 'var(--pos)' : 'var(--neg)'}
-                  />
-                </span>
-                <span className="bl-opos__meta meta">
-                  {usd(tradePnl(t))} · ${compact(t.size)} · held {Math.round(heldDays(t))}d
-                </span>
-                <span className="bl-opos__why">{why(t)}</span>
-                <span className="bl-opos__watch">
-                  <span className="eyebrow">Watching</span>
-                  {t.exitNote}
-                </span>
-                <span className="bl-opos__cta meta">Read the thesis →</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ---------------- history ---------------- */}
-      <section className="bl-pfsec">
-        <SectionHead
-          index="03"
-          title="Trade history"
-          sub="Every trade the model has made, with the line that says why. Open any one to read the full thesis."
-        />
-
-        <div className="bl-hbar">
-          <div className="bl-seg bl-seg--sm" role="radiogroup" aria-label="Kind">
-            {(['all', 'meme', 'ai', 'infra', 'defi'] as const).map((k) => (
-              <button
-                key={k}
-                role="radio"
-                aria-checked={kind === k}
-                className="bl-seg__b"
-                data-on={kind === k}
-                onClick={() => setKind(k)}
-              >
-                {k === 'all' ? 'All' : KIND_LABEL[k]}
-              </button>
-            ))}
-          </div>
-          <div className="bl-seg bl-seg--sm" role="radiogroup" aria-label="Outcome">
-            {(['all', 'won', 'lost', 'open'] as Outcome[]).map((o) => (
-              <button
-                key={o}
-                role="radio"
-                aria-checked={outcome === o}
-                className="bl-seg__b"
-                data-on={outcome === o}
-                onClick={() => setOutcome(o)}
-              >
-                {o === 'all' ? 'Any outcome' : o[0].toUpperCase() + o.slice(1)}
-              </button>
-            ))}
-          </div>
-          <div className="bl-hbar__sort">
-            <span className="meta">Sort</span>
-            <div className="bl-seg bl-seg--sm" role="radiogroup" aria-label="Sort">
-              {(['date', 'return', 'size'] as SortKey[]).map((s) => (
-                <button
-                  key={s}
-                  role="radio"
-                  aria-checked={sort === s}
-                  className="bl-seg__b"
-                  data-on={sort === s}
-                  onClick={() => setSort(s)}
-                >
-                  {s === 'date' ? 'Newest' : s === 'return' ? 'Return' : 'Size'}
-                </button>
-              ))}
+          <section className="bl-paper__policies">
+            <div className="bl-unres__sech">
+              <h2 className="eyebrow">Four policies, same launches, same cost</h2>
+              <span className="meta">computed from the rows below</span>
             </div>
-          </div>
-        </div>
+            <div className="bl-tablewrap">
+              <table className="bl-table">
+                <thead>
+                  <tr>
+                    <th>Policy</th>
+                    <th>Rule</th>
+                    <th className="bl-th--r">Trades</th>
+                    <th className="bl-th--r">Mean</th>
+                    <th className="bl-th--r">Median</th>
+                    <th className="bl-th--r">Hit rate</th>
+                    <th className="bl-th--r">Pulled</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(['AGENT', 'LAUNCHPAD', 'CONTROL', 'AVOIDED'] as Policy[]).map((p) => {
+                    const s = stats[p];
+                    return (
+                      <tr key={p}>
+                        <td>
+                          <b>{POLICY_LABEL[p]}</b>
+                        </td>
+                        <td className="meta">{POLICY_RULE[p]}</td>
+                        <td className="bl-td--r num">{s ? int(s.trades) : '—'}</td>
+                        <td className="bl-td--r num" style={s ? { color: s.mean >= 0 ? 'var(--pos)' : 'var(--neg)' } : undefined}>
+                          {pct(s?.mean)}
+                        </td>
+                        <td className="bl-td--r num">{pct(s?.median)}</td>
+                        <td className="bl-td--r num">{s ? `${Math.round(s.hitRate * 100)}%` : '—'}</td>
+                        <td className="bl-td--r num">{s ? int(s.pulled) : '—'}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="bl-paper__note">
+              <b>Where the edge comes from.</b> The agent beats buy-everything because self-deployed launches
+              lose their liquidity; a model-free rule that buys every launchpad launch does about as well.
+              {headline?.agent_minus_launchpad_ci && (
+                <>
+                  {' '}
+                  Agent minus that rule: {pct(headline.agent_minus_launchpad_ci[0], 0)} to{' '}
+                  {pct(headline.agent_minus_launchpad_ci[1], 0)}, an interval that spans zero (post hoc).
+                </>
+              )}{' '}
+              The risk score has not yet been shown to add to the launch-type filter; the page says so rather
+              than claiming it.
+            </p>
+          </section>
 
-        {rows.length === 0 ? (
-          <p className="bl-hempty meta">No trades match — try another kind or outcome.</p>
-        ) : (
-          <ol className="bl-pfhist">
-            {rows.map((t) => {
-              const r = tradeReturn(t);
-              const state = isOpen(t) ? 'open' : isWin(t) ? 'won' : 'lost';
-              return (
-                <li key={t.id}>
-                  <button className="bl-hrow" onClick={() => setOpen(t)}>
-                    <span className="bl-hrow__d num">{dateShort(t.entryAt).slice(0, 6)}</span>
-                    <span className="bl-hrow__pair">
-                      <PairMark trade={t} size="md" />
-                      <KindTag kind={t.kind} />
-                    </span>
-                    <span className="bl-hrow__why" data-lore={t.kind === 'meme'}>
-                      {why(t)}
-                    </span>
-                    <span className="bl-hrow__held meta">{Math.max(1, Math.round(heldDays(t)))}d</span>
-                    <span className="bl-hrow__bar" aria-hidden="true">
-                      <span
-                        className="bl-hrow__fill"
-                        data-up={r >= 0}
-                        style={r >= 0 ? { left: '50%', width: `${barHalf(t)}%` } : { right: '50%', width: `${barHalf(t)}%` }}
-                      />
-                    </span>
-                    <span className="bl-hrow__r num" data-up={r >= 0}>
-                      {signed(r * 100)}%
-                    </span>
-                    <span className="bl-hrow__pnl num">{usd(tradePnl(t))}</span>
-                    <span className="bl-hrow__s" data-state={state}>
-                      {state}
-                    </span>
+          <section className="bl-paper__trades">
+            <div className="bl-filters">
+              <div className="bl-filters__grp">
+                <span className="eyebrow">Show</span>
+                {(['AGENT', 'AVOIDED', 'ALL'] as Filter[]).map((f) => (
+                  <button key={f} className="bl-fchip" data-on={filter === f} onClick={() => setFilter(f)}>
+                    {f === 'AGENT' ? 'Agent bought' : f === 'AVOIDED' ? 'Agent refused' : 'Every scored launch'}
                   </button>
-                </li>
-              );
-            })}
-          </ol>
-        )}
+                ))}
+              </div>
+              <div className="bl-filters__grp">
+                <span className="eyebrow">Sort</span>
+                {(['time', 'return', 'risk'] as const).map((s) => (
+                  <button key={s} className="bl-fchip" data-on={sort === s} onClick={() => setSort(s)}>
+                    {s === 'time' ? 'Newest' : s === 'return' ? 'Return' : 'Risk'}
+                  </button>
+                ))}
+              </div>
+              <span className="meta num">{int(rows.length)} trades</span>
+            </div>
+            <div className="bl-tablewrap">
+              <table className="bl-table bl-table--live">
+                <thead>
+                  <tr>
+                    <th>Launched (UTC)</th>
+                    <th>Token</th>
+                    <th>Launch type</th>
+                    <th className="bl-th--r">Risk</th>
+                    <th className="bl-th--r">Price at 6h</th>
+                    <th>Liquidity</th>
+                    <th className="bl-th--r">Return</th>
+                    <th>Agent</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.slice(0, 400).map((t) => (
+                    <TradeRow key={t.token} t={t} onOpen={() => nav(`/app/token/${t.token}`)} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </>
+      )}
 
-        <p className="bl-page__foot meta">{PORTFOLIO_NOTE}</p>
-      </section>
-
-      <TradeDossier trade={open} onClose={() => setOpen(null)} />
+      <p className="bl-page__foot meta">
+        A paper record: no money moved. One unit of notional per trade, entry at the minute-5 price, exit at
+        the hour-6 price, −100% when the pool's liquidity was gone by then, returns capped at +1,000% per
+        trade. Only predictions scored before their outcome existed count. Protocol:{' '}
+        {book.state === 'ok' ? book.value.protocol : 'DECISIONS.md, Phase 9'}.
+      </p>
     </div>
   );
 }
 
-/* ============================================================
-   The real paper agent — pre-registered (DECISIONS.md, Phase 9).
-   ============================================================ */
-
-function RealAgent() {
-  const [f, setF] = useState<ForwardRecord | null>(null);
-  const [err, setErr] = useState('');
-  useEffect(() => {
-    let alive = true;
-    const load = () =>
-      fetchFeed()
-        .then((d) => alive && (setF(d.forward), setErr('')))
-        .catch((e) => alive && setErr(String(e?.message ?? e)));
-    load();
-    const t = setInterval(load, 60_000);
-    return () => {
-      alive = false;
-      clearInterval(t);
-    };
-  }, []);
-
-  const pol = f?.paper_agent?.policies;
-  const head = pol?.headline;
-  const ready = !!head?.reportable;
-  const pct = (x?: number) => (x == null ? '—' : `${x > 0 ? '+' : ''}${(x * 100).toFixed(1)}%`);
-  const rows: [string, string][] = [
-    ['AGENT', 'Buys only launchpad launches scored under 20% risk'],
-    ['CONTROL', 'Buys every scored launch'],
-    ['AVOIDED', 'The launches the agent refused'],
-    ['LAUNCHPAD', 'Post-hoc check: every launchpad launch, no risk score'],
-  ];
-  const ci = head?.agent_minus_control_ci as [number, number] | undefined;
-  const lp = head?.agent_minus_launchpad_ci as [number, number] | undefined;
-  const capped = head?.AGENT?.capped ?? 0;
-
+function TradeRow({ t, onOpen }: { t: PaperTrade; onOpen: () => void }) {
+  const r = t.return;
   return (
-    <section className="bl-pfsec bl-pf__real">
-      <div className="bl-unres__sech">
-        <h2 className="eyebrow">The paper agent · forward record</h2>
-        <span className="bl-live__state" data-status={err ? 'error' : f ? 'live' : 'loading'}>
-          <span className="bl-live__dot" />
-          {err ? 'API not running' : f ? 'Live · paper only' : 'Connecting'}
+    <tr className="bl-tr" onClick={onOpen}>
+      <td className="meta num">{when(t.launch_ts)}</td>
+      <td className="num">{shortAddr(t.token, 8, 6)}</td>
+      <td>
+        <span className="bl-tag" data-size="sm" data-tone={t.launch_type === 'self-deployed' ? 'negative' : undefined}>
+          {t.launch_type === 'launchpad' ? 'Launchpad · locked' : 'Self-deployed'}
         </span>
-      </div>
-      <ul className="bl-launch__val meta" style={{ marginBottom: 16 }}>
-        <li>Buys at launch + 5 minutes at that price, sells at hour 6. One unit per trade, 3% round-trip cost.</li>
-        <li>If the liquidity was pulled before the exit, the trade counts as a total loss. Gains are capped at +1,000%.</li>
-        <li>
-          Success means beating buy-everything, with the interval above zero. No conclusion before{' '}
-          {f?.paper_agent?.floor ?? 100} agent trades.
-        </li>
-      </ul>
-      {err && (
-        <p className="meta">
-          The record lives in the BlockLens API, which is not answering ({err}). Start it with
-          backend/scripts/start_live.ps1.
-        </p>
-      )}
-      {head && (
-        <div className="bl-tablewrap">
-          <table className="bl-table">
-            <thead>
-              <tr>
-                <th>Policy</th>
-                <th className="bl-th--r">Trades</th>
-                <th className="bl-th--r">Mean</th>
-                <th className="bl-th--r">Median</th>
-                <th className="bl-th--r">Hit rate</th>
-                <th className="bl-th--r">At 1% / 10% cost</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(([k, desc]) => {
-                const r = head[k] ?? { trades: 0 };
-                return (
-                  <tr key={k}>
-                    <td>
-                      <span className="bl-tokencell__b">
-                        <span className="bl-tokencell__n">{k}</span>
-                        <span className="bl-tokencell__t meta">{desc}</span>
-                      </span>
-                    </td>
-                    <td className="bl-td--r num">{r.trades}</td>
-                    <td className="bl-td--r num">{ready ? pct(r.mean) : '—'}</td>
-                    <td className="bl-td--r num">{ready ? pct(r.median) : '—'}</td>
-                    <td className="bl-td--r num">{ready && r.hit_rate != null ? `${Math.round(r.hit_rate * 100)}%` : '—'}</td>
-                    <td className="bl-td--r num">
-                      {ready ? `${pct(pol?.low?.[k]?.mean)} / ${pct(pol?.high?.[k]?.mean)}` : '—'}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {!ready && (
-        <p className="meta" style={{ marginTop: 12 }}>
-          Too early: returns are hidden until the pre-registered floor is reached, so an early lucky or
-          unlucky streak cannot be read as a result.
-        </p>
-      )}
-      {ready && ci && (
-        <ul className="bl-launch__val meta" style={{ marginTop: 12 }}>
-          <li>
-            Agent minus buy-everything, 95% interval: {pct(ci[0])} to {pct(ci[1])}.{' '}
-            {ci[0] > 0
-              ? 'It beats the control, which is the pre-registered test.'
-              : 'Not beating the control; reported as it stands.'}
-          </li>
-          {lp && (
-            <li>
-              Post-hoc check, agent minus launchpad-only: {pct(lp[0])} to {pct(lp[1])}.{' '}
-              {lp[0] > 0
-                ? 'The risk score adds to the launch-type filter.'
-                : 'The interval includes zero: the edge comes from avoiding self-deployed launches, not from the risk score.'}
-            </li>
-          )}
-          <li>
-            The median trade is {pct(head?.AGENT?.median)}. {capped} of {head?.AGENT?.trades} agent trades
-            hit the +1,000% cap.{' '}
-            {(head?.AGENT?.median ?? 0) <= 0 &&
-              'The typical trade loses about the cost; any positive mean comes from those few large winners. The agent avoids losses more than it picks winners.'}
-          </li>
-        </ul>
-      )}
-    </section>
+      </td>
+      <td className="bl-td--r num" style={t.risk != null ? { color: bandColor[riskBand(t.risk)] } : undefined}>
+        {t.risk == null ? '—' : `${Math.round(t.risk * 100)}%`}
+      </td>
+      <td className="bl-td--r num">{t.price_6h_vs_cutoff == null ? '—' : `×${t.price_6h_vs_cutoff.toFixed(2)}`}</td>
+      <td className="meta">{t.pulled ? <span style={{ color: 'var(--neg)' }}>pulled</span> : 'held'}</td>
+      <td className="bl-td--r num" style={r != null ? { color: r >= 0 ? 'var(--pos)' : 'var(--neg)' } : undefined}>
+        {pct(r, 0)}
+        {t.capped ? <span className="meta"> cap</span> : ''}
+      </td>
+      <td className="meta">{t.agent ? <b>bought</b> : 'refused'}</td>
+      <td className="bl-td--act">
+        <span className="bl-rowacts">
+          <a className="bl-iconbtn" href={`https://dexscreener.com/base/${t.pool}`} target="_blank" rel="noreferrer" title="Open on DexScreener" onClick={(e) => e.stopPropagation()}>
+            <Icon.Ext size={13} />
+          </a>
+        </span>
+      </td>
+    </tr>
+  );
+}
+
+/* Two cumulative-return lines on a shared trade axis, hand-built. */
+function Equity({ agent, control }: { agent: { t: number; v: number }[]; control: { t: number; v: number }[] }) {
+  const W = 900;
+  const H = 220;
+  const P = 28;
+  const all = [...agent, ...control];
+  if (all.length < 2) return <p className="meta">Not enough resolved trades to draw yet.</p>;
+  const t0 = Math.min(...all.map((p) => p.t));
+  const t1 = Math.max(...all.map((p) => p.t));
+  const lo = Math.min(0, ...all.map((p) => p.v));
+  const hi = Math.max(0, ...all.map((p) => p.v));
+  const x = (t: number) => P + ((t - t0) / Math.max(1, t1 - t0)) * (W - P * 2);
+  const y = (v: number) => P + (1 - (v - lo) / Math.max(1e-9, hi - lo)) * (H - P * 2);
+  const path = (pts: { t: number; v: number }[]) =>
+    pts.map((p, i) => `${i ? 'L' : 'M'}${x(p.t).toFixed(1)},${y(p.v).toFixed(1)}`).join('');
+  const ticks = [lo, 0, hi].filter((v, i, arr) => arr.indexOf(v) === i);
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="bl-paper__svg" role="img" aria-label="Cumulative return of the agent against buy-everything">
+      {ticks.map((v) => (
+        <g key={v}>
+          <line x1={P} x2={W - P} y1={y(v)} y2={y(v)} stroke={v === 0 ? 'var(--rule-strong)' : 'var(--rule)'} strokeWidth="1" />
+          <text x={W - P + 4} y={y(v) + 4} fontFamily="var(--mono)" fontSize="10" fill="var(--ink-4)">
+            {v >= 0 ? '+' : ''}
+            {v.toFixed(0)}
+          </text>
+        </g>
+      ))}
+      <path d={path(control)} fill="none" stroke="var(--ink-4)" strokeWidth="1.4" />
+      <path d={path(agent)} fill="none" stroke="var(--ink)" strokeWidth="1.8" />
+      <text x={P} y={H - 8} fontFamily="var(--mono)" fontSize="10" fill="var(--ink-4)">
+        {new Date(t0).toISOString().slice(0, 10)}
+      </text>
+      <text x={W - P} y={H - 8} textAnchor="end" fontFamily="var(--mono)" fontSize="10" fill="var(--ink-4)">
+        {new Date(t1).toISOString().slice(0, 10)}
+      </text>
+    </svg>
   );
 }

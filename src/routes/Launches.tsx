@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../components/app/Icons';
+import { Drawer } from '../components/primitives/Bits';
+import { Explain } from '../components/live/Explain';
 import { bandColor, shortAddr, int } from '../lib/format';
 import { fetchFeed, fetchSymbols, riskBand, type Feed, type ForwardRecord, type Launch } from '../lib/live/launches';
+import { openScoredStream } from '../lib/live/product';
 
 /* ============================================================
    Fresh Launches — every new Base pool, judged once at minute 5.
@@ -14,7 +17,13 @@ import { fetchFeed, fetchSymbols, riskBand, type Feed, type ForwardRecord, type 
    ============================================================ */
 
 const POLL_MS = 30_000;
+const TOAST_MS = 15_000;
+const AGENT_MAX_RISK = 0.2;
 type Show = 'scored' | 'all';
+type Notify = 'off' | 'on' | 'denied' | 'unsupported';
+
+/* The agent's own buy rule: the only launches worth interrupting someone for. */
+const agentWouldBuy = (l: Launch) => l.launch_type === 'launchpad' && l.risk != null && l.risk < AGENT_MAX_RISK;
 
 function ago(iso: string): string {
   const m = (Date.now() - Date.parse(iso)) / 60_000;
@@ -29,6 +38,49 @@ export function Launches() {
   const [show, setShow] = useState<Show>('scored');
   const [names, setNames] = useState<Record<string, { symbol: string; name: string }>>({});
   const [, tick] = useState(0);
+  const [push, setPush] = useState<boolean | null>(null);
+  const [toasts, setToasts] = useState<Launch[]>([]);
+  const [why, setWhy] = useState<Launch | null>(null);
+  const [notify, setNotify] = useState<Notify>(() =>
+    typeof Notification === 'undefined' ? 'unsupported' : Notification.permission === 'granted' ? 'on' : Notification.permission === 'denied' ? 'denied' : 'off'
+  );
+  const notifyRef = useRef(notify);
+  notifyRef.current = notify;
+  const reload = useRef<() => void>(() => undefined);
+
+  /* Push: a newly scored launch arrives over server-sent events. The feed
+     is re-read, a toast appears, and, if allowed, a browser notification
+     for launches the paper agent itself would buy. */
+  useEffect(() => {
+    const close = openScoredStream(
+      (l) => {
+        reload.current();
+        setToasts((t) => [l, ...t.filter((x) => x.token !== l.token)].slice(0, 4));
+        window.setTimeout(() => setToasts((t) => t.filter((x) => x.token !== l.token)), TOAST_MS);
+        if (notifyRef.current === 'on' && agentWouldBuy(l)) {
+          try {
+            new Notification('BlockLens · low-risk launchpad launch', {
+              body: `${shortAddr(l.token, 8, 6)} · risk ${Math.round((l.risk ?? 0) * 100)}% · ${l.buyers_by_cutoff ?? 0} buyers by minute 5`,
+              tag: l.token,
+            });
+          } catch {
+            /* notifications are a convenience */
+          }
+        }
+      },
+      (ok) => setPush(ok)
+    );
+    return close;
+  }, []);
+
+  const askNotify = useCallback(() => {
+    if (typeof Notification === 'undefined') return;
+    if (notify === 'on') {
+      setNotify('off');
+      return;
+    }
+    Notification.requestPermission().then((p) => setNotify(p === 'granted' ? 'on' : p === 'denied' ? 'denied' : 'off'));
+  }, [notify]);
 
   useEffect(() => {
     let alive = true;
@@ -48,6 +100,7 @@ export function Launches() {
         if (alive) setErr(e instanceof Error ? e.message : String(e));
       }
     };
+    reload.current = load;
     load();
     const t = setInterval(load, POLL_MS);
     const c = setInterval(() => tick((n) => n + 1), 15_000);
@@ -97,8 +150,43 @@ export function Launches() {
           <span className="meta num">
             {feed?.last_run ? `Scanned ${ago(feed.last_run)} ago` : '—'}
           </span>
+          <span className="bl-live__state" data-status={push ? 'live' : push === false ? 'error' : 'loading'} title="Server-sent events from /api/stream">
+            <span className="bl-live__dot" />
+            {push ? 'Push on' : push === false ? 'Push off' : 'Push…'}
+          </span>
+          {notify !== 'unsupported' && (
+            <button
+              className="bl-fchip"
+              data-on={notify === 'on'}
+              disabled={notify === 'denied'}
+              onClick={askNotify}
+              title={
+                notify === 'denied'
+                  ? 'Notifications are blocked for this site in the browser'
+                  : 'Browser notification when a launchpad launch scores under the agent ceiling'
+              }
+            >
+              {notify === 'on' ? 'Notifying' : notify === 'denied' ? 'Notifications blocked' : 'Notify me'}
+            </button>
+          )}
         </div>
       </header>
+
+      {toasts.length > 0 && (
+        <div className="bl-toasts" role="status" aria-live="polite">
+          {toasts.map((l) => (
+            <button key={l.token} className="bl-toast" data-buy={agentWouldBuy(l)} onClick={() => setWhy(l)}>
+              <span className="bl-toast__k eyebrow">Just scored</span>
+              <span className="bl-toast__t num">{names[l.token]?.symbol || shortAddr(l.token, 8, 6)}</span>
+              <span className="bl-toast__d meta">
+                {l.launch_type === 'launchpad' ? 'launchpad' : 'self-deployed'} · risk{' '}
+                <b style={{ color: bandColor[riskBand(l.risk ?? 0)] }}>{Math.round((l.risk ?? 0) * 100)}%</b>
+                {agentWouldBuy(l) ? ' · agent would buy' : ''}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {feed && (
         <section className="bl-launch__model">
@@ -171,16 +259,17 @@ export function Launches() {
               <th className="bl-th--r">Buyers by 5m</th>
               <th className="bl-th--r">Run-up by 5m</th>
               <th>Status</th>
+              <th>Why</th>
               <th />
             </tr>
           </thead>
           <tbody>
             {rows.map((l) => (
-              <Row key={l.token} l={l} name={names[l.token]} onOpen={() => nav(`/app/token/${l.token}`)} />
+              <Row key={l.token} l={l} name={names[l.token]} onOpen={() => nav(`/app/token/${l.token}`)} onWhy={() => setWhy(l)} />
             ))}
             {!rows.length && (
               <tr>
-                <td colSpan={9} className="bl-live__empty meta">
+                <td colSpan={10} className="bl-live__empty meta">
                   {err
                     ? `The BlockLens API is not answering (${err}). Start it with: uvicorn blocklens.api.app:app --port 8000`
                     : !feed
@@ -200,11 +289,47 @@ export function Launches() {
         this token, and launch behaviour on Base has shifted more than once this year. Liquidity-pull
         risk is read from launch type, not from this score.
       </p>
+
+      <Drawer
+        open={!!why}
+        onClose={() => setWhy(null)}
+        eyebrow="Why this score"
+        title={why ? <span className="num">{names[why.token]?.symbol || shortAddr(why.token, 10, 6)}</span> : ''}
+        width={520}
+      >
+        {why && (
+          <div className="bl-whydrawer">
+            <div className="bl-unres__grid">
+              <span className="bl-stat">
+                <span className="bl-stat__l eyebrow">Buyer-loss risk</span>
+                <span className="bl-stat__v num" style={{ color: bandColor[riskBand(why.risk ?? 0)] }}>
+                  {why.risk == null ? '—' : `${Math.round(why.risk * 100)}%`}
+                </span>
+                <span className="bl-stat__s meta">scored {why.scored_at ? `${ago(why.scored_at)} ago` : ''}</span>
+              </span>
+              <span className="bl-stat">
+                <span className="bl-stat__l eyebrow">Launch type</span>
+                <span className="bl-stat__v num">{why.launch_type === 'launchpad' ? 'Launchpad' : 'Self-deployed'}</span>
+                <span className="bl-stat__s meta">{why.launch_type === 'launchpad' ? 'liquidity locked' : 'liquidity withdrawable'}</span>
+              </span>
+            </div>
+            {why.why ? <Explain why={why.why} /> : <p className="meta">No anatomy was recorded for this launch.</p>}
+            <div className="bl-whydrawer__acts">
+              <button className="bl-fchip" onClick={() => nav(`/app/token/${why.token}`)}>
+                Open token page
+              </button>
+              <a className="bl-fchip" href={`https://dexscreener.com/base/${why.pool}`} target="_blank" rel="noreferrer">
+                DexScreener
+              </a>
+            </div>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }
 
-function Row({ l, name, onOpen }: { l: Launch; name?: { symbol: string; name: string }; onOpen: () => void }) {
+function Row({ l, name, onOpen, onWhy }: { l: Launch; name?: { symbol: string; name: string }; onOpen: () => void; onWhy: () => void }) {
   const band = l.risk == null ? null : riskBand(l.risk);
   return (
     <tr className="bl-tr" onClick={onOpen}>
@@ -260,6 +385,25 @@ function Row({ l, name, onOpen }: { l: Launch; name?: { symbol: string; name: st
             : `${l.run_up_by_cutoff.toFixed(l.run_up_by_cutoff < 10 ? 2 : 0)}×`}
       </td>
       <td className="meta">{l.status === 'scored' ? 'Scored at minute 5' : l.status.replace('not scored: ', '')}</td>
+      <td>
+        {l.why ? (
+          <button
+            className="bl-whybtn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onWhy();
+            }}
+            title="The score's anatomy"
+          >
+            {l.why.drivers.slice(0, 3).map((d) => (
+              <span key={d.feature} className="bl-whybtn__dot" data-dir={d.direction} />
+            ))}
+            why
+          </button>
+        ) : (
+          <span className="meta">—</span>
+        )}
+      </td>
       <td className="bl-td--act">
         <span className="bl-rowacts">
           <a

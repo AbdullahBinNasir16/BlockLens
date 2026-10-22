@@ -28,7 +28,7 @@ export function RoadmapSection() {
   return (
     <Section
       id="roadmap"
-      index="08"
+      index="05"
       title="Roadmap"
       sub="What was promised, what landed, and what slipped."
       right={

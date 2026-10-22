@@ -25,7 +25,7 @@ function pointAt(series: number[], i: number) {
 }
 
 const FINDINGS_A = [
-  { i: 7, text: 'KOL entry · day 2', dx: 14, dy: -30 },
+  { i: 7, text: 'Influencer entry · day 2', dx: 14, dy: -30 },
   { i: 20, text: 'dev history verified', dx: -8, dy: -38 },
 ];
 const FINDINGS_B = [

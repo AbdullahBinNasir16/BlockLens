@@ -1,5 +1,27 @@
 /* The live launch feed, from the BlockLens API (backend/blocklens/api). */
 
+/** One term of a score's anatomy (backend/blocklens/live/explain.py). */
+export interface Driver {
+  feature: string;
+  label: string;
+  value: number;
+  display: string;
+  /** log-odds added to the base rate; positive raises the risk */
+  contribution: number;
+  direction: 'raises' | 'lowers' | 'neutral';
+}
+
+export interface Explanation {
+  base_rate: number;
+  base_logit: number;
+  logit: number;
+  risk: number;
+  drivers: Driver[];
+  /** what every feature outside `drivers` contributed, together */
+  rest: number;
+  unit: string;
+}
+
 export interface Launch {
   token: string;
   pool: string;
@@ -14,6 +36,7 @@ export interface Launch {
   buyers_by_cutoff: number | null;
   run_up_by_cutoff: number | null;
   scored_at: string | null;
+  why?: Explanation | null;
 }
 
 export interface ModelMeta {
@@ -47,6 +70,8 @@ export interface ForwardRecord {
     pr_auc_minus_base_rate_ci?: [number, number];
     flagged_at_0_5?: number;
     precision_at_0_5?: number | null;
+    /** ten-bin calibration: mean predicted against observed loss rate */
+    reliability?: { bin: string; n: number; mean_predicted: number; observed: number }[];
     reportable?: boolean;
   };
   launch_type: Record<string, Record<string, { resolved: number; pulled: number; rate: number }>>;
