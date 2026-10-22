@@ -1,0 +1,35 @@
+\chapter{Detailed Test Cases}
+\label{app:tests}
+\section{Backend test modules}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.3\textwidth}p{0.60\textwidth}}
+\toprule
+Module & What it proves\\
+\midrule
+\code{test_write_gate.py} & lookahead refused for the whole batch; idempotent upserts (\code{xmax = 0}); coalescing of nullable columns; batching\\
+\code{test_budget.py} & token bucket rates and bursts; per-run ceiling stops cleanly; monthly ledger persists\\
+\code{test_decode.py} & keccak topics against the canonical \code{Transfer} topic; log decoding for V3 and V4\\
+\code{test_sources.py} & recorded RPC and DexScreener fixtures; retries and timeouts; unrouted request is an error\\
+\code{test_label_rules.py}, \code{test_label_fixtures.py}, \code{test_label_build.py} & each criterion in isolation; verdicts on recorded series; the age gate; UNCLEAR on poor coverage\\
+\code{test_reserve_method.py} & the V4 token-side reserve equals the net flow of stored transfers\\
+\code{test_graph.py} & edge construction; disperser vs infrastructure split; Louvain determinism across three runs\\
+\code{test_model.py} & grouped vs random split on fingerprinted synthetic data; feature matrix construction\\
+\code{test_phase5.py} & window arithmetic; family assignment; coarse pre-screen\\
+\code{test_explain.py} & additivity to the model's logit; ranking; labels; display units\\
+\code{test_alerts.py} & disabled by default; the agent's rule; the Telegram request; failure recorded\\
+\code{test_api.py}, \code{test_product_api.py} & validation record on every feed response; 400 on junk; watchlist and history round trips; empty-log health and book; stream handshake\\
+\bottomrule
+\end{tabular}
+\caption{Backend test modules (161 cases).}
+\end{table}
+\section{Frontend unit tests}
+\code{format.test.ts} (formatters), \code{screener.test.ts} (acceptance query, funnel monotonicity, case-insensitive contracts, fail-closed check ids, quantifiers), \code{projects/index.test.ts} (registry resolution), \code{live/launches.test.ts} (risk bands), \code{live/paper.test.ts} (policies, stats, equity, capped trades), \code{live/health.test.ts} (reason totals, stacking order, drift series): 33 cases.
+\section{End-to-end tests}
+\code{e2e/smoke.spec.ts}: landing; case-study resolution; unknown-address resolution; Fresh Launches with the validation record and live state; Model Health; Paper Agent; watchlist round trip through the API. Run in Chromium against \code{vite preview} and the API on a PostgreSQL service.
+\section{Example output}
+\begin{lstlisting}
+Backend . pytest against PostgreSQL   161 passed in 90.50s
+Frontend . typecheck, test, build     Test Files 6 passed (6)  Tests 33 passed (33)
+End to end                            7 passed (10.9s)
+\end{lstlisting}

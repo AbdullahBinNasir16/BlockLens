@@ -1,0 +1,125 @@
+\chapter{Testing and Early Validation}
+\label{ch:test}
+
+\section{Testing Strategy}
+Three layers, each with a rule that makes a passing test mean something. \textbf{Unit and API tests} run with the network transport blocked for the whole backend suite, so a test that leaks a real call fails instead of passing against a live API; store tests run on a real PostgreSQL because the idempotency proof depends on PostgreSQL-specific SQL. \textbf{End-to-end tests} drive the built bundle in a real browser against the real API on a PostgreSQL service. \textbf{Validation} of the model is pre-registered: baselines, metrics, floors and success criteria are written before the data is seen, and the forward test logs every prediction before its outcome exists.
+
+\section{Test Levels and Techniques}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.14\textwidth}p{0.36\textwidth}p{0.34\textwidth}}
+\toprule
+Level & Technique & Where\\
+\midrule
+Unit (backend) & recorded fixtures via \code{httpx.MockTransport}; property-style checks (additivity, idempotency, determinism) & \code{backend/tests/}, 158 functions\\
+Unit (frontend) & pure functions with fixed inputs; the README's acceptance query as a test & \code{src/**/*.test.ts}, 33 cases\\
+API & FastAPI \code{TestClient} with a rolled-back session injected by dependency override & \code{test_api.py}, \code{test_product_api.py}\\
+End to end & Playwright, Chromium, real API & \code{e2e/smoke.spec.ts}, 7 cases\\
+Static & TypeScript strict mode, \code{noUnusedLocals}; \code{DeprecationWarning} as error in pytest & CI\\
+Security & \code{npm audit}, \code{pip-audit}, Trivy on images & CI, CD\\
+Data integrity & SQL checks on the stored rows: 0 transfers after \code{as_of_ts}, 0 before creation, byte-identical re-ingest & Phase 1 acceptance\\
+Validation & held-out random cohort, out-of-time split, permutation nulls, family bootstrap, pre-registered checkers, forward record & \code{backend/reports/}\\
+\bottomrule
+\end{tabular}
+\caption{Test levels and techniques.}
+\end{table}
+
+\section{Test Cases}
+Selected cases; the full list is in Appendix~\ref{app:tests}.
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.08\textwidth}p{0.46\textwidth}p{0.3\textwidth}p{0.08\textwidth}}
+\toprule
+ID & Case & Expected & Result\\
+\midrule
+T-01 & Write a batch with one row later than \code{as_of_ts} & \code{LookaheadError}, nothing written & pass\\
+T-02 & Re-ingest a complete token with checkpoints deleted & zero inserts, same MD5 over rows & pass\\
+T-03 & Enrichment runs after chain ingest & \code{decimals} kept (coalesce), name filled & pass\\
+T-04 & Louvain three times on the same graph & identical assignments & pass\\
+T-05 & Explain three feature rows & terms + base = model logit within 1e-3; rest = 0 & pass\\
+T-06 & Notifier with no configuration & \code{send} returns False, no network & pass\\
+T-07 & Notifier with a mock transport & POST to \code{api.telegram.org} with chat id and risk & pass\\
+T-08 & \code{POST /api/watchlist} twice, then \code{DELETE} & created then updated; label coalesced; 404 on second delete & pass\\
+T-09 & \code{GET /api/stream?ticks=1} & \code{event: hello} then \code{: ping} & pass\\
+T-10 & \code{GET /api/token/not-an-address} & 400 & pass\\
+T-11 & Acceptance screener query over the seeded corpus & exactly 8 wallets, each with $\geq 2$ matched projects & pass\\
+T-12 & Unknown check id in a screener query & zero matches (fails closed) & pass\\
+T-13 & Paper book stats on a four-trade fixture & mean, median, hit rate, pulled count as computed by hand & pass\\
+T-14 & Browser: paste an unknown address & lands on the live token page, not a profile & pass\\
+T-15 & Browser: watchlist round trip through the API & row visible, then removed & pass\\
+\bottomrule
+\end{tabular}
+\caption{Selected test cases.}
+\end{table}
+
+\section{Test Results}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{lrrl}
+\toprule
+Suite & Cases & Result & Where\\
+\midrule
+Backend pytest (PostgreSQL service) & 161 & 161 passed & CI, PR \#2 and later\\
+Frontend vitest & 33 & 33 passed, coverage floor met & CI\\
+Playwright end to end & 7 & 7 passed & local and CI (PR \#4)\\
+TypeScript strict typecheck & -- & 0 errors & CI\\
+\bottomrule
+\end{tabular}
+\caption{Test results at the time of writing (22 October 2026).}
+\end{table}
+
+\section{Acceptance Testing / Validation}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.3\textwidth}p{0.2\textwidth}p{0.2\textwidth}p{0.22\textwidth}}
+\toprule
+Measurement & BlockLens & Baseline & Set\\
+\midrule
+Liquidity-pull: self-deployed pulled & 109 of 113 & -- & EVAL random cohort\\
+Liquidity-pull: launchpad pulled & 0 of 74 & -- & EVAL random cohort\\
+Buyer-loss PR-AUC, in period & 0.833 & 0.370 (checker) & CAL, 179 tokens, base rate 0.36\\
+Buyer-loss PR-AUC, out of time & 0.758 & 0.331 & Mar--Apr, trained before Mar\\
+Regime check May--Jul & 5 flagged of 78, all 3 losses caught & -- & few examples\\
+Forward resolved predictions & 850 & floor 200 / 20 losses (14 so far) & since 19 Oct\\
+Paper agent mean return & $+49.3\%$ (315 trades) & $-33.4\%$ control (832) & CI $+55\%$ to $+110\%$\\
+Self-deployed pulled within a day (forward) & 86\% & 0.4\% launchpad & forward\\
+\bottomrule
+\end{tabular}
+\caption{Validation results. Sources: \codex{model\_card\_v2.md}, \codex{model\_card\_phase6.md}, \codex{paper\_agent.md}.}
+\end{table}
+The paper agent's pre-registered success criterion is met. The buyer-loss forward record is below its floor for losses and no forward accuracy claim is made; the page shows the counts and says ``too early''.
+
+\section{Edge and Failure Cases}
+\begin{itemize}
+  \item A token minting $10^{30}$ units overflowed \code{NUMERIC(38,18)} and a dust price rounded to zero in \code{NUMERIC(38,12)}: both columns are now unconstrained.
+  \item The first failed run left no record because the bookkeeping wrote to an aborted session; the runner now rolls back before recording a failure.
+  \item A stopped database made the suite hang rather than skip; the engine fixture now has a 3-second connect timeout.
+  \item A V4 pool keyed by id never matched a transfer counterparty, silently emptying a join and nearly producing a false ``no co-movement'' finding.
+  \item A 107,000-row upsert did not finish; writes are batched at 5,000.
+  \item RPC 403/429: PublicNode rate-banned a probe after four minutes; the budget module keeps the project under measured limits.
+  \item Outage: late-due launches are logged as missed; a catch-up backlog was found to delay live launches and was removed.
+\end{itemize}
+
+\section{Defects and Corrective Actions}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.4\textwidth}p{0.51\textwidth}}
+\toprule
+Defect & Correction\\
+\midrule
+Phase 4 model learned the label (64/85 leaking features; total censoring) & model withdrawn; 5-minute window; redesigned sampling; family splits\\
+\code{SET col = excluded.col} erased correct decimals on enrichment & nullable columns coalesce; caught by a test\\
+Age decided by DexScreener timestamp let a 369-day-old token through & age by block number\\
+Failed \code{balanceOf} swallowed, giving a confident verdict on 12/112 samples & failures recorded; $<80\%$ usable $\to$ UNCLEAR\\
+Prior-shift correction made the logistic model worse on EVAL & reported, not dropped; boosting with Platt scaling shipped\\
+Scoring a 38-hour backlog delayed live launches & launches past their 6-hour mark are logged as missed, never scored\\
+Stacked pull requests ran no CI (trigger limited to \code{main}/\code{develop}) & CI runs on every pull request and on feature branches\\
+Playwright strict-mode locator collisions (two ``Open Workspace'' links; name in table and sidebar) & locators scoped to the navigation and the table\\
+\code{pip-audit} in CI flagged twelve known vulnerabilities in Starlette 0.48, pinned by FastAPI 0.118 & FastAPI upgraded to 0.159 (Starlette 1.9); suite unchanged; re-audit clean. The gate found a real issue on its first run\\
+\bottomrule
+\end{tabular}
+\caption{Defects found and corrected.}
+\end{table}
+
+\section{Current Validation Status}
+All automated suites pass in CI. The model's held-out and out-of-time validation is complete and shipped with every score. The forward test is running; its liquidity-pull half is already decisive forward (86\% vs 0.4\% within a day), its buyer-loss half awaits its floor, and the paper agent has passed its floor with a positive, robust margin whose source the product names honestly.

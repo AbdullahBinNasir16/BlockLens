@@ -59,8 +59,8 @@ either built on top of that or removed.
 | M2 | **Launch risk signals**: launch type + buyer-loss model, with validation (Phases 5, 6) | Abdullah | done |
 | M3 | **Live scoring API and Fresh Launches feed** (Phase 7) | Abdullah | done |
 | M4 | **Forward validation and paper agent** (Phases 8, 9) | Abdullah | running; first 7-day liquidity results due 2026-10-26 |
-| M5 | **CI/CD and delivery**: GitHub Actions CI for both halves, container images on GHCR, production compose, branch protection, PR process | Shahmir | pipeline added; branch protection to switch on |
-| M6 | **Token page for any Base contract**: live market and security data (DexScreener, GeckoTerminal, GoPlus) merged with the BlockLens signal when the token was tracked at launch | both | exists as *Unresearched token* page; becomes the single "investigate" flow (3.2) |
+| M5 | **CI/CD and delivery**: GitHub Actions CI for both halves (unit, API, audit, end-to-end), container images on GHCR with a vulnerability scan, production compose, branch protection, PR process | Shahmir | pipeline complete; branch protection to switch on |
+| M6 | **Product around the signal**: token page for any Base contract (live market and security data merged with the BlockLens signal and its anatomy), push alerts, the Paper Agent page, Model Health, watchlist and history | both | done (Phase 10) |
 
 ### 3.2 In scope for FYP-2
 
@@ -104,13 +104,15 @@ meaningful branches and automated tests, and the report.
    pools arriving and being scored at minute 5, open one, show the forward
    record and the paper-agent panel. Then `/api/launches` raw, to show the
    validation record travels with every response.
-2. **Pipeline**: the CI run on this pull request (frontend typecheck, 32
-   unit tests, build; backend 146 tests against PostgreSQL), the CD run on
-   `main` publishing two images, the branch graph `main ← develop ←
+2. **Pipeline**: the CI runs on pull requests #1 to #5 (frontend typecheck,
+   33 unit tests with a coverage floor, build; backend 161 tests against
+   PostgreSQL; dependency audits; 7 browser end-to-end tests), the CD run
+   publishing and scanning two images, the branch graph `main ← develop ←
    feature/*`, and branch protection on both.
 3. **Tests**: `npm test` and `pytest` locally, the same as CI.
-4. **Report**: the FYP-1 mid report in the FAST template, with this scope as
-   chapter 1.6 and `DECISIONS.md` as the evidence base for chapters 2 and 5.
+4. **Report**: the FYP-1 mid report in the FAST template under `report/`,
+   compiled by the `Report` workflow, with this scope as section 1.6 and
+   `DECISIONS.md` as the evidence base for chapters 2 and 5.
 
 ## 6. Branch protection (to be switched on by the repository owner)
 
@@ -123,7 +125,7 @@ and do not allow bypassing. This needs admin on the repository.
 
 | When | Milestone |
 |---|---|
-| 2026-10-22 | CI/CD, tests and this scope merged to `develop` |
+| 2026-10-22 | CI/CD, tests, Phase 10, product rework and the report draft in pull requests #1 to #5 |
 | 2026-10-26 | first 7-day liquidity results on the forward record |
 | before the mid evaluation | `develop` → `main` release `v0.1.0`; branch protection on; report submitted |
 | FYP-1, after the mid evaluation | M7 (single investigation flow) and the product cuts in 3.3 |

@@ -1,0 +1,87 @@
+\documentclass{fast-nuces-bs}
+
+\usepackage{mathptmx}% Times Roman font
+\usepackage[T1]{fontenc}
+\usepackage{sectsty}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+\usepackage{listings}
+\usepackage{xurl}
+\usepackage{adjustbox}
+
+% Items the team must complete from their own records before submission are
+% printed in red so none is missed.
+\newcommand{\todo}[1]{\textcolor{red}{[#1]}}
+\DeclareUrlCommand\code{\urlstyle{tt}}
+\newcommand{\codex}[1]{\texttt{#1}}  % for captions and other moving arguments
+\setlist{nosep}
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{4pt}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single,columns=fullflexible,keepspaces=true}
+
+% Information about the project
+% -----------------------------------------------------------------------------
+\department{FAST School of Computing}
+\faculty{Computer Science}
+\degreeyear{2026}
+\degreemonth{October}
+\degreename{Computer Science}
+\campuscity{Islamabad}
+\authorone{Abdullah Bin Nasir}{\todo{roll number}}
+\authortwo{Shahmir Khan Lughmani}{\todo{roll number}}
+\authorthree{\todo{Third member, or delete this line}}{\todo{roll number}}
+\supervisor{\todo{Mr./Ms./Dr. Supervisor Name}}
+\sessionduration{2023-2027}
+\cosupervisor{\todo{Co-supervisor, or delete this line}}
+\deanname{Dr. Dean Computing}
+\directorname{Dr. Director of the Campus}
+\hodname{Dr. Head of Computer Science Department}
+\fypcoordinatorname{Name of FYP Coordinator}
+\title{BlockLens: Launch-Risk Intelligence for Base Token Launches}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\cleardoublepage
+\pagenumbering{roman}
+\input{chapters/01_students_submission}
+\input{chapters/02_anti_plagiarism}
+\input{chapters/03_authors_declaration}
+\input{chapters/04_abstract}
+\input{chapters/05_acknowledgments}
+\input{chapters/06_executive_summary}
+\input{chapters/07_abbreviations}
+
+\cleardoublepage
+\pagenumbering{arabic}
+\input{chapters/chapter1_introduction}
+\input{chapters/chapter2_research}
+\input{chapters/chapter3_iteration_plan}
+\input{chapters/chapter4_requirements}
+\input{chapters/chapter5_design}
+\input{chapters/chapter6_iteration1}
+\input{chapters/chapter8_testing}
+\input{chapters/chapter9_development_evidence}
+\input{chapters/chapter10_fyp2_plan}
+\input{chapters/conclusion}
+
+\appendix
+\input{chapters/appendix_action_register}
+\input{chapters/appendix_requirements}
+\input{chapters/appendix_test_cases}
+\input{chapters/appendix_repository}
+\input{chapters/appendix_diagrams}
+\input{chapters/appendix_meetings}
+
+\bibliographystyle{plainnat}
+\bibliography{references/references}
+\end{document}

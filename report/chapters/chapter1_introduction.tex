@@ -1,0 +1,100 @@
+\chapter{Introduction and Project Vision}
+
+\section{Project Overview}
+BlockLens is a launch-risk intelligence system for token launches on Base, an Ethereum layer-2 blockchain. It watches the chain directly, discovers every new Uniswap V3 and V4 liquidity pool from the chain's own events, and judges each launch once, at launch plus five minutes, with two signals: the \emph{launch type}, which says who can withdraw the pool's liquidity, and a \emph{buyer-loss risk}, the modelled probability that a purchase at that moment is worth half or less six hours later. The verdict, its exact anatomy, and a public running record of how often past verdicts were right are served by a FastAPI service to a React web application. Around the signal the product offers push alerts, a paper-trading agent that tests the signal forward, a monitoring page, a watchlist and an investigation history.
+
+The system has two halves in one repository: a Python backend (\code{backend/}) that ingests, labels, samples, trains, scores live and serves; and a TypeScript front end (\code{src/}) that renders what the backend can defend and nothing it cannot. Both are built, tested and published by a GitHub Actions pipeline.
+
+\section{Problem Statement}
+On Base in 2026, Uniswap V4 alone emits about 3,100 pool-initialisation events a day, of which roughly 128 tokens a day are ever traded~\cite{decisions}. Of a random cohort of launches that were still alive five minutes after launch, 58\% had their liquidity pulled within ninety days, and among the launches that were not pulled, 93\% decayed to nothing. A retail buyer sees a new token on an aggregator minutes to hours after launch, with a price chart and no judgement. The facts that decide the outcome, in particular whether the deployer holds withdrawable liquidity, are readable on chain at minute zero, but no free tool reads them, states a verdict, explains it, and keeps score of its own accuracy.
+
+The problem, stated as one sentence: \emph{given only what is observable on chain in a token's first five minutes, say how likely a buyer is to lose, say why, and prove it forward.}
+
+\section{Problem Context and Motivation}
+Three groups of people meet this problem. Retail traders, who buy new launches and carry the losses. Analysts and researchers, who want a reproducible, labelled record of what happened to launches and why. And platform operators, who need such a system to run unattended on free infrastructure and to report on itself.
+
+The motivation is partly that the existing tools fall into three unsatisfying groups (Chapter~\ref{ch:research}): aggregators that show market data without judgement; static checkers that read contract code and miss the dominant failure mode on Base, which is behavioural rather than syntactic; and paid wallet-labelling services. It is also that the question is scientifically interesting: an earlier version of this project, and some of the literature, held that the structure of the wallet graph around a launch predicts its outcome. Measuring that claim properly, on a correctly sampled population with leakage and censoring controlled, was itself a contribution, and its answer (Section~\ref{sec:findings}) was not the expected one.
+
+\section{Project Vision}
+A trader opens BlockLens and sees every launch on Base judged within minutes of its birth, by a model whose validation record is printed beside every score, whose every verdict is logged before the outcome exists, and whose paper agent shows in public what the signal would have earned. Nothing on screen is invented; where a number is illustrative it says so.
+
+\section{Project Objectives}
+\begin{enumerate}[label=\textbf{O\arabic*}]
+  \item Build an ingestion and labelling pipeline for Base on free, keyless sources, capable of a random cohort of at least 450 alive launches with outcome labels at 90 days. \emph{Achieved: 458 random-cohort tokens, 1,066 alive tokens in total.}
+  \item Train and validate at least one launch-time signal that beats a pre-registered rule checker on a held-out, out-of-time set. \emph{Achieved: launch type, and buyer-loss PR-AUC 0.83 vs 0.37 in period, 0.76 vs 0.33 out of time.}
+  \item Score every new Base launch live, within one minute of its five-minute mark, and serve it through an API with its validation record. \emph{Achieved; median scoring delay is reported on the Model Health page.}
+  \item Keep a pre-registered forward record and report nothing below a floor of 200 resolved predictions with 20 losses. \emph{Running: 850 resolved, 14 losses as of 21 October 2026.}
+  \item Explain every score exactly, as additive per-feature terms that sum to the model's own output. \emph{Achieved, asserted by a unit test to 1e-3.}
+  \item Deliver both halves through a CI/CD pipeline with automated unit, API and end-to-end tests, protected branches and published artefacts. \emph{Achieved: 161 backend, 33 frontend and 7 end-to-end tests; images on GHCR.}
+\end{enumerate}
+
+\section{Project Scope}
+\label{sec:scope}
+The agreed scope is recorded in the repository as \code{docs/FYP1_SCOPE.md} and is summarised here.
+
+\textbf{In scope, FYP-1 (core module).}
+\begin{itemize}
+  \item M1 Ingestion and labelling pipeline (Phases 1, 2, 5 of the decision log).
+  \item M2 Launch risk signals: launch type and the buyer-loss model, with validation (Phases 5, 6).
+  \item M3 Live scoring API and the Fresh Launches feed (Phase 7), with score explanations and push alerts (Phase 10).
+  \item M4 Forward validation and the paper agent (Phases 8, 9), served as the Paper Agent page.
+  \item M5 CI/CD and delivery: GitHub Actions for both halves, container images, production compose, branch process.
+  \item M6 Token page for any Base contract: live market and security data merged with the BlockLens signal; watchlist and history; model health.
+\end{itemize}
+
+\textbf{In scope, FYP-2.} M7 one investigation flow; M8 richer persistence; M9 an early-buyer wallet screener over stored transfers, replacing the generated corpus; M10 a model retrained on the forward record; M11 hosting.
+
+\textbf{Out of scope, and why.} KOL and social scoring need paid reads of X posts and there is no keyless substitute. A simulated portfolio was removed because invented trades beside a real record invite the question ``which of these is real''. Hand-authored wallet, narrative and social sections of the three case-study profiles were removed for the same reason. Chains other than Base are unmeasured. Accounts and multi-user state are deferred: the product is single-user by design at this stage.
+
+\section{Project Modules}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.05\textwidth}p{0.3\textwidth}p{0.52\textwidth}}
+\toprule
+\# & Module & Responsibility\\
+\midrule
+M1 & Ingestion and labelling & Discover pools from chain events; backfill transfers and swaps in 1,000-block windows through a write gate that forbids lookahead; sample reserves and prices at historical blocks; assign RUG / FAILED / SURVIVED / NEVER\_LAUNCHED with a sensitivity analysis.\\
+M2 & Signals & Case-control sampling with operator families; 23 token-level features at minute 5; launch-type rule; gradient-boosted buyer-loss model with calibration and out-of-time validation.\\
+M3 & Live scoring and API & A scorer loop that discovers, waits for minute 5, backfills, scores, explains (tree SHAP) and alerts; FastAPI endpoints for the feed, token lookup, explanations, stream and health.\\
+M4 & Forward record and paper agent & Append-only prediction log; outcomes resolved at hour 6 and days 1/7/30/90; pre-registered metrics and floors; four trading policies computed from the same rows.\\
+M5 & Delivery & CI (typecheck, unit, API, audit, end-to-end), CD (GHCR images, release, scan, deploy hook), Dockerfiles, compose, branch protection, PR template.\\
+M6 & Product surfaces & Fresh Launches, token page, Paper Agent, Model Health, Trending, Watchlist, History, three labelled case studies, a Sample-labelled wallet screener.\\
+\bottomrule
+\end{tabular}
+\caption{Project modules and their responsibilities.}
+\end{table}
+
+\section{Stakeholders and User Classes}
+\begin{itemize}
+  \item \textbf{Retail trader.} Wants a verdict on a launch in seconds, a reason, and evidence the verdict is worth anything. Uses Fresh Launches, the token page, alerts and the watchlist.
+  \item \textbf{Analyst or researcher.} Wants the labelled dataset, the model cards, the forward record and the decision log; reproducibility matters more than speed.
+  \item \textbf{Operator.} Runs the stack; needs health, outages and drift visible, and a deployment that survives a reboot.
+  \item \textbf{Supervisor and evaluators.} Need to see process: branches, reviews, tests, measured claims, honest negative results.
+\end{itemize}
+
+\section{Success Criteria}
+\begin{enumerate}
+  \item Every new Base Uniswap pool appears in the feed within one scan interval (60 s) and is scored or given a reason within one minute of its five-minute mark.
+  \item Each signal's validation record is served with every score, and no score is shown without it.
+  \item The forward record's success criteria, fixed on 19 October 2026 before any outcome, are met or the failure is reported: forward PR-AUC above the base rate with a bootstrap interval above zero, and a self-deployed 7-day pull rate above launchpad's.
+  \item The paper agent's mean return beats the buy-everything control with the interval above zero. \emph{Met on 21 October 2026.}
+  \item A pull request cannot merge into \code{develop} or \code{main} with a failing check.
+\end{enumerate}
+
+\section{Constraints and Assumptions}
+\begin{itemize}
+  \item \textbf{Unpaid work only.} No API key and no paid plan anywhere in the pipeline; the metered resource is politeness toward public endpoints, enforced by token buckets.
+  \item \textbf{One chain.} Base runs at exactly 2.00 s per block (measured), so block numbers are the clock; every source, label and model is Base-specific.
+  \item \textbf{Measured limits.} The keyless gateway caps \code{eth_getLogs} at 1,000 blocks and 20,000 results; archive \code{eth_call} works at least 365 days back; DexScreener allows 60 requests a minute.
+  \item \textbf{Single user.} No accounts; product state has no owner column.
+  \item \textbf{Development machine without Docker rights.} The store runs on a portable PostgreSQL in development; containers are built and tested in CI.
+\end{itemize}
+
+\section{Ethical, Legal and DEI Considerations}
+\begin{itemize}
+  \item \textbf{Pseudonymity.} The system groups addresses by behaviour and never attempts to identify a person; no column in any table can hold a name, handle, IP or KYC record, and the curated address lists name contracts, not people.
+  \item \textbf{Not advice.} Every score is labelled as a model estimate about a launch at minute 5, not a recommendation; the paper agent moves no money and the page says so.
+  \item \textbf{Honesty on screen.} Every section is marked Sourced or Sample; real projects never carry invented numbers; features that could only be faked were removed rather than shown.
+  \item \textbf{Public infrastructure.} Rate limits are enforced client-side; the whole research phase cost the endpoint operators 297,000 requests spread over weeks, and no key was used.
+  \item \textbf{Accessibility.} Body text is 16--17\,px, colour is never the only carrier of meaning (every tag also carries text), and \code{prefers-reduced-motion} disables all animation.
+\end{itemize}

@@ -1,0 +1,59 @@
+\chapter{Remaining FYP Plan}
+\label{ch:plan}
+
+\section{Remaining Scope}
+The FYP-2 scope is the set M7--M11 of \code{docs/FYP1_SCOPE.md}: one investigation flow, richer persistence, an early-buyer screener over stored transfers, a model retrained on the forward record, and hosting. Nothing cut in FYP-1 returns unless a free, measured source for it appears.
+
+\section{Remaining Modules and Features}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.06\textwidth}p{0.3\textwidth}p{0.52\textwidth}}
+\toprule
+\# & Module & Definition of done\\
+\midrule
+M7 & One investigation flow & \code{/app/new} resolves any Base address to the token page; the case studies are reached from a ``Case studies'' link; the research animation is retired\\
+M8 & Persistence & notes on watchlist items; alert preferences; history filters; export of the forward record as CSV\\
+M9 & Early-buyer screener & ``which wallets bought tracked launches in their first six hours and what did they realise'' over the backend's transfers and swaps; \code{evaluateQuery} becomes a POST; an ETH/USD series from GeckoTerminal OHLCV for dollar PnL; the generated corpus deleted\\
+M10 & Model v2 & retrain buyer loss on the forward record once the floor is passed; a new, separately reported forward record; the old one kept\\
+M11 & Hosting & the compose stack on a cloud VM with \code{restart: unless-stopped}; the deploy hook wired; uptime shown on Model Health\\
+\bottomrule
+\end{tabular}
+\caption{FYP-2 modules.}
+\end{table}
+
+\section{Remaining Iterations}
+\begin{itemize}
+  \item \textbf{Iteration 3} (rest of FYP-1): branch protection, 7-day forward results, M7, hosting trial (M11), final FYP-1 report.
+  \item \textbf{Iteration 4} (FYP-2, first half): M9 screener backend and ETH/USD series; M8 persistence.
+  \item \textbf{Iteration 5} (FYP-2, second half): M10 model v2 and its forward record; M11 production hosting; final report and demonstration.
+\end{itemize}
+
+\section{Implementation Plan}
+Each module is a feature branch with a pull request per deliverable, CI green, one review. M9 starts with a measured cost estimate (as every phase did), because it reads six hours of transfers per launch rather than five minutes. M10 starts with its protocol written and committed before any retraining.
+
+\section{Testing and Validation Plan}
+Unit tests for every new pure function; API tests for every new endpoint on the rolled-back session; an end-to-end case per new user path; the coverage floor ratcheted up with each pull request. M9 is validated by re-deriving Phase 6's minute-5 cohort profits from the new screener and matching them. M10 is validated only on its own forward record, by the same pre-registered protocol.
+
+\section{Deployment Plan}
+The images CD already publishes run on any Docker host. M11 provisions a small VM, pulls \code{docker-compose.prod.yml}, sets the environment (database URL, optional Telegram credentials) and registers the Render-style deploy hook as a repository secret so a merge to \code{main} redeploys. The staging tag from \code{develop} runs on the same host under a second compose project for pre-release checks.
+
+\section{Tentative Timeline}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.26\textwidth}p{0.64\textwidth}}
+\toprule
+When & Milestone\\
+\midrule
+26 Oct 2026 & first 7-day liquidity results on the forward record\\
+before the mid evaluation & \code{develop} $\to$ \code{main}, release \code{v0.1.0}; branch protection on; this report\\
+Nov--Dec 2026 & M7; hosting trial; buyer-loss forward floor expected; FYP-1 final report\\
+Jan--Feb 2027 & M9 screener; M8 persistence\\
+Mar--Apr 2027 & M10 model v2 and its forward record; M11 production hosting\\
+May 2027 & FYP-2 final report and demonstration\\
+\bottomrule
+\end{tabular}
+\caption{Tentative timeline. \todo{Align with the official FYP calendar.}}
+\end{table}
+
+\section{Expected Final Deliverables}
+A hosted BlockLens with its forward record running continuously; the labelled dataset and data card; model cards v2, Phase 6 and v2-forward; the screener over real early buyers; the decision log; the CI/CD pipeline with its history of green runs; and the FYP-2 report.

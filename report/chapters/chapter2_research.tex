@@ -1,0 +1,83 @@
+\chapter{Research and Existing Solutions}
+\label{ch:research}
+
+\section{Research Method / Approach}
+The project treated every assumption about its data sources as a claim to be measured. Before any pipeline code was written, two sets of feasibility spikes (\code{backend/spikes/}, Parts A and B) probed each free endpoint for its real limits: request caps, block-range caps, archive depth, rate limits and the cost in calls of each operation the brief needed. Every number in the cost model is a measurement with the script that produced it. Decisions were written down as they were made, with their evidence, in \code{DECISIONS.md}; the file now runs to ten phases and records every deviation from the original brief, every bug that would have become a false finding, and every negative result.
+
+Domain knowledge came from three places: the Uniswap V3 and V4 designs~\cite{uniswapv4}, which decide how pools, reserves and prices can be read; the academic literature on scam tokens and rug pulls on Ethereum DEXes~\cite{xia2021,mazorra2022,cernera2023}; and the evaluation literature for rare-event classification~\cite{saito2015,king2001,platt1999} and model explanation~\cite{lundberg2017,lundberg2020}.
+
+\section{Existing Solutions / Products}
+\begin{description}
+  \item[Aggregators: DexScreener, GeckoTerminal.] Index pools across chains and show price, volume, liquidity and holders. No judgement; DexScreener's ``new token'' feeds carried zero Base tokens in a 60-row sample, so they are not even a discovery source for this chain.
+  \item[Static checkers: GoPlus, Token Sniffer, RugCheck.] Read contract code and ownership: honeypot simulation, taxes, mintability, owner privileges, top-holder share. Valuable, free, and blind to the behavioural signals that decide most Base outcomes: whether liquidity is locked by a launchpad factory, and what the first five minutes of trading looked like.
+  \item[Wallet intelligence: Nansen, Arkham, Bubblemaps.] Label and cluster wallets, including funding provenance. Paid, closed, and not designed to judge a launch at minute 5.
+  \item[Academic work.] Xia et al.~\cite{xia2021} characterise scam tokens on Uniswap and detect them from trading and contract features; Mazorra et al.~\cite{mazorra2022} classify rug pulls from token and liquidity features; Cernera et al.~\cite{cernera2023} measure token spam, rug pulls and sniper bots at scale. All predate Uniswap V4's singleton design, which holds every pool's funds in one contract and breaks per-pool reserve reads.
+\end{description}
+
+\section{Comparison of Existing Solutions}
+\begin{table}[H]
+\centering\small
+\footnotesize\begin{tabular}{p{0.2\textwidth}cccccc}
+\toprule
+ & Free & Live at launch & Judgement & Explains & Scores itself forward & Base V4\\
+\midrule
+DexScreener / GeckoTerminal & \checkmark & partial & -- & -- & -- & \checkmark\\
+GoPlus / Token Sniffer & \checkmark & \checkmark & static & partial & -- & partial\\
+Nansen / Arkham & -- & -- & labels & -- & -- & partial\\
+Academic detectors & n/a & -- & \checkmark & partial & -- & --\\
+\textbf{BlockLens} & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+\bottomrule
+\end{tabular}
+\caption{Existing solutions against the criteria this project set itself.}
+\end{table}
+
+\section{Limitations and Gaps}
+Nothing free judges a Base launch at the moment it can still be acted on, says why, and keeps a public record of its own accuracy. The published detectors were trained on populations where rug and non-rug launches look structurally alike; on Base in 2026 the population is dominated by launchpad launches that mint and lock liquidity in one transaction, so their features and even their labels do not transfer unchanged. Two further gaps are practical: no keyless source exists for wallet funding provenance, and the public explorers that older write-ups treat as free fallbacks (Blockscout, Envio) now refuse keyless requests.
+
+\section{Proposed Solution}
+Read the chain, not the aggregators: discover pools from Uniswap's own events, backfill each pool's first minutes through a write gate that makes lookahead impossible, and sample reserves and prices at historical blocks with archive calls rather than reconstructing them from transfers. Define the outcome label explicitly, with every threshold a named constant and a sensitivity sweep over all of them. Sample properly: a random cohort at the true prevalence for every headline number, case-control strata for training, and operator families so no family crosses a split. Validate against pre-registered baselines and out of time. Then put the two signals that survive into a live service, explain each score exactly, log every prediction before its outcome, and run a paper agent on the record.
+
+\section{Complex Computing Problem}
+The project is a complex computing problem in the sense of the Washington Accord attributes:
+\begin{itemize}
+  \item \textbf{Conflicting requirements.} Completeness of data against the rule of unpaid work: the brief's method for labels (transfer reconstruction) cost 3,888 calls per token on the free gateway; the solution had to be re-derived (archive sampling, 90--232 calls) and shown to be more accurate, not less.
+  \item \textbf{Depth of analysis.} The first model scored AUC 0.97 and was wrong: 64 of 85 features were downstream of the label, and all 28 labelled rugs had died inside their own feature window. Finding that required a leakage audit, a censoring analysis and a redesigned sampling frame.
+  \item \textbf{No obvious solution.} Uniswap V4's singleton holds every pool's quote token in one contract, so the reserve a label needs cannot be read directly; the solution (read the \emph{token} side, which the singleton holds only on account of that token's pools) was derived and verified to the wei against stored transfers.
+  \item \textbf{Infrequent and novel.} V4 is 95\% of Base launches and postdates the literature.
+  \item \textbf{Beyond standard practice.} The product carries its validation record with every response, pre-registers its forward test and paper agent, and reports its own negative results.
+\end{itemize}
+
+\section{Technical Challenges}
+\begin{itemize}
+  \item Every keyless Base RPC caps \code{eth_getLogs} between 10 and 1,000 blocks; Blockscout and Envio no longer serve keyless requests; DexScreener's feeds carry no Base launches.
+  \item Uniswap V4 keys pools by id, not address, which broke two queries silently before they were caught (one would have produced a fabricated ``no co-movement'' finding).
+  \item Label leakage through activity features, and outcome censoring: the median rug dies at minute 15, inside a 24-hour feature window.
+  \item A regime shift: self-deployed launches went from 4--11\% to 63--69\% of the population in three months, which broke prior-shift calibration.
+  \item No keyless source for ETH funding provenance, so graph edges are token-acquisition provenance, stated as such.
+  \item A development machine without Docker rights, and a forward test that must survive reboots.
+\end{itemize}
+
+\section{Research Findings and Design Decisions}
+\label{sec:findings}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.40\textwidth}p{0.47\textwidth}}
+\toprule
+Finding (measured) & Decision it drove\\
+\midrule
+DexScreener feeds: 0 Base tokens in 60 rows & Discovery reads chain events (V4 \code{Initialize}, V3 \code{PoolCreated})\\
+Base = 2.00 s/block exactly & Block numbers are the clock; age by block, never by aggregator timestamp\\
+1,000-block log cap; archive \code{eth_call} $\geq$ 365 d & Labels are sampled at blocks, not reconstructed; 90 points in 43 s\\
+V4 singleton holds every quote reserve & Reserve criteria read the token side; verified exact to the wei on 5 tokens\\
+64/85 features leak the label; all rugs die in-window & Phase 4 withdrawn; 5-minute window with survival requirement; family-grouped splits\\
+20 RUG tokens formed one shared-wallet component & Operator families; cap 3 tokens per family; every CI resamples families\\
+Launch type: 109/113 vs 0/74 & Launch type is a first-class signal, shown at minute 0\\
+Graph features add +0.0003 at token level, AUC 0.52 at wallet level & Graph module kept as a documented negative result, not a product feature\\
+FAILED splits 93\% decay / 4\% extraction & Buyer loss (price ratio at hour 6) is the product's second target\\
+Buyer-loss PR-AUC 0.83 vs 0.37; 0.76 vs 0.33 out of time & Judged good enough to ship with its validation beside it\\
+Self-deployed share shifted 4--11\% $\to$ 63--69\% & Model Health page tracks the drift; calibration reported before and after\\
+Paper agent +49\% vs $-33\%$; LAUNCHPAD policy indistinguishable & The page states the edge is the launch-type filter\\
+\bottomrule
+\end{tabular}
+\caption{Measured findings and the decisions they produced (details in \codex{DECISIONS.md}).}
+\end{table}

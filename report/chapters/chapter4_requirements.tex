@@ -1,0 +1,194 @@
+\chapter{Software Requirements}
+\label{ch:req}
+
+\section{User Interactions / Use Cases}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.07\textwidth}p{0.25\textwidth}p{0.17\textwidth}p{0.41\textwidth}}
+\toprule
+ID & Use case & Actor & Goal\\
+\midrule
+UC1 & Watch fresh launches & Trader & See every new Base pool judged at minute 5, with status or reason, updating live\\
+UC2 & Read a score's anatomy & Trader, Analyst & See which observations moved a score and which way\\
+UC3 & Investigate an address & Trader & Paste any Base contract and get live data plus the BlockLens signal if tracked\\
+UC4 & Receive an alert & Trader & Be told, in the page or by Telegram, when a launch the agent would buy is scored\\
+UC5 & Keep a watchlist & Trader & Star tokens and find them again\\
+UC6 & Review history & Trader & Reopen past investigations\\
+UC7 & Read the forward record & Analyst, Evaluator & See the paper agent's book and the pre-registered metrics\\
+UC8 & Monitor the system & Operator & See scan status, volume by reason, drift, calibration and outages\\
+UC9 & Browse trending tokens & Trader & Discovery over live Base pools\\
+UC10 & Deliver a change & Developer & Open a PR, pass CI, merge, publish images\\
+\bottomrule
+\end{tabular}
+\caption{Use cases.}
+\end{table}
+
+\section{Use Case Diagram}
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=\textwidth}\begin{tikzpicture}[font=\small, actor/.style={draw, rounded corners, minimum width=1.9cm, minimum height=0.7cm}, uc/.style={draw, ellipse, minimum width=3.1cm, minimum height=0.75cm, align=center, inner sep=1pt}, node distance=0.35cm]
+  \node[actor] (trader) at (0,0) {Trader};
+  \node[actor] (analyst) at (0,-3.4) {Analyst};
+  \node[actor] (op) at (0,-5.6) {Operator};
+  \node[actor] (dev) at (0,-7.4) {Developer};
+  \node[uc] (uc1) at (5,1.2) {UC1 Watch launches};
+  \node[uc] (uc2) at (5,0.2) {UC2 Read anatomy};
+  \node[uc] (uc3) at (5,-0.8) {UC3 Investigate};
+  \node[uc] (uc4) at (5,-1.8) {UC4 Get alert};
+  \node[uc] (uc5) at (5,-2.8) {UC5 Watchlist};
+  \node[uc] (uc6) at (5,-3.8) {UC6 History};
+  \node[uc] (uc7) at (5,-4.8) {UC7 Forward record};
+  \node[uc] (uc8) at (5,-5.8) {UC8 Monitor};
+  \node[uc] (uc9) at (5,-6.8) {UC9 Trending};
+  \node[uc] (uc10) at (5,-7.8) {UC10 Deliver change};
+  \node[actor, right=2.2cm of uc3] (api) {BlockLens API};
+  \node[actor, right=2.2cm of uc9] (src) {Public sources};
+  \node[actor, right=2.2cm of uc10] (gh) {GitHub Actions};
+  \foreach \u in {uc1,uc2,uc3,uc4,uc5,uc6,uc9} \draw (trader) -- (\u);
+  \foreach \u in {uc2,uc7} \draw (analyst) -- (\u);
+  \draw (op) -- (uc8);
+  \draw (dev) -- (uc10);
+  \foreach \u in {uc1,uc2,uc3,uc4,uc5,uc6,uc7,uc8} \draw (\u) -- (api);
+  \foreach \u in {uc3,uc9} \draw (\u) -- (src);
+  \draw (uc10) -- (gh);
+  \draw[dashed,-{Stealth}] (uc1) to[bend left=25] node[right,font=\scriptsize]{extends} (uc2);
+\end{tikzpicture}\end{adjustbox}
+\caption{Use case diagram.}
+\end{figure}
+
+\section{Detailed Use Cases}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.2\textwidth}p{0.70\textwidth}}
+\toprule
+\multicolumn{2}{l}{\textbf{UC3 Investigate an address}}\\
+\midrule
+Actor & Trader\\
+Precondition & The web app is open; the API is reachable (for the signal) or not (live data still shows)\\
+Main flow & 1. The user pastes a contract address on New Investigation and presses Investigate. 2. If the address is one of the three case studies, the research animation plays and the profile opens. 3. Otherwise the token page opens: DexScreener market data, GoPlus holders and flags, the pools. 4. The API is asked whether the launch was tracked; if so, launch type, risk and the score's anatomy are shown. 5. The visit is recorded in history.\\
+Alternative & 3a. Not an address: the field says so and nothing is submitted. 3b. A source is unreachable: that section shows an error, the others still load. 4a. The API is down: the page says the signal is unavailable; the Watch button is disabled.\\
+Postcondition & A history row exists; no sample section was shown under the real token's name\\
+\midrule
+\multicolumn{2}{l}{\textbf{UC1 Watch fresh launches}}\\
+\midrule
+Actor & Trader\\
+Precondition & The API is running with its live loop\\
+Main flow & 1. Fresh Launches loads the feed and the model's validation record. 2. The page polls every 30 s and subscribes to the push stream. 3. A pool appears as ``waiting for minute 5''; at its five-minute mark it is scored or given a reason. 4. A newly scored launch arrives by push as a toast; if permitted and the agent would buy it, a browser notification fires. 5. The user opens the why-button for the anatomy or the row for the token page.\\
+Alternative & 2a. The stream drops: the status says ``Push off'' and polling continues. 3a. The scorer cannot read the chain: the pool shows ``could not read the first 5 minutes''.\\
+Postcondition & Every scored launch is logged once in the forward record\\
+\midrule
+\multicolumn{2}{l}{\textbf{UC10 Deliver a change}}\\
+\midrule
+Actor & Developer\\
+Main flow & 1. Branch from \code{develop}. 2. Commit; push; open a PR with the template. 3. CI runs: typecheck, unit tests with a coverage floor, build; backend tests on PostgreSQL; audits; end-to-end. 4. A reviewer approves. 5. Squash-merge; CD publishes the \code{develop} image tag. 6. A PR from \code{develop} to \code{main} and a tag publish \code{latest}, a release, and trigger the deploy hook.\\
+Alternative & 3a. A check fails: the merge button is blocked until it is green.\\
+\bottomrule
+\end{tabular}
+\caption{Detailed use cases (the remainder are in Appendix~\ref{app:req}).}
+\end{table}
+
+\section{Functional Requirements}
+\subsection{M1 Ingestion and labelling}
+\begin{itemize}[label={}]
+  \item \textbf{FR-1.1} The system shall discover new pools from Uniswap V4 \code{Initialize} and V3 \code{PoolCreated} events, polling at a configurable interval.
+  \item \textbf{FR-1.2} The system shall backfill each pool's transfers and swaps in 1,000-block windows, resumable from a checkpoint.
+  \item \textbf{FR-1.3} Every row shall enter the store through one write gate that takes an explicit \code{as_of_ts} and rejects any batch containing a later timestamp.
+  \item \textbf{FR-1.4} Every metered call shall pass through a token bucket per source and a per-run ceiling.
+  \item \textbf{FR-1.5} The system shall sample each token's reserve and price at historical blocks and assign RUG, FAILED, SURVIVED or NEVER\_LAUNCHED by named criteria, storing the observations with the verdict.
+  \item \textbf{FR-1.6} A sensitivity sweep shall re-derive every verdict offline at any threshold.
+\end{itemize}
+\subsection{M2 Signals}
+\begin{itemize}[label={}]
+  \item \textbf{FR-2.1} Training shall use a random cohort at true prevalence for evaluation and case-control strata for fitting, grouped by operator family, with no family crossing a split.
+  \item \textbf{FR-2.2} The launch-type signal shall be read at minute 0 from whether the token was minted and supplied with liquidity in one transaction.
+  \item \textbf{FR-2.3} The buyer-loss model shall be scored once, at minute 5, only for pools that traded by then and still hold their liquidity.
+  \item \textbf{FR-2.4} Every model shall be compared against a pre-registered rule checker, in period and out of time, and shipped with that record.
+\end{itemize}
+\subsection{M3 Live scoring and API}
+\begin{itemize}[label={}]
+  \item \textbf{FR-3.1} The scorer shall find new pools every 60 s and score each at its five-minute mark, or record the reason it was not scored.
+  \item \textbf{FR-3.2} Every API response carrying a score shall carry the model's validation record.
+  \item \textbf{FR-3.3} Every score shall carry its anatomy: per-feature log-odds terms that sum to the score, with labels and display values.
+  \item \textbf{FR-3.4} The API shall push newly scored launches over server-sent events and, when configured, to Telegram for launches matching the paper agent's buy rule.
+  \item \textbf{FR-3.5} \code{GET /api/token/{address}} shall return the launch's signals if tracked and say so if not; a non-address is rejected with 400.
+\end{itemize}
+\subsection{M4 Forward record and paper agent}
+\begin{itemize}[label={}]
+  \item \textbf{FR-4.1} Every prediction shall be written once, at scoring time, and never edited; unscored launches are logged with their reason.
+  \item \textbf{FR-4.2} Buyer loss shall be resolved at hour 6 by the same code as the label; liquidity at days 1, 7, 30 and 90.
+  \item \textbf{FR-4.3} No forward metric shall be called a result below 200 resolved predictions with 20 losses; the paper agent needs 100 trades.
+  \item \textbf{FR-4.4} Only predictions scored before their outcome existed shall count; late ones are counted separately.
+  \item \textbf{FR-4.5} The API shall serve the book trade by trade, and the pages shall derive every performance figure from those rows.
+\end{itemize}
+\subsection{M5 Delivery}
+\begin{itemize}[label={}]
+  \item \textbf{FR-5.1} Every push and pull request shall run typecheck, unit tests with a coverage floor, build, backend tests on PostgreSQL, dependency audits and end-to-end tests.
+  \item \textbf{FR-5.2} A merge to \code{develop} or \code{main} shall publish container images for both halves, tagged by branch, sha and semver, and scan them.
+  \item \textbf{FR-5.3} A version tag shall create a GitHub Release with the web bundle attached.
+  \item \textbf{FR-5.4} \code{main} and \code{develop} shall require a pull request, one approval and green checks.
+\end{itemize}
+\subsection{M6 Product surfaces}
+\begin{itemize}[label={}]
+  \item \textbf{FR-6.1} Fresh Launches shall show every tracked pool with status, launch type, risk, minute-5 counts, a why-button, push toasts and an optional browser notification.
+  \item \textbf{FR-6.2} The token page shall never show a sample section under a real token's name.
+  \item \textbf{FR-6.3} The user shall be able to star any token or case study and see the watchlist; every investigation shall be recorded in history.
+  \item \textbf{FR-6.4} Model Health shall show scan status, launches a day by reason, launch-type drift, forward calibration and outages.
+  \item \textbf{FR-6.5} Every section with illustrative data shall carry a Sample chip.
+\end{itemize}
+
+\section{Non-Functional Requirements}
+\subsection{Reliability}
+NFR-R1 The scorer loop shall survive any failing tick and report the error on \code{/api/health}. NFR-R2 A crashed backfill shall resume from its checkpoint; re-ingesting a token shall leave the store byte-identical (verified). NFR-R3 A failed alert shall never stop scoring. NFR-R4 An outage shall cost coverage, never correctness: late-due launches are logged as missed.
+\subsection{Usability}
+NFR-U1 Body text 16--17\,px, colour never the sole carrier of meaning. NFR-U2 Every number says where it came from (Sourced / Sample / live API). NFR-U3 Empty and error states name the cause and a next step. NFR-U4 Works at phone width; the sidebar becomes a drawer below 900\,px.
+\subsection{Performance}
+NFR-P1 A launch is scored within 60 s of its five-minute mark under normal load (median delay shown on Model Health). NFR-P2 The production bundle is under 100\,KB gzipped of application code (currently 79\,KB). NFR-P3 No chart library; geometry computed once; scroll work rAF-throttled. NFR-P4 The screener evaluates 400 wallets in under 1\,ms.
+\subsection{Security}
+NFR-S1 No API key or secret in the repository; alert credentials only from the environment. NFR-S2 The test suite blocks the network transport so no test can leak a call. NFR-S3 Dependencies audited on every PR; images scanned on every publish. NFR-S4 Input addresses validated server-side; product state has no path to code execution. NFR-S5 The write gate makes lookahead structurally impossible.
+
+\section{Acceptance Criteria}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.12\textwidth}p{0.47\textwidth}p{0.32\textwidth}}
+\toprule
+Req. & Check & Status\\
+\midrule
+FR-1.3 & A batch with one row after \code{as_of_ts} raises \code{LookaheadError} and writes nothing & pass (\code{test_write_gate.py})\\
+FR-1.5 & Labels re-derived from stored series at every threshold; 90-day baseline reclassifies 0\%, 30-day 10.9\% & pass (\code{label_sensitivity.md})\\
+FR-2.4 & PR-AUC 0.83 vs 0.37 in period; 0.76 vs 0.33 out of time & pass (\code{model_card_phase6.md})\\
+FR-3.2 & Every \code{/api/launches} response carries \code{model.validation} & pass (\code{test_api.py})\\
+FR-3.3 & Anatomy terms sum to the model's logit within 1e-3 & pass (\code{test_explain.py})\\
+FR-4.3 & Pages show ``too early'' below the floor & pass (visible on Fresh Launches)\\
+FR-5.1 & CI run on PR \#4 shows all jobs & pass\\
+FR-5.4 & Branch protection on \code{main}, \code{develop} & \todo{to switch on by the owner}\\
+FR-6.3 & Watchlist round trip via API in the browser & pass (\code{e2e/smoke.spec.ts})\\
+\bottomrule
+\end{tabular}
+\caption{Acceptance checks for the important requirements.}
+\end{table}
+
+\section{Requirements Traceability}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.1\textwidth}p{0.08\textwidth}p{0.3\textwidth}p{0.40\textwidth}}
+\toprule
+Req. & Module & Implementation & Tests\\
+\midrule
+FR-1.1--1.2 & M1 & \code{ingest/chain.py}, \code{ingest/runner.py} & \code{test_decode.py}, \code{test_sources.py}\\
+FR-1.3 & M1 & \code{store/write.py} & \code{test_write_gate.py}\\
+FR-1.4 & M1 & \code{ingest/budget.py} & \code{test_budget.py}\\
+FR-1.5--1.6 & M1 & \code{label/rules.py}, \code{label/sample.py}, \code{scripts/label_sensitivity.py} & \code{test_label_rules.py}, \code{test_label_fixtures.py}, \code{test_reserve_method.py}\\
+FR-2.1 & M2 & \code{sampling/design.py} & \code{test_phase5.py}\\
+FR-2.2--2.4 & M2 & \code{model/token_features.py}, \code{scripts/phase5_model.py}, \code{phase6_model.py}, \code{rulecheck_x.py} & \code{test_model.py}\\
+FR-3.1--3.2 & M3 & \code{live/scorer.py}, \code{api/app.py} & \code{test_api.py}\\
+FR-3.3 & M3 & \code{live/explain.py} & \code{test_explain.py}\\
+FR-3.4 & M3 & \code{live/alerts.py}, \code{/api/stream} & \code{test_alerts.py}, \code{test_product_api.py}\\
+FR-4.1--4.5 & M4 & \code{live/resolver.py} & \code{test_product_api.py}; forward checks vs 4 research tokens\\
+FR-5.1--5.3 & M5 & \code{.github/workflows/ci.yml}, \code{cd.yml} & the runs themselves\\
+FR-6.1 & M6 & \code{routes/Launches.tsx}, \code{components/live/Explain.tsx} & \code{launches.test.ts}, \code{e2e}\\
+FR-6.3 & M6 & \code{lib/live/product.ts}, \code{WatchlistPage.tsx} & \code{e2e}\\
+FR-6.4 & M6 & \code{routes/ModelHealth.tsx}, \code{lib/live/health.ts} & \code{health.test.ts}, \code{e2e}\\
+\bottomrule
+\end{tabular}
+\caption{Traceability from requirements to modules, code and tests.}
+\end{table}

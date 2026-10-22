@@ -1,0 +1,86 @@
+\chapter{Proposal Feedback and Iteration Plan}
+
+\section{Proposal Feedback Summary}
+\todo{Summarise here, in the team's own words, the feedback given at the proposal defence (from the evaluation form or the panel's notes). The register below must list each point and what was done about it; three rows are drafted from the decisions the project has in fact taken since the proposal, so that the panel can see them traced, but they must be checked against the real feedback and replaced where they differ.}
+
+\section{Proposal Action Register}
+\begin{longtable}{p{0.05\textwidth}p{0.26\textwidth}p{0.24\textwidth}p{0.12\textwidth}p{0.16\textwidth}}
+\toprule
+No. & Feedback / Required Change & Action Taken & Status & Evidence\\
+\midrule
+1 & \todo{e.g. ``Scope is too wide; what is the core module?''} & Core module fixed as launch-risk intelligence (M1--M6); KOL, social, simulated portfolio and three chains cut with reasons & Done & \code{docs/FYP1_SCOPE.md}; DECISIONS.md Phase 10\\
+2 & \todo{e.g. ``Show real data, not sample data''} & Live scoring of every new Base launch; every section labelled Sourced / Sample; no sample shown under a real token & Done & Fresh Launches; token page; README\\
+3 & \todo{e.g. ``Use GitHub with CI/CD and automated tests''} & GitHub Actions CI (unit, API, audit, end-to-end) and CD (images, release, scan); branch process & Done & PR \#1, \#4; \code{CONTRIBUTING.md}\\
+4 & \todo{further items} & & &\\
+\bottomrule
+\end{longtable}
+
+\section{Iteration Strategy}
+Development is phase-gated and evidence-driven rather than time-boxed. Each phase states what it will measure before it runs, records its decisions and deviations in \code{DECISIONS.md} as they happen, and ends with a report in \code{backend/reports/} that a later phase can cite. Two practices from research methodology are applied to the product: \emph{pre-registration} (the forward test's metrics, floors and success criteria, and the paper agent's rules, were written down on 19 October 2026 before any outcome existed) and \emph{withdrawal} (the Phase 4 model card is marked withdrawn and its numbers may not be quoted).
+
+On the engineering side the loop is the one in \code{CONTRIBUTING.md}: a feature branch from \code{develop}, small conventional commits, a pull request that CI must pass and a reviewer must approve, squash-merged; a release is a pull request from \code{develop} into \code{main} plus a version tag.
+
+\section{Iteration 1 Plan}
+\textbf{Dates:} 9 September to 19 October 2026. \textbf{Objective:} prove the data path and the signals, and build the interface the proposal showed.
+
+\begin{itemize}
+  \item \textbf{Selected features:} front-end prototype (profiles, screener, discovery pages); Phases 1--2 (ingestion, labels); Phase 3 (wallet graph); Phase 4 (first model) and its audit; Phase 5 (sampling, retrain, graph test); Phase 6 (buyer-loss target); Phase 7 (API, live feed).
+  \item \textbf{Deliverables:} the labelled dataset and its data card; model cards v1 (withdrawn), v2 and Phase 6; the FastAPI service; the Fresh Launches page.
+  \item \textbf{Evidence:} 24 commits, \code{backend/reports/*}, \code{DECISIONS.md} Phases 1--7.
+\end{itemize}
+
+\section{Iteration 2 Plan}
+\textbf{Dates:} 19 to 22 October 2026 (continuing to the mid evaluation). \textbf{Objective:} prove the signal forward, deliver the product around it, and put both halves under CI/CD.
+
+\begin{itemize}
+  \item \textbf{Selected features:} Phase 8 forward validation; Phase 9 paper agent; Phase 10 score anatomy, push alerts, paper book, model health, watchlist and history; product cuts per scope; CI/CD pipeline; containers; end-to-end tests; this report.
+  \item \textbf{Deliverables:} four pull requests (\#1--\#4), \code{docs/FYP1_SCOPE.md}, \code{CONTRIBUTING.md}, the report under \code{report/}.
+  \item \textbf{Evidence:} CI runs on every pull request; \code{reports/paper_agent.md}; this document.
+\end{itemize}
+
+\section{Work Breakdown and Responsibilities}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.3\textwidth}p{0.3\textwidth}p{0.3\textwidth}}
+\toprule
+Area & Owner & Evidence\\
+\midrule
+Feasibility spikes, ingestion, labels, sampling, models, graph, live scorer, forward test & Abdullah Bin Nasir & commits 11--21 Oct; \code{backend/}; \code{DECISIONS.md}\\
+Front-end prototype and design system & Abdullah Bin Nasir & commits 9--10 Sep; \code{src/}\\
+CI/CD, containers, test strategy, unit and end-to-end tests, product rework, scope, report & Shahmir Khan Lughmani & commits 22 Oct; PRs \#1--\#4; \code{report/}\\
+Score explanations, alerts, health, product state (API) & Shahmir Khan Lughmani (with Abdullah's review) & PR \#2\\
+\todo{Third member's area, if any} & & \\
+\bottomrule
+\end{tabular}
+\caption{Work breakdown. \todo{Adjust if the real split differs.}}
+\end{table}
+
+\section{Progress Against Plan}
+\begin{table}[H]
+\centering\small
+\begin{tabular}{p{0.34\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.22\textwidth}}
+\toprule
+Milestone & Planned & Actual & Note\\
+\midrule
+Front-end prototype & Sep & 10 Sep & as proposed\\
+Ingestion of 100 first-24h windows & Oct & 11 Oct (159) & target exceeded\\
+Labelled set & Oct & 13 Oct (46) & then redesigned in Phase 5\\
+Wallet graph and first model & Oct & 13 Oct & model withdrawn 18 Oct after audit\\
+Powered dataset and retrain & -- & 18 Oct (1,066 alive) & added after the audit\\
+Live API and feed & Oct & 19 Oct & \\
+Forward test and paper agent & -- & 19 Oct, result 21 Oct & pre-registered\\
+CI/CD pipeline & before mid-eval & 22 Oct & \\
+Product rework and scope & before mid-eval & 22 Oct & \\
+Mid report & before mid-eval & 22 Oct (draft) & this document\\
+\bottomrule
+\end{tabular}
+\caption{Planned milestones against actual progress.}
+\end{table}
+
+\section{Delays, Deviations and Recovery Plan}
+\begin{itemize}
+  \item \textbf{The first model was wrong, and was withdrawn.} Phase 4 reported AUC 0.79/0.97 from entry timing. The Phase 5 audit showed total outcome censoring and label leakage. Recovery: a 5-minute feature window with a survival requirement, a random cohort, case-control training strata and operator families; the retrain produced the two signals the product ships. Cost: about four days; benefit: every number now survives an adversarial reading.
+  \item \textbf{A 38-hour outage of the forward test} (19--21 October) after a machine restart. Recovery: an auto-start task; a rule, set before any late row was scored, that only timely predictions count; late-due launches logged as missed rather than scored. Hosting the stack on a server is FYP-2's first task.
+  \item \textbf{Keyless sources moved.} Blockscout and Envio stopped serving keyless requests; DexScreener's feeds proved useless for Base discovery. Recovery: chain-event discovery, archive sampling, GoPlus for holder data.
+  \item \textbf{Scope was wider than the research could support.} Recovery: the scope document and the product cuts of Phase 10, recorded with reasons, so the panel sees a product that is narrower and entirely real rather than wider and half sample.
+\end{itemize}
