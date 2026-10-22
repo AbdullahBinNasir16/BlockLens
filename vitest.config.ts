@@ -11,6 +11,10 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/lib/**', 'src/data/projects/index.ts'],
       reporter: ['text', 'lcov'],
+      /* A floor CI enforces, ratcheted up as tests are added: the pure
+         libraries are the testable surface; readers of public APIs are
+         exercised end to end instead. */
+      thresholds: { lines: 30, functions: 35, branches: 80 },
     },
   },
 });

@@ -31,3 +31,9 @@ backend/data/*
 # Test output
 coverage/
 *.egg-info/
+
+# Playwright and coverage output
+playwright-report/
+test-results/
+backend/coverage.xml
+backend/.coverage
