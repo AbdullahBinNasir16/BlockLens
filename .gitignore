@@ -27,3 +27,7 @@ backend/data/*
 # Presentation files (kept outside the code history)
 *.pptx
 *.docx
+
+# Test output
+coverage/
+*.egg-info/
