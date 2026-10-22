@@ -114,12 +114,15 @@ meaningful branches and automated tests, and the report.
    compiled by the `Report` workflow, with this scope as section 1.6 and
    `DECISIONS.md` as the evidence base for chapters 2 and 5.
 
-## 6. Branch protection (to be switched on by the repository owner)
+## 6. Branch protection
 
-Settings → Branches → Add rule, for `main` and again for `develop`:
-require a pull request before merging, require 1 approval, require status
-checks to pass (select **Frontend** and **Backend** from the CI workflow),
-and do not allow bypassing. This needs admin on the repository.
+GitHub offers branch protection rules on a private repository only on a
+paid plan (or on a public repository). Until the repository is made public,
+the rule is enforced by convention: every change to `develop` and `main`
+arrives as a reviewed, CI-green pull request, which the merge history shows.
+The day the repository goes public: Settings → Branches → Add rule for
+`main` and `develop`: require a pull request, 1 approval, and the
+**Frontend** and **Backend** checks; no bypass.
 
 ## 7. Timeline
 

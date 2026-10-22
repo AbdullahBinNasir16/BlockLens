@@ -160,7 +160,7 @@ FR-3.2 & Every \code{/api/launches} response carries \code{model.validation} & p
 FR-3.3 & Anatomy terms sum to the model's logit within 1e-3 & pass (\code{test_explain.py})\\
 FR-4.3 & Pages show ``too early'' below the floor & pass (visible on Fresh Launches)\\
 FR-5.1 & CI run on PR \#4 shows all jobs & pass\\
-FR-5.4 & Branch protection on \code{main}, \code{develop} & \todo{to switch on by the owner}\\
+FR-5.4 & Branch protection on \code{main}, \code{develop} & not available: GitHub offers protection rules on a private repository only on a paid plan, or on a public one. Enforced by convention instead (every change on \code{develop} is a reviewed, CI-green pull request, as the merge history shows); it is switched on the day the repository is made public\\
 FR-6.3 & Watchlist round trip via API in the browser & pass (\code{e2e/smoke.spec.ts})\\
 \bottomrule
 \end{tabular}

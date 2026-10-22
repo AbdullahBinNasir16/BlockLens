@@ -12,8 +12,10 @@ automated gates that implies. This page is the whole process.
 | `feature/<topic>` | one piece of work, branched from `develop` | its author, by pull request |
 | `fix/<topic>` | a bug fix, branched from `develop` (or `main` for a hotfix) | by pull request |
 
-Never commit straight to `main` or `develop`. Both are protected: a pull
-request needs the CI check green and one review before it can merge.
+Never commit straight to `main` or `develop`. A pull request needs the CI
+checks green and one review before it merges. (GitHub's protection rules
+are not available on a private free-plan repository, so this is enforced
+by convention until the repository is public; then it is switched on.)
 
 ## The loop
 
