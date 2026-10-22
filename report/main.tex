@@ -1,3 +1,5 @@
+% Chapters may open on either page: the template's right-hand openings add a blank page after almost every chapter.
+\PassOptionsToClass{openany}{book}
 \documentclass{fast-nuces-bs}
 
 \usepackage{mathptmx}% Times Roman font
@@ -50,7 +52,7 @@
 
 \begin{document}
 
-\cleardoublepage
+\clearpage
 \pagenumbering{roman}
 \input{chapters/01_students_submission}
 \input{chapters/02_anti_plagiarism}
@@ -60,7 +62,7 @@
 \input{chapters/06_executive_summary}
 \input{chapters/07_abbreviations}
 
-\cleardoublepage
+\clearpage
 \pagenumbering{arabic}
 \input{chapters/chapter1_introduction}
 \input{chapters/chapter2_research}
