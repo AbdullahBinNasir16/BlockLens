@@ -40,6 +40,8 @@ from ..model import token_features as tf
 from ..sampling import design as d
 from ..store.db import session_factory
 from . import resolver
+from .alerts import Notifier
+from .explain import Explainer
 
 CHAIN = "base"
 MODEL_PATH = Path("data/models/buyer_loss_v1.joblib")
@@ -68,12 +70,16 @@ class Launch:
     run_up_by_cutoff: float | None = None
     scored_at: str | None = None
     notes: list[str] = field(default_factory=list)
+    # Phase 10: the score's anatomy (live/explain.py), set when scored.
+    why: dict | None = None
 
 
 class Scorer:
     def __init__(self) -> None:
         art = joblib.load(MODEL_PATH)
         self.model, self.meta = art["model"], art["meta"]
+        self.explainer = Explainer(self.model, self.meta["features"])
+        self.notifier = Notifier()
         self.launches: dict[str, Launch] = {}
         self.scanned_to: int | None = None
         self.last_run: str | None = None
@@ -168,6 +174,8 @@ class Scorer:
                 for l in due:
                     if l.status == "waiting for minute 5":
                         self._score(s, rpc, ctx, l, clock)
+                    if self.notifier.should_alert(l):
+                        self.notifier.send(l)
                 # Phase 8: every final status is logged once, scored or not
                 for l in due:
                     if l.status == "waiting for minute 5":
@@ -177,7 +185,8 @@ class Scorer:
                         rc = resolver.reserve_at(rpc, token=l.token, pool=l.pool, dex=l.dex,
                                                  block=l.created_block + d.CUTOFF_BLOCKS)
                     resolver.record(s, launch=l, model_version=self.meta["version"],
-                                    features=self._features.pop(l.token, None), reserve_cutoff=rc)
+                                    features=self._features.pop(l.token, None), reserve_cutoff=rc,
+                                    explanation=l.why)
                 s.commit()
         with session_factory()() as s:
             resolver.resolve(s, rpc, self._context(s), head)
@@ -261,6 +270,7 @@ class Scorer:
         x = [[float(row.get(n, 0.0) or 0.0) for n in self.meta["features"]]]
         self._features[l.token] = {n: float(row.get(n, 0.0) or 0.0) for n in self.meta["features"]}
         l.risk = float(self.model.predict_proba(x)[0, 1])
+        l.why = self.explainer.explain(self._features[l.token])
         l.status = "scored"
         l.scored_at = datetime.now(timezone.utc).isoformat()
 

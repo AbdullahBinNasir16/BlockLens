@@ -31,15 +31,15 @@ STABLES = {"0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
 
 
 def record(s: Session, *, launch, model_version: str, features: dict | None,
-           reserve_cutoff: float | None) -> None:
+           reserve_cutoff: float | None, explanation: dict | None = None) -> None:
     """Write a prediction once. A second write for the same token is ignored:
     the log is append-only by construction."""
     s.execute(text("""
         insert into live_prediction (token_address, chain, pool_key, dex, created_block,
             launch_ts, model_version, status, scored_at, risk, launch_type, features,
-            reserve_cutoff, recorded_at)
+            reserve_cutoff, explanation, recorded_at)
         values (:t, :c, :pk, :dex, :cb, :lt, :mv, :st, :sa, :risk, :lty, cast(:f as jsonb),
-                :rc, :now)
+                :rc, cast(:x as jsonb), :now)
         on conflict (token_address, chain) do nothing
     """), {"t": launch.token, "c": CHAIN, "pk": launch.pool, "dex": launch.dex,
            "cb": launch.created_block, "lt": datetime.fromisoformat(launch.launch_ts),
@@ -47,7 +47,8 @@ def record(s: Session, *, launch, model_version: str, features: dict | None,
            "sa": datetime.fromisoformat(launch.scored_at) if launch.scored_at else None,
            "risk": launch.risk, "lty": launch.launch_type,
            "f": json.dumps(features) if features is not None else None,
-           "rc": reserve_cutoff, "now": datetime.now(timezone.utc)})
+           "rc": reserve_cutoff, "x": json.dumps(explanation) if explanation is not None else None,
+           "now": datetime.now(timezone.utc)})
 
 
 def _balance(rpc, token: str, holder: str, block: int) -> float | None:
@@ -272,4 +273,33 @@ def paper_agent(s: Session) -> dict:
                                                    round(float(np.percentile(d, 97.5)), 4)]
             pol["reportable"] = len(ag) >= AGENT_FLOOR
         out["policies"][cost_name] = pol
+    return out
+
+
+def paper_trades(s: Session, limit: int = 300) -> list[dict]:
+    """The paper agent's book, trade by trade: every timely, resolved, scored
+    launch with what each policy would have done and earned at the headline
+    cost. Newest first. Read-only over the same rows `paper_agent` sums."""
+    rows = s.execute(text("""
+        select token_address, pool_key, dex, launch_ts, scored_at, risk, launch_type,
+               price_6h_vs_cutoff, reserve_cutoff, reserve_6h
+        from live_prediction
+        where chain = :c and status = 'scored' and resolved_6h_at is not null
+          and scored_at <= launch_ts + interval '6 hours'
+        order by launch_ts desc limit :n
+    """), {"c": CHAIN, "n": limit}).all()
+    out = []
+    cost = COSTS["headline"]
+    for tok, pool, dex, lt, sa, risk, kind, ratio, rc, r6 in rows:
+        ref = max(float(rc or 0), float(r6 or 0))
+        pulled = ref > 0 and r6 is not None and float(r6) <= PULLED_AT * ref
+        take = risk is not None and risk < AGENT_MAX_RISK and kind == "launchpad"
+        ret = _trade_return(None if ratio is None else float(ratio), pulled, cost)
+        out.append({"token": tok, "pool": pool, "dex": dex,
+                    "launch_ts": lt.isoformat(), "scored_at": sa.isoformat() if sa else None,
+                    "risk": None if risk is None else round(float(risk), 4),
+                    "launch_type": kind, "agent": bool(take), "pulled": bool(pulled),
+                    "price_6h_vs_cutoff": None if ratio is None else round(float(ratio), 4),
+                    "return": None if ret is None else round(float(ret), 4),
+                    "capped": ret is not None and ret >= RETURN_CAP})
     return out

@@ -37,3 +37,8 @@ def test_untracked_token_says_so(client):
 def test_forward_record_endpoint_answers(client):
     r = client.get("/api/forward")
     assert r.status_code == 200 and isinstance(r.json(), dict)
+
+
+def test_health_reports_the_alert_channel_state(client):
+    r = client.get("/api/health").json()
+    assert r["alerts"]["enabled"] is False and r["alerts"]["sent"] == 0
