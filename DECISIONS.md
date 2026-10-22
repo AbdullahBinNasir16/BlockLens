@@ -1395,3 +1395,65 @@ Full report: `backend/reports/paper_agent.md`. Numbers come from
 * The buyer-loss forward record is still below its floor (831 resolved, 14
   losses against the 20 required). The 7-day launch-type check is still due
   around 2026-10-26.
+
+# Phase 10 — the product around the signal (2026-10-22)
+
+Scope for the FYP-1 mid evaluation is fixed in `docs/FYP1_SCOPE.md`. This
+phase adds what a user needs around the two signals, and nothing that the
+research cannot stand behind.
+
+## Every score carries its anatomy
+
+**Decision:** each live score is decomposed into a base rate plus one
+additive term per feature, by path-dependent tree SHAP on the frozen
+`buyer_loss_v1` artefact (`live/explain.py`), and the top movers are shown
+beside the score with their values in the feature's own unit.
+
+**Why SHAP and not a surrogate or a feature-importance table:** the
+decomposition is exact for a tree ensemble, in log-odds, and sums to the
+model's own logit; `test_explain.py` asserts that to 1e-3. A global
+importance table says what matters on average; the user is looking at one
+launch. The frozen model is not touched, so the forward test (Phase 8) is
+unaffected; the explanation is stored beside the prediction
+(`live_prediction.explanation`) so the forward record can later be read by
+driver.
+
+**What it is not:** a causal account of the launch. The labels say "raises
+the risk" and "lowers the risk", meaning the model's estimate, and the page
+says so.
+
+## Alerts follow the paper agent's rule, and only that
+
+A scored launchpad launch with risk under the agent's ceiling (0.2) is
+pushed over a server-sent-events stream to the open page, and, if a bot
+token and chat id are configured, to Telegram. Nothing else is pushed. The
+rule is the pre-registered policy from Phase 9 rather than a new threshold,
+because a new threshold would be an untested claim. Telegram because its Bot
+API is free and keyless beyond the bot's own token; the channel is off
+unless both environment variables are set, and a failed send is recorded
+and never stops the scorer.
+
+## Product state lives in the store, without accounts
+
+Two tables, `watchlist_item` and `investigation`, written through the gate
+like every other row, with no owner column. The product is single-user at
+this stage; adding accounts is a column and a filter, not a redesign.
+Addresses are lower-cased on write so a token can be on the list once.
+
+## The system reports on itself
+
+`/api/model/health` reads the forward log only: launches a day and why
+each was or was not scored, the self-deployed share per day (the regime
+drift that broke calibration in Phase 5), scoring delay, and gaps in the
+record longer than fifteen minutes, which are the outages. It is the
+product's monitoring, deliberately separate from the forward record, which
+is the only place accuracy is claimed.
+
+## The front end is narrowed to what the backend can defend
+
+Removed from the product, per the scope: the KOL directory and section
+(no keyless source; resolved 2026-10-19), the simulated portfolio (invented
+trades beside a real record), the social and narrative sections, and the
+chain selector's three unmeasured chains. The three hand-built profiles
+remain as labelled case studies. The Portfolio page is the paper agent's
+real book, trade by trade, from `/api/paper-agent/trades`.

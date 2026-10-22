@@ -23,6 +23,9 @@ dependencies = [
     "fastapi==0.118.0",
     "uvicorn==0.37.0",
     "joblib==1.5.2",
+    # Phase 10: exact per-feature score explanations (tree SHAP). Resolved
+    # on 2026-10-22 against the scikit-learn and numpy pins above.
+    "shap==0.54.1",
 ]
 
 [project.optional-dependencies]

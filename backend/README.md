@@ -318,3 +318,23 @@ it with:
 ```powershell
 Unregister-ScheduledTask -TaskName 'BlockLens live stack' -Confirm:$false
 ```
+
+## Phase 10: the product around the signal
+
+| endpoint | returns |
+|---|---|
+| `GET /api/explain` | how explanations are built: base rate, feature labels |
+| `GET /api/token/{address}` | now carries `launch.why`: the score's top movers, each with its value and its log-odds contribution |
+| `GET /api/paper-agent/trades` | the paper agent's book, trade by trade, newest first |
+| `GET /api/model/health` | launches a day and why each was or was not scored, launch-type drift, scoring delay, outages |
+| `GET /api/stream` | server-sent events: `hello`, then `scored` per newly scored launch (`?ticks=1` for a one-shot check) |
+| `GET/POST /api/watchlist`, `DELETE /api/watchlist/{address}` | the watchlist |
+| `GET/POST /api/history` | investigations opened, newest first |
+
+Alerts: set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` and every scored
+launchpad launch with risk under `ALERT_MAX_RISK` (default 0.2, the paper
+agent's ceiling) is sent to that chat. Unset, nothing is sent; `/api/health`
+reports the channel's state either way.
+
+Migration `b7a8c9d0e1f2` adds the two product tables and the `explanation`
+column; run `python -m alembic upgrade head` on an existing store.

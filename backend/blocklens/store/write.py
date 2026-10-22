@@ -279,3 +279,45 @@ def save_checkpoint(session: Session, *, chain: str, token_address: str, from_bl
 
 def get_checkpoint(session: Session, *, chain: str, token_address: str) -> BackfillCheckpoint | None:
     return session.get(BackfillCheckpoint, (chain, token_address))
+
+
+# ---------------------------------------------------------------------------
+# Product state. These rows carry no chain timestamp, so the lookahead rule
+# has nothing to check; they still enter through this module so the "every
+# row enters through the gate" invariant stays literally true.
+# ---------------------------------------------------------------------------
+
+def upsert_watchlist(session: Session, *, token: str, chain: str, label: str | None,
+                     note: str | None, as_of_ts: datetime) -> WriteResult:
+    from .models import WatchlistItem
+
+    stmt = insert(WatchlistItem).values(
+        token_address=token.lower(), chain=chain, label=label, note=note, added_at=as_of_ts,
+    ).on_conflict_do_update(
+        index_elements=[WatchlistItem.token_address, WatchlistItem.chain],
+        set_={"label": func.coalesce(text("excluded.label"), WatchlistItem.label),
+              "note": func.coalesce(text("excluded.note"), WatchlistItem.note)},
+    ).returning(text("xmax = 0"))
+    fresh = session.execute(stmt).scalar_one()
+    return WriteResult(inserted=int(bool(fresh)), updated=int(not fresh))
+
+
+def remove_watchlist(session: Session, *, token: str, chain: str) -> int:
+    from .models import WatchlistItem
+
+    r = session.execute(
+        text("delete from watchlist_item where token_address = :t and chain = :c"),
+        {"t": token.lower(), "c": chain},
+    )
+    return int(r.rowcount or 0)
+
+
+def add_investigation(session: Session, *, token: str, chain: str, outcome: str,
+                      as_of_ts: datetime) -> int:
+    from .models import Investigation
+
+    row = Investigation(token_address=token.lower(), chain=chain, outcome=outcome,
+                        opened_at=as_of_ts)
+    session.add(row)
+    session.flush()
+    return int(row.id)

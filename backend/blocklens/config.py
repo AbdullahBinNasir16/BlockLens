@@ -83,6 +83,14 @@ class Config:
     x_cache_dir: str = _str("X_CACHE_DIR", "data/x_cache")
     x_enabled: bool = os.environ.get("X_ENABLED", "0") == "1"
 
+    # ---- alerts (Phase 10) ----
+    # Off unless both are set. Telegram's Bot API is free; the only secret is
+    # the bot's own token, which never enters the repository.
+    telegram_bot_token: str = _str("TELEGRAM_BOT_TOKEN", "")
+    telegram_chat_id: str = _str("TELEGRAM_CHAT_ID", "")
+    # The paper agent's buy ceiling (DECISIONS.md, Phase 9).
+    alert_max_risk: float = float(os.environ.get("ALERT_MAX_RISK", "0.2"))
+
     @property
     def alchemy_enabled(self) -> bool:
         return bool(self.alchemy_key)

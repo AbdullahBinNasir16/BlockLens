@@ -25,8 +25,9 @@ from __future__ import annotations
 from datetime import datetime
 
 from sqlalchemy import (
-    BigInteger, DateTime, Enum, Index, Integer, Numeric, String, Text, text,
+    BigInteger, Boolean, DateTime, Float, Enum, Index, Integer, Numeric, String, Text, text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -421,3 +422,68 @@ class TokenSample(Base):
 
 
 Index("ix_token_sample_stratum", TokenSample.chain, TokenSample.sampling_stratum)
+
+
+class WatchlistItem(Base):
+    """Product state: a token the user is keeping an eye on.
+
+    No account and no owner column: the product is single-user by design
+    at this stage (docs/FYP1_SCOPE.md, M8). Keyed by address so a token can
+    be on the list once, whatever the letter case it was pasted in.
+    """
+    __tablename__ = "watchlist_item"
+    token_address: Mapped[str] = mapped_column(String(66), primary_key=True)
+    chain: Mapped[str] = mapped_column(String(16), primary_key=True)
+    label: Mapped[str | None] = mapped_column(String(64))
+    note: Mapped[str | None] = mapped_column(Text)
+    added_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class Investigation(Base):
+    """Product state: every address the user opened, and what it resolved to.
+
+    `outcome` is `profile` (one of the researched case studies), `tracked`
+    (a launch the live feed scored) or `live` (public market data only).
+    """
+    __tablename__ = "investigation"
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    token_address: Mapped[str] = mapped_column(String(66), nullable=False)
+    chain: Mapped[str] = mapped_column(String(16), nullable=False)
+    outcome: Mapped[str] = mapped_column(String(24), nullable=False)
+    opened_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class LivePrediction(Base):
+    """Phase 8: the forward-validation log, one row per launch the live feed
+    reached a verdict on, written once and never edited (live/resolver.py).
+
+    Declared here so the test schema matches the migrated one; the
+    migrations (`a9c1d2e3f405`, `b7a8c9d0e1f2`) remain the source of truth
+    for a real database.
+    """
+    __tablename__ = "live_prediction"
+    __table_args__ = (Index("ix_live_prediction_launch", "chain", "launch_ts"),)
+    token_address: Mapped[str] = mapped_column(String(66), primary_key=True)
+    chain: Mapped[str] = mapped_column(String(16), primary_key=True)
+    pool_key: Mapped[str] = mapped_column(String(66), nullable=False)
+    dex: Mapped[str] = mapped_column(String(32), nullable=False)
+    created_block: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    launch_ts: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    model_version: Mapped[str] = mapped_column(String(32), nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False)
+    scored_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    risk: Mapped[float | None] = mapped_column(Float)
+    launch_type: Mapped[str | None] = mapped_column(String(16))
+    features: Mapped[dict | None] = mapped_column(JSONB)
+    reserve_cutoff: Mapped[float | None] = mapped_column(Numeric)
+    explanation: Mapped[dict | None] = mapped_column(JSONB)
+    resolved_6h_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    price_6h_vs_cutoff: Mapped[float | None] = mapped_column(Float)
+    buyer_loss: Mapped[bool | None] = mapped_column(Boolean)
+    reserve_6h: Mapped[float | None] = mapped_column(Numeric)
+    reserve_1d: Mapped[float | None] = mapped_column(Numeric)
+    reserve_7d: Mapped[float | None] = mapped_column(Numeric)
+    reserve_30d: Mapped[float | None] = mapped_column(Numeric)
+    reserve_90d: Mapped[float | None] = mapped_column(Numeric)
+    notes: Mapped[str | None] = mapped_column(Text)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
