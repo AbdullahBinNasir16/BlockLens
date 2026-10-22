@@ -8,15 +8,16 @@ import { useScrollProgress, useInView } from '../lib/hooks';
 import { datasets, chainMeta, CHAINS } from '../data/projects';
 import { ChainMark } from '../components/primitives/TokenMark';
 
+/* The one case study offered from the landing page. */
 const DEMO_CONTRACT = datasets.nockchain.project.contract;
 
 const DIMENSIONS = [
   { k: 'On-chain', d: 'Holders, flow, launch mechanics' },
   { k: 'Developers', d: 'Prior deployments and outcomes' },
-  { k: 'Wallets', d: 'Clusters, funding, entry timing' },
-  { k: 'KOLs', d: 'Historical win rate, not follower count' },
+  { k: 'Launch type', d: 'Who holds the liquidity, read at minute 0' },
+  { k: 'Buyer-loss risk', d: 'A validated model, scored once at minute 5' },
   { k: 'GitHub', d: 'Commit history and consistency' },
-  { k: 'Social', d: 'Authenticity and momentum' },
+  { k: 'Forward record', d: 'Every prediction logged before its outcome' },
   { k: 'Fundamentals', d: 'Idea, uniqueness, innovation' },
   { k: 'History', d: 'What this team shipped before' },
   { k: 'Risk', d: 'Signals, evidence, contradiction' },
@@ -31,7 +32,11 @@ export function Landing() {
 
   const go = (e?: React.FormEvent) => {
     e?.preventDefault();
-    const addr = ca.trim() || DEMO_CONTRACT;
+    const addr = ca.trim();
+    if (!addr) {
+      nav('/app/new');
+      return;
+    }
     nav(`/app/investigating?ca=${encodeURIComponent(addr)}&chain=${chain}`);
   };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { TokenMark, ChainMark } from '../components/primitives/TokenMark';
 import { EmptyNote, Stat } from '../components/primitives/Bits';
@@ -9,6 +9,8 @@ import { fetchLiveToken, isEvmAddress, type LiveToken } from '../lib/live/token'
 import { fetchHolders, type HolderInfo } from '../lib/live/trending';
 import { fetchTracked, riskBand, type Launch } from '../lib/live/launches';
 import { bandColor } from '../lib/format';
+import { Explain } from '../components/live/Explain';
+import { addWatch, fetchWatchlist, recordInvestigation, removeWatch } from '../lib/live/product';
 
 /* ============================================================
    A token BlockLens has not researched.
@@ -40,6 +42,8 @@ export function UnresearchedToken() {
   const [market, setMarket] = useState<Load<LiveToken | null>>({ state: 'loading' });
   const [holders, setHolders] = useState<Load<HolderInfo>>({ state: 'loading' });
   const [tracked, setTracked] = useState<Launch | null>(null);
+  const [watched, setWatched] = useState<boolean | null>(null);
+  const logged = useRef('');
 
   useEffect(() => {
     if (!valid || !supported) return;
@@ -50,8 +54,18 @@ export function UnresearchedToken() {
       .then((v) => alive && setMarket({ state: 'ok', value: v }))
       .catch((e) => alive && setMarket({ state: 'error', msg: String(e?.message ?? e) }));
     fetchTracked(address.toLowerCase())
-      .then((t) => alive && setTracked(t))
+      .then((t) => {
+        if (!alive) return;
+        setTracked(t);
+        if (logged.current !== address) {
+          logged.current = address;
+          recordInvestigation(address, t ? 'tracked' : 'live');
+        }
+      })
       .catch(() => alive && setTracked(null));
+    fetchWatchlist()
+      .then((w) => alive && setWatched(w.some((i) => i.address === address.toLowerCase())))
+      .catch(() => alive && setWatched(null));
     fetchHolders(address.toLowerCase(), 0)
       .then((v) => alive && setHolders({ state: 'ok', value: v }))
       .catch((e) => alive && setHolders({ state: 'error', msg: String(e?.message ?? e) }));
@@ -90,14 +104,29 @@ export function UnresearchedToken() {
             <ChainMark chain={chain} size={13} />
             {chainMeta[chain]?.label ?? chain}
           </span>
+          {valid && supported && (
+            <button
+              className="bl-btn bl-btn--sm bl-btn--ghost"
+              disabled={watched === null}
+              title={watched === null ? 'The BlockLens API is not reachable' : undefined}
+              onClick={() => {
+                const next = !watched;
+                setWatched(next);
+                (next ? addWatch(address, tok?.symbol) : removeWatch(address)).catch(() => setWatched(!next));
+              }}
+            >
+              <Icon.Star size={13} filled={!!watched} />
+              {watched ? 'Watching' : 'Watch'}
+            </button>
+          )}
         </div>
       </header>
 
       <div className="bl-unres__notice">
         <p className="bl-unres__lede">BlockLens has not researched this project yet.</p>
         <p className="meta">
-          There is no intelligence profile, risk score, wallet analysis or KOL record for this
-          token, and none is shown. Everything below is live market data from public sources,
+          There is no hand-built research profile for this token, and no sample section is shown
+          under its name. Everything below is live market data from public sources,
           fetched just now. It is not an assessment.
         </p>
       </div>
@@ -203,6 +232,12 @@ export function UnresearchedToken() {
                 <Stat label="Swaps by minute 5" value={tracked.swaps_by_cutoff ?? '—'} />
                 <Stat label="Buyers by minute 5" value={tracked.buyers_by_cutoff ?? '—'} />
               </div>
+              {tracked.why && (
+                <div className="bl-unres__why">
+                  <p className="eyebrow">Why this score</p>
+                  <Explain why={tracked.why} />
+                </div>
+              )}
               <p className="meta" style={{ marginTop: 14 }}>
                 A model estimate, validated on 2026 Base launches (see Fresh Launches for the record).
                 It describes the launch at minute 5, not the token today.

@@ -1,6 +1,5 @@
 import type { ProjectDataset } from '../types';
 import { heatmap, growth, spikeSeries, flow } from '../synth';
-import { kolsFor } from '../kols';
 
 /* ============================================================
    DOT — Dot, on Base
@@ -125,7 +124,7 @@ export const dot: ProjectDataset = {
       },
       {
         id: 'kols',
-        label: 'KOLs',
+        label: 'Promotion',
         score: 52,
         note: 'Sample roster. Ecosystem accounts have picked it up; win-rate history is thin.',
         drivers: [
@@ -330,7 +329,6 @@ export const dot: ProjectDataset = {
   /* Real accounts. The win rate and outcome beside each one are prototype
      sample values, not a measured record — see the section note. */
   /* read from the directory, so the record matches everywhere it appears */
-  kols: kolsFor(['DrShillBee', 'kyle', 'blknoiz06', 'HsakaTrades', 'CryptoKaleo', 'gainzy222']),
 
 
   github: {

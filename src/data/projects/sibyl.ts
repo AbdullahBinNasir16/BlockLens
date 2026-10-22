@@ -1,6 +1,5 @@
 import type { ProjectDataset } from '../types';
 import { heatmap, growth, spikeSeries, flow } from '../synth';
-import { kolsFor } from '../kols';
 
 /* ============================================================
    SIBYL — SIBYL by Virtuals, on Base
@@ -126,7 +125,7 @@ export const sibyl: ProjectDataset = {
       },
       {
         id: 'kols',
-        label: 'KOLs',
+        label: 'Promotion',
         score: 47,
         note: 'Sample roster. Very little third-party coverage at this size.',
         drivers: [
@@ -320,7 +319,6 @@ export const sibyl: ProjectDataset = {
   /* Real accounts. The win rate and outcome beside each one are prototype
      sample values, not a measured record — see the section note. */
   /* read from the directory, so the record matches everywhere it appears */
-  kols: kolsFor(['DrShillBee', 'kyle', 'notthreadguy', 'Danny_Crypton', 'mrpunkdoteth', 'inversebrah']),
 
 
   github: {

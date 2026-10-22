@@ -9,9 +9,8 @@ import './styles/landing.css';
 import './styles/app.css';
 import './styles/research.css';
 import './styles/screener.css';
-import './styles/kols.css';
-import './styles/portfolio.css';
 import './styles/trending.css';
+import './styles/live.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

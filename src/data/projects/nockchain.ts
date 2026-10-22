@@ -1,6 +1,5 @@
 import type { ProjectDataset } from '../types';
 import { heatmap, growth, spikeSeries, flow } from '../synth';
-import { kolsFor } from '../kols';
 
 /* ============================================================
    NOCK — Nockchain, on Base
@@ -131,7 +130,7 @@ export const nockchain: ProjectDataset = {
       },
       {
         id: 'kols',
-        label: 'KOLs',
+        label: 'Promotion',
         score: 62,
         note: 'Sample roster. Coverage is technical rather than promotional.',
         drivers: [
@@ -338,7 +337,6 @@ export const nockchain: ProjectDataset = {
   /* Real accounts. The win rate and outcome beside each one are prototype
      sample values, not a measured record — see the section note. */
   /* read from the directory, so the record matches everywhere it appears */
-  kols: kolsFor(['DrShillBee', 'kyle', '0xngmi', 'DefiIgnas', 'Cobie', 'theunipcs']),
 
 
   github: {

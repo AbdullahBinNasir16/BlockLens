@@ -18,7 +18,7 @@ const DIMENSIONS = [
   'Idea & Fundamentals',
   'Website & Documentation',
   'Developer Intelligence',
-  'KOL / Promotion Intelligence',
+  'Launch Signal Intelligence',
   'X Authenticity',
   'Social Intelligence',
   'On-Chain Intelligence',

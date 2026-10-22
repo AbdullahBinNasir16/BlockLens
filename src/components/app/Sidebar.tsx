@@ -1,19 +1,19 @@
 import { NavLink, Link } from 'react-router-dom';
 import { Logo } from '../primitives/Logo';
-import { TokenMark } from '../primitives/TokenMark';
 import { Icon } from './Icons';
-import { watchlist, history } from '../../data/lists';
-import { KOLS } from '../../data/kols';
+import { shortAddr } from '../../lib/format';
+import { findByContract } from '../../data/projects';
+import { useProductState } from '../../lib/live/useProduct';
 
 const NAV = [
-  { to: '/app/new', label: 'New Workspace', hint: 'Start an investigation', icon: Icon.New },
-  { to: '/app/portfolio', label: 'Portfolio', hint: 'Paper agent · forward', icon: Icon.Portfolio },
-  { to: '/app/trending', label: 'Trending Tokens', hint: 'Discovery', icon: Icon.Trend },
+  { to: '/app/new', label: 'New Investigation', hint: 'Any Base contract', icon: Icon.New },
   { to: '/app/launches', label: 'Fresh Launches', hint: 'Scored at minute 5', icon: Icon.Launch },
+  { to: '/app/trending', label: 'Trending Tokens', hint: 'Discovery', icon: Icon.Trend },
+  { to: '/app/portfolio', label: 'Paper Agent', hint: 'Forward record', icon: Icon.Portfolio },
+  { to: '/app/model', label: 'Model Health', hint: 'Drift, outages, calibration', icon: Icon.Pulse },
   { to: '/app/wallets', label: 'Screener', hint: 'Cross-project wallets', icon: Icon.Screen },
-  { to: '/app/kols', label: 'KOLs', hint: 'Accounts & records', icon: Icon.Kol },
-  { to: '/app/watchlist', label: 'Watchlist', hint: 'Saved projects', icon: Icon.Watch },
-  { to: '/app/history', label: 'Research History', hint: 'Past investigations', icon: Icon.History },
+  { to: '/app/watchlist', label: 'Watchlist', hint: 'Saved tokens', icon: Icon.Watch },
+  { to: '/app/history', label: 'History', hint: 'Past investigations', icon: Icon.History },
 ];
 
 export function Sidebar({
@@ -25,11 +25,11 @@ export function Sidebar({
   onToggle: () => void;
   onNavigate?: () => void;
 }) {
-  const counts: Record<string, number | undefined> = {
-    '/app/kols': KOLS.length,
-    '/app/watchlist': watchlist.length,
-    '/app/history': history.length,
-  };
+  const { watchlist, history, available } = useProductState();
+  const counts: Record<string, number | undefined> = available
+    ? { '/app/watchlist': watchlist.length, '/app/history': history.length }
+    : {};
+  const recent = history.slice(0, 3);
 
   return (
     <aside className="bl-rail" data-collapsed={collapsed}>
@@ -75,47 +75,31 @@ export function Sidebar({
         })}
       </nav>
 
-      {!collapsed && (
+      {!collapsed && recent.length > 0 && (
         <div className="bl-rail__recent">
           <p className="eyebrow bl-rail__recentl">Recent</p>
-          {history.slice(0, 3).map((h) => (
-            <Link
-              key={h.id + h.time}
-              to={`/app/project/${h.id}`}
-              className="bl-recent"
-              onClick={onNavigate}
-            >
-              <TokenMark logo={h.logo} monogram={h.monogram} size={20} radius={6} />
-              <span className="bl-recent__n">{h.name}</span>
-              <span
-                className="bl-recent__r num"
-                data-level={h.riskLevel}
-                title={`Risk ${h.risk} / 100`}
-              >
-                {h.risk}
-              </span>
-            </Link>
-          ))}
+          {recent.map((h) => {
+            const known = findByContract(h.address);
+            const to = known ? `/app/project/${known.project.id}` : `/app/token/${h.address}`;
+            return (
+              <Link key={h.id} to={to} className="bl-recent" onClick={onNavigate}>
+                <span className="bl-recent__n num">{known ? known.project.name : shortAddr(h.address, 6, 4)}</span>
+                <span className="bl-recent__r meta" data-level={h.outcome}>
+                  {h.outcome}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       )}
 
       <div className="bl-rail__foot">
-        <button className="bl-railitem bl-railitem--quiet" title="Settings">
-          <span className="bl-railitem__i">
-            <Icon.Settings />
-          </span>
-          {!collapsed && (
-            <span className="bl-railitem__b">
-              <span className="bl-railitem__l">Settings</span>
-            </span>
-          )}
-        </button>
         <div className="bl-profile" data-collapsed={collapsed}>
-          <span className="bl-profile__av">RA</span>
+          <span className="bl-profile__av">BL</span>
           {!collapsed && (
             <span className="bl-profile__b">
-              <span className="bl-profile__n">Research account</span>
-              <span className="bl-profile__p meta">Prototype · local</span>
+              <span className="bl-profile__n">Single-user workspace</span>
+              <span className="bl-profile__p meta">{available ? 'API connected' : 'API offline'}</span>
             </span>
           )}
         </div>

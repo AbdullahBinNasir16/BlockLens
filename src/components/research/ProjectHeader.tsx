@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { chainMeta } from '../../data/projects';
 import { useProject } from '../../lib/project-context';
 import { TokenMark, ChainMark } from '../primitives/TokenMark';
@@ -7,6 +7,7 @@ import { Sparkline } from '../primitives/Charts';
 import { Icon } from '../app/Icons';
 import { useCopy } from '../../lib/hooks';
 import { compact, price, pct, int, shortAddr } from '../../lib/format';
+import { addWatch, fetchWatchlist, removeWatch } from '../../lib/live/product';
 
 function sparkFor(change: number, seed: number) {
   let s = seed >>> 0;
@@ -24,7 +25,28 @@ function sparkFor(change: number, seed: number) {
 export function ProjectHeader() {
   const { project } = useProject();
   const [copied, copy] = useCopy();
-  const [watched, setWatched] = useState(true);
+  const [watched, setWatched] = useState(false);
+  const [canWatch, setCanWatch] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    fetchWatchlist()
+      .then((w) => {
+        if (!alive) return;
+        setCanWatch(true);
+        setWatched(w.some((i) => i.address === project.contract.toLowerCase()));
+      })
+      .catch(() => alive && setCanWatch(false));
+    return () => {
+      alive = false;
+    };
+  }, [project.contract]);
+  const toggleWatch = () => {
+    const next = !watched;
+    setWatched(next);
+    (next ? addWatch(project.contract, project.ticker) : removeWatch(project.contract)).catch(() =>
+      setWatched(!next)
+    );
+  };
   const m = project.metrics;
   const up = m.priceChange24h >= 0;
 
@@ -110,7 +132,12 @@ export function ProjectHeader() {
             />
             <span className="meta">24h</span>
           </div>
-          <button className="bl-btn bl-btn--sm bl-btn--ghost" onClick={() => setWatched((w) => !w)}>
+          <button
+            className="bl-btn bl-btn--sm bl-btn--ghost"
+            onClick={toggleWatch}
+            disabled={!canWatch}
+            title={canWatch ? undefined : 'The BlockLens API is not reachable'}
+          >
             <Icon.Star size={13} filled={watched} />
             {watched ? 'Watching' : 'Watch'}
           </button>

@@ -19,7 +19,7 @@ export function GithubSection() {
   return (
     <Section
       id="github"
-      index="06"
+      index="04"
       title="GitHub Intelligence"
       sub="Whether the code exists, who writes it, and whether the pace survived the token launch."
       right={<Tag tone="positive">Last commit {github.lastCommit}</Tag>}

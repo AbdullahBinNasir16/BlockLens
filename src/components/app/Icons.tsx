@@ -56,11 +56,9 @@ export const Icon = {
     </svg>
   ),
   /* a person with broadcast arcs — an account whose voice carries */
-  Kol: (p: { size?: number }) => (
+  Pulse: (p: { size?: number }) => (
     <svg {...base} width={p.size ?? 17} height={p.size ?? 17}>
-      <circle cx="8" cy="7" r="2.8" />
-      <path d="M2.8 16.2c.4-2.9 2.5-4.7 5.2-4.7s4.8 1.8 5.2 4.7" />
-      <path d="M14.6 5.2a3.6 3.6 0 010 4.6M16.7 3.4a6.4 6.4 0 010 8.2" />
+      <path d="M2.5 10.5h3l2-5 3 9 2.5-6.5 1.5 2.5h3" />
     </svg>
   ),
   Settings: (p: { size?: number }) => (

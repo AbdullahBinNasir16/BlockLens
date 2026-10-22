@@ -25,7 +25,7 @@ export function RiskSection() {
   return (
     <Section
       id="risk"
-      index="10"
+      index="06"
       title="Risk Analysis"
       sub="Every signal on one scale. Further right is more concerning."
       right={

@@ -3,6 +3,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { shortAddr } from '../lib/format';
 import { chainMeta, findByContract } from '../data/projects';
 import { TokenMark, ChainMark } from '../components/primitives/TokenMark';
+import { recordInvestigation } from '../lib/live/product';
 
 type Step = { group: string; label: string; ms: number };
 
@@ -49,6 +50,13 @@ export function Investigating() {
   const match = findByContract(ca);
   const target = match?.project.id;
   const resolved = match?.project;
+
+  const logged = useRef(false);
+  useEffect(() => {
+    if (!target || logged.current) return;
+    logged.current = true;
+    recordInvestigation(ca, 'profile');
+  }, [target, ca]);
 
   useEffect(() => {
     if (!target) return;
