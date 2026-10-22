@@ -1,5 +1,7 @@
 # BlockLens
 
+[![CI](https://github.com/AbdullahBinNasir16/BlockLens/actions/workflows/ci.yml/badge.svg)](https://github.com/AbdullahBinNasir16/BlockLens/actions/workflows/ci.yml) [![CD](https://github.com/AbdullahBinNasir16/BlockLens/actions/workflows/cd.yml/badge.svg)](https://github.com/AbdullahBinNasir16/BlockLens/actions/workflows/cd.yml)
+
 Blockchain project intelligence. One contract address in, a complete visual
 investigation out.
 

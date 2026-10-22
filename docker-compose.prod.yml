@@ -1,0 +1,48 @@
+# The whole product from the images CD publishes. On any machine with Docker:
+#
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# then open http://localhost:8080. Set IMAGE_TAG to pin a release (default
+# latest = the current main). Set BLOCKLENS_LIVE=0 for a UI-only demo that
+# does not poll the chain.
+services:
+  db:
+    image: timescale/timescaledb:2.17.2-pg16
+    environment:
+      POSTGRES_USER: blocklens
+      POSTGRES_PASSWORD: blocklens
+      POSTGRES_DB: blocklens
+      TIMESCALEDB_TELEMETRY: "off"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blocklens -d blocklens"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    image: ghcr.io/abdullahbinnasir16/blocklens-api:${IMAGE_TAG:-latest}
+    environment:
+      DATABASE_URL: postgresql+psycopg://blocklens:blocklens@db:5432/blocklens
+      BLOCKLENS_LIVE: ${BLOCKLENS_LIVE:-1}
+    volumes:
+      - apidata:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/abdullahbinnasir16/blocklens-web:${IMAGE_TAG:-latest}
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  apidata:
