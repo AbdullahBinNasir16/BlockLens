@@ -179,7 +179,9 @@ function Stacked({ days }: { days: ReturnType<typeof stackedDays> }) {
   const H = 180;
   const P = 24;
   const max = Math.max(1, ...days.map((d) => d.total));
-  const bw = (W - P * 2) / days.length;
+  /* a bar per day, no wider than a fortnight's worth would be, so one day
+     of data does not paint the whole chart */
+  const bw = (W - P * 2) / Math.max(days.length, 14);
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="bl-health__svg" role="img" aria-label="Launches a day by scoring outcome">
       {days.map((d, i) => {

@@ -20,7 +20,9 @@ dependencies = [
     "numpy==2.5.4",
     "scipy==1.18.1",
     # Phase 7: the API layer and the shipped model artefact.
-    "fastapi==0.118.0",
+    # Upgraded 2026-10-22: pip-audit in CI found twelve known vulnerabilities
+    # in the Starlette 0.48 that fastapi 0.118 pinned; 0.159 pulls Starlette 1.9.
+    "fastapi==0.159.1",
     "uvicorn==0.37.0",
     "joblib==1.5.2",
     # Phase 10: exact per-feature score explanations (tree SHAP). Resolved
