@@ -1,0 +1,57 @@
+# Render blueprint: the whole product on Render from this repository.
+# One click after creating a Render account: New → Blueprint → this repo.
+#
+# The API needs an always-on instance (the scorer polls the chain every
+# minute and a free instance sleeps after 15 minutes idle), so the API
+# service is on the starter plan; the static site and the database are
+# free tiers. Set TELEGRAM_* on the API service for alerts (optional).
+services:
+  - type: web
+    name: blocklens-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: blocklens-db
+          property: connectionString
+      - key: BLOCKLENS_LIVE
+        value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    disk:
+      name: blocklens-state
+      mountPath: /app/data
+      sizeGB: 1
+
+  - type: web
+    name: blocklens-web
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      # the app talks to one origin; Render rewrites /api to the API service
+      - type: rewrite
+        source: /api/*
+        destination: https://blocklens-api.onrender.com/api/*
+      - type: rewrite
+        source: /ds/*
+        destination: https://api.dexscreener.com/*
+      - type: rewrite
+        source: /gt/*
+        destination: https://api.geckoterminal.com/api/v2/*
+      - type: rewrite
+        source: /gp/*
+        destination: https://api.gopluslabs.io/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: blocklens-db
+    plan: free
+    databaseName: blocklens
+    user: blocklens
