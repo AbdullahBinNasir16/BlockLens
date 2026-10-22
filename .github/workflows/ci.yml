@@ -30,8 +30,15 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
-      - name: Unit tests
-        run: npm test
+      - name: Unit tests, with a coverage floor
+        run: npm run test:coverage
+
+      - name: Keep the coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-coverage-${{ github.sha }}
+          path: coverage/lcov.info
+          retention-days: 7
 
       - name: Production build
         run: npm run build
@@ -84,4 +91,91 @@ jobs:
         run: python -m pip install -e ".[dev]"
 
       - name: Tests (no network; the transport is blocked for the whole suite)
-        run: python -m pytest -q -rs
+        run: python -m pytest -q -rs --cov=blocklens --cov-report=xml --cov-report=term
+
+      - name: Keep the coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage-${{ github.sha }}
+          path: backend/coverage.xml
+          retention-days: 7
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: npm audit (high and above fails)
+        run: npm audit --omit=dev --audit-level=high
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: pip-audit on the backend's pins
+        run: |
+          python -m pip install pip-audit
+          cd backend && python -m pip install -e . && pip-audit --progress-spinner off
+
+  e2e:
+    name: End to end · browser against the real API
+    runs-on: ubuntu-latest
+    needs: [frontend, backend]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: blocklens
+          POSTGRES_PASSWORD: blocklens
+          POSTGRES_DB: blocklens
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U blocklens -d blocklens"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://blocklens:blocklens@localhost:5432/blocklens
+      BLOCKLENS_LIVE: "0"
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - name: Install and migrate the API
+        working-directory: backend
+        run: |
+          python -m pip install -e .
+          python -m alembic upgrade head
+      - name: Start the API (no live loop)
+        working-directory: backend
+        run: |
+          nohup python -m uvicorn blocklens.api.app:app --port 8000 > ../api.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8000/api/health && break; sleep 2; done
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Install Playwright's browser
+        run: npx playwright install --with-deps chromium
+      - name: Smoke tests
+        run: npm run e2e -- --project=chromium || npm run e2e
+      - name: Keep the trace and the API log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-${{ github.sha }}
+          path: |
+            playwright-report
+            test-results
+            api.log
+          retention-days: 7
