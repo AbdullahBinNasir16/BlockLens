@@ -61,6 +61,11 @@ File & What it holds\\
 Python 3.12, FastAPI, uvicorn, SQLAlchemy 2, Alembic, PostgreSQL 16 with TimescaleDB, httpx, scikit-learn, numpy, scipy, networkx, shap, joblib, pytest, pytest-cov; TypeScript 5, React 18, React Router 6, Vite 5, vitest, Playwright; Docker, nginx, GitHub Actions, GHCR, Trivy, Dependabot; TinyTeX for this report.
 
 \section{Demonstration Evidence}
+\textbf{The product is deployed and open to anyone:} \url{https://flying-boron-kxx29gy.tmp.now}.
+The repository, which always carries the current address, is \url{https://github.com/AbdullahBinNasir16/BlockLens}.
+
+The landing page, the three case studies, Trending Tokens and the wallet screener run entirely in the browser. Fresh Launches, the token page's signals, Paper Agent and Model Health read the BlockLens API, so they report the API as unreachable unless the API is running: during the demonstration it is started with \code{uvicorn blocklens.api.app:app --port 8000}, and the figures below were captured against it. Hosting the API itself is module M11 (Section~\ref{sec:roadmap}).
+
 \begin{figure}[H]\centering\includegraphics[width=\textwidth]{figures/launches.png}\caption{Fresh Launches: every new Base pool scored at minute 5, with the validation record, the forward record, push status and the why-button.}\end{figure}
 \begin{figure}[H]\centering\includegraphics[width=\textwidth]{figures/token.png}\caption{The token page for a tracked launch: live market data, GoPlus flags, the two signals and the score's anatomy.}\end{figure}
 \begin{figure}[H]\centering\includegraphics[width=\textwidth]{figures/trending.png}\caption{Trending Tokens over live Base pools.}\end{figure}

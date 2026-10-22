@@ -5,6 +5,11 @@
 Blockchain project intelligence. One contract address in, a complete visual
 investigation out.
 
+**Live:** https://flying-boron-kxx29gy.tmp.now — the front end, deployed. The
+pages that read the BlockLens API (Fresh Launches, the token page's signals,
+Paper Agent, Model Health) need the API running; hosting it is tracked as
+M11 in [docs/FYP1_SCOPE.md](docs/FYP1_SCOPE.md).
+
 Two halves, one product: a backend that watches Base directly and judges
 every new launch once, at launch + 5 minutes, and a front end that shows the
 verdict, its anatomy, and the public running score of how right it has been.
