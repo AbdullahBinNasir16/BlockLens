@@ -1,0 +1,1058 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "TrendingWindow": {
+      "type": "string",
+      "enum": [
+        "m5",
+        "h1",
+        "h6",
+        "h24"
+      ]
+    },
+    "TrendingPool": {
+      "type": "object",
+      "properties": {
+        "rank": {
+          "type": "number"
+        },
+        "pool": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "dex": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "change": {
+          "type": "object",
+          "properties": {
+            "m5": {
+              "type": "number"
+            },
+            "h1": {
+              "type": "number"
+            },
+            "h6": {
+              "type": "number"
+            },
+            "h24": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "m5",
+            "h1",
+            "h6",
+            "h24"
+          ],
+          "additionalProperties": false
+        },
+        "volume": {
+          "type": "object",
+          "properties": {
+            "m5": {
+              "type": "number"
+            },
+            "h1": {
+              "type": "number"
+            },
+            "h6": {
+              "type": "number"
+            },
+            "h24": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "m5",
+            "h1",
+            "h6",
+            "h24"
+          ],
+          "additionalProperties": false
+        },
+        "buys": {
+          "type": "object",
+          "properties": {
+            "m5": {
+              "type": "number"
+            },
+            "h1": {
+              "type": "number"
+            },
+            "h6": {
+              "type": "number"
+            },
+            "h24": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "m5",
+            "h1",
+            "h6",
+            "h24"
+          ],
+          "additionalProperties": false
+        },
+        "sells": {
+          "type": "object",
+          "properties": {
+            "m5": {
+              "type": "number"
+            },
+            "h1": {
+              "type": "number"
+            },
+            "h6": {
+              "type": "number"
+            },
+            "h24": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "m5",
+            "h1",
+            "h6",
+            "h24"
+          ],
+          "additionalProperties": false
+        },
+        "makers": {
+          "type": "object",
+          "properties": {
+            "m5": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "h1": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "h6": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "h24": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "m5",
+            "h1",
+            "h6",
+            "h24"
+          ],
+          "additionalProperties": false,
+          "description": "unique buyers + sellers, from GeckoTerminal; null where it gives none"
+        },
+        "liquidity": {
+          "type": "number"
+        },
+        "marketCap": {
+          "type": "number"
+        },
+        "fdv": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "ms epoch"
+        },
+        "holders": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TokenSecurity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "rank",
+        "pool",
+        "url",
+        "dex",
+        "token",
+        "name",
+        "symbol",
+        "quote",
+        "price",
+        "change",
+        "volume",
+        "buys",
+        "sells",
+        "makers",
+        "liquidity",
+        "marketCap",
+        "fdv",
+        "createdAt",
+        "holders"
+      ],
+      "additionalProperties": false,
+      "description": "One row per token: the highest-ranked pool stands for it."
+    },
+    "TokenSecurity": {
+      "type": "object",
+      "properties": {
+        "holders": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "top10Pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "share of supply held by the ten largest holders, percent"
+        },
+        "honeypot": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "asOf": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "holders",
+        "top10Pct",
+        "honeypot",
+        "asOf"
+      ],
+      "additionalProperties": false,
+      "description": "GoPlus token security, the parts the UI shows."
+    },
+    "TrendingResponse": {
+      "type": "object",
+      "properties": {
+        "provenance": {
+          "$ref": "#/definitions/Provenance"
+        },
+        "window": {
+          "$ref": "#/definitions/TrendingWindow"
+        },
+        "asOf": {
+          "type": "string",
+          "description": "ISO time the ranking was fetched upstream"
+        },
+        "stale": {
+          "type": "boolean",
+          "description": "true when GeckoTerminal is throttling and the last good ranking is served"
+        },
+        "pools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TrendingPool"
+          }
+        }
+      },
+      "required": [
+        "provenance",
+        "window",
+        "asOf",
+        "stale",
+        "pools"
+      ],
+      "additionalProperties": false
+    },
+    "Provenance": {
+      "type": "string",
+      "enum": [
+        "live",
+        "sample"
+      ],
+      "description": "Where a section's numbers come from. 'live'   — fetched from a public source and reproducible 'sample' — illustrative shape for the prototype, not a real finding"
+    },
+    "MarketPair": {
+      "type": "object",
+      "properties": {
+        "pool": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "dex": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "change24h": {
+          "type": "number"
+        },
+        "volume24h": {
+          "type": "number"
+        },
+        "buys24h": {
+          "type": "number"
+        },
+        "sells24h": {
+          "type": "number"
+        },
+        "liquidity": {
+          "type": "number"
+        },
+        "marketCap": {
+          "type": "number"
+        },
+        "fdv": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "ms epoch"
+        }
+      },
+      "required": [
+        "pool",
+        "url",
+        "dex",
+        "quote",
+        "price",
+        "change24h",
+        "volume24h",
+        "buys24h",
+        "sells24h",
+        "liquidity",
+        "marketCap",
+        "fdv",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "TokenMarket": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "pairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MarketPair"
+          },
+          "description": "deepest first"
+        },
+        "asOf": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "address",
+        "name",
+        "symbol",
+        "pairs",
+        "asOf"
+      ],
+      "additionalProperties": false
+    },
+    "MarketSection": {
+      "type": "object",
+      "properties": {
+        "provenance": {
+          "$ref": "#/definitions/Provenance"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TokenMarket"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "null when DexScreener has no Base pair for the address"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provenance",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "SecuritySection": {
+      "type": "object",
+      "properties": {
+        "provenance": {
+          "$ref": "#/definitions/Provenance"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TokenSecurity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provenance",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ProjectLiveResponse": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "market": {
+          "$ref": "#/definitions/MarketSection"
+        },
+        "security": {
+          "$ref": "#/definitions/SecuritySection"
+        },
+        "risk": {
+          "$ref": "#/definitions/TokenRiskResponse"
+        }
+      },
+      "required": [
+        "address",
+        "market",
+        "security",
+        "risk"
+      ],
+      "additionalProperties": false,
+      "description": "The live half of a token page. The research sections are not here: they are sample, held by the front end, and badged as such."
+    },
+    "TokenRiskResponse": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/definitions/Provenance"
+        },
+        "state": {
+          "$ref": "#/definitions/RiskState"
+        },
+        "reason": {
+          "type": "string",
+          "description": "why there is or is not a score, in a sentence a user can read"
+        },
+        "model": {
+          "$ref": "#/definitions/ModelCard"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RiskScore"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "address",
+        "provenance",
+        "state",
+        "reason",
+        "model",
+        "score"
+      ],
+      "additionalProperties": false
+    },
+    "RiskState": {
+      "type": "string",
+      "enum": [
+        "scored",
+        "pending",
+        "not_scored",
+        "out_of_scope"
+      ]
+    },
+    "ModelCard": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string",
+          "description": "what the score predicts, in words"
+        },
+        "appliesTo": {
+          "type": "string",
+          "description": "the population the model was trained to judge"
+        },
+        "trainedOnLaunches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "trainedOnTokens": {
+          "type": "number"
+        },
+        "trainedAt": {
+          "type": "string",
+          "description": "date the model artifact was written"
+        }
+      },
+      "required": [
+        "version",
+        "target",
+        "appliesTo",
+        "trainedOnLaunches",
+        "trainedOnTokens",
+        "trainedAt"
+      ],
+      "additionalProperties": false
+    },
+    "RiskScore": {
+      "type": "object",
+      "properties": {
+        "risk": {
+          "type": "number",
+          "description": "the model's raw output: a ranking, not a calibrated probability"
+        },
+        "launchType": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "launchpad",
+            "self-deployed",
+            null
+          ]
+        },
+        "launchTs": {
+          "type": "string"
+        },
+        "scoredAt": {
+          "type": "string"
+        },
+        "band": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ForwardBand"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "drivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Driver"
+          }
+        },
+        "baseRate": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "risk",
+        "launchType",
+        "launchTs",
+        "scoredAt",
+        "band",
+        "drivers",
+        "baseRate"
+      ],
+      "additionalProperties": false
+    },
+    "ForwardBand": {
+      "type": "object",
+      "properties": {
+        "lo": {
+          "type": "number"
+        },
+        "hi": {
+          "type": "number"
+        },
+        "launches": {
+          "type": "number"
+        },
+        "losses": {
+          "type": "number"
+        },
+        "observed": {
+          "type": "number",
+          "description": "losses / launches"
+        },
+        "since": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "lo",
+        "hi",
+        "launches",
+        "losses",
+        "observed",
+        "since"
+      ],
+      "additionalProperties": false,
+      "description": "What happened, forward, to launches the model scored in the same band. This is the honest reading of a score: the model's raw probabilities are not calibrated forward (DECISIONS.md, Phase 8 result)."
+    },
+    "Driver": {
+      "type": "object",
+      "properties": {
+        "feature": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "display": {
+          "type": "string"
+        },
+        "contribution": {
+          "type": "number",
+          "description": "additive, in log-odds"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "raises",
+            "lowers",
+            "neutral"
+          ]
+        }
+      },
+      "required": [
+        "feature",
+        "label",
+        "value",
+        "display",
+        "contribution",
+        "direction"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenerToken": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "launchedAt": {
+          "type": "number",
+          "description": "ms epoch of the first swap BlockLens stored"
+        },
+        "wallets": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "address",
+        "symbol",
+        "name",
+        "launchedAt",
+        "wallets"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenerResponse": {
+      "type": "object",
+      "properties": {
+        "provenance": {
+          "$ref": "#/definitions/Provenance"
+        },
+        "asOf": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string",
+          "const": "ETH",
+          "description": "money in positions is in this unit, not USD (see DECISIONS.md)"
+        },
+        "tokens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScreenerToken"
+          }
+        },
+        "wallets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WalletRecord"
+          }
+        }
+      },
+      "required": [
+        "provenance",
+        "asOf",
+        "unit",
+        "tokens",
+        "wallets"
+      ],
+      "additionalProperties": false
+    },
+    "WalletRecord": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "description": "a known identity, when one exists"
+        },
+        "ens": {
+          "type": "string"
+        },
+        "firstSeen": {
+          "type": "number",
+          "description": "ms epoch the wallet first appeared on chain"
+        },
+        "fundingSource": {
+          "$ref": "#/definitions/FundingSource"
+        },
+        "clusterSize": {
+          "type": "number",
+          "description": "wallets funded from the same origin, including this one"
+        },
+        "smartMoney": {
+          "type": "boolean"
+        },
+        "insiderLinked": {
+          "type": "boolean"
+        },
+        "positions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WalletProjectPosition"
+          }
+        }
+      },
+      "required": [
+        "address",
+        "firstSeen",
+        "fundingSource",
+        "clusterSize",
+        "smartMoney",
+        "insiderLinked",
+        "positions"
+      ],
+      "additionalProperties": false
+    },
+    "FundingSource": {
+      "type": "string",
+      "enum": [
+        "fresh",
+        "cex",
+        "bridge",
+        "cluster",
+        "unknown"
+      ]
+    },
+    "WalletProjectPosition": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string"
+        },
+        "chain": {
+          "$ref": "#/definitions/Chain"
+        },
+        "firstBuy": {
+          "type": "number",
+          "description": "ms epoch of the first buy"
+        },
+        "lastSell": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "ms epoch of the last sell; null while the position is still open"
+        },
+        "buys": {
+          "type": "number"
+        },
+        "sells": {
+          "type": "number"
+        },
+        "invested": {
+          "type": "number",
+          "description": "USD spent acquiring the position"
+        },
+        "soldFraction": {
+          "type": "number",
+          "description": "share of the position that has been sold, 0-1"
+        },
+        "proceeds": {
+          "type": "number",
+          "description": "USD received from those sells"
+        },
+        "remainingValue": {
+          "type": "number",
+          "description": "USD value of what is still held"
+        },
+        "entryDelay": {
+          "type": "number",
+          "description": "ms between the project's first pair activity and this wallet's first buy"
+        },
+        "averagedDown": {
+          "type": "boolean"
+        },
+        "soldFirstPump": {
+          "type": "boolean"
+        },
+        "wentToZero": {
+          "type": "boolean"
+        },
+        "honeypot": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "projectId",
+        "chain",
+        "firstBuy",
+        "lastSell",
+        "buys",
+        "sells",
+        "invested",
+        "soldFraction",
+        "proceeds",
+        "remainingValue",
+        "entryDelay",
+        "averagedDown",
+        "soldFirstPump",
+        "wentToZero",
+        "honeypot"
+      ],
+      "additionalProperties": false,
+      "description": "One wallet's position in one project.\n\nMoney is stored as what actually moved — spent, taken out, still held — and never as a pre-computed PnL. Every figure the screener filters on is derived from these, so the prototype filters the way a backend would."
+    },
+    "Chain": {
+      "type": "string",
+      "enum": [
+        "ethereum",
+        "base",
+        "solana",
+        "bnb"
+      ]
+    },
+    "UpstreamHealth": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "latencyMs": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "error": {
+          "type": "string"
+        },
+        "checkedAt": {
+          "type": "string"
+        },
+        "calls": {
+          "type": "number",
+          "description": "calls made to this source since the API started"
+        },
+        "cacheHits": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "ok",
+        "latencyMs",
+        "checkedAt",
+        "calls",
+        "cacheHits"
+      ],
+      "additionalProperties": false
+    },
+    "HealthResponse": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "database": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "error": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ok"
+          ],
+          "additionalProperties": false
+        },
+        "model": {
+          "type": "object",
+          "properties": {
+            "loaded": {
+              "type": "boolean"
+            },
+            "version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "loaded",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "scorer": {
+          "type": "object",
+          "properties": {
+            "running": {
+              "type": "boolean"
+            },
+            "lastRun": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "lastError": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "scannedToBlock": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "tracked": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "running",
+            "lastRun",
+            "lastError",
+            "scannedToBlock",
+            "tracked"
+          ],
+          "additionalProperties": false
+        },
+        "alerts": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "sent": {
+              "type": "number"
+            },
+            "lastError": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "enabled",
+            "sent",
+            "lastError"
+          ],
+          "additionalProperties": false
+        },
+        "upstream": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/UpstreamHealth"
+          }
+        }
+      },
+      "required": [
+        "ok",
+        "database",
+        "model",
+        "scorer",
+        "alerts",
+        "upstream"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
