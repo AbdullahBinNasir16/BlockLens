@@ -481,6 +481,22 @@ function ForwardPanel({ f }: { f: ForwardRecord }) {
             : 'The model is not yet beating the base rate on unseen launches; that is reported as a failure, not hidden.'}
         </p>
       )}
+      {ready && b.brier != null && b.brier_base_rate != null && (
+        <ul className="bl-launch__val meta" style={{ marginTop: 8 }}>
+          {b.brier > b.brier_base_rate && (
+            <li>
+              Read the score as a ranking, not a probability: it averages{' '}
+              {Math.round((b.mean_predicted ?? 0) * 100)}% against {Math.round((b.base_rate ?? 0) * 100)}% observed,
+              and its Brier score ({b.brier.toFixed(3)}) is worse than always predicting the base rate (
+              {b.brier_base_rate.toFixed(3)}).
+            </li>
+          )}
+          <li>
+            Buyer loss is the hour-6 price, which a liquidity pull leaves standing, so pulled pools count as no loss
+            here. Check the launch type first: self-deployed pools are the ones that get pulled.
+          </li>
+        </ul>
+      )}
     </section>
   );
 }

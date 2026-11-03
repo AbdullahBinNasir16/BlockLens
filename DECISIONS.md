@@ -1475,3 +1475,51 @@ contract, and this case is outside them. Decoding such swaps from the
 `Swap` events' own amounts, independent of transfers, is a backfill change
 for the research pipeline (it affects the dataset, not just the feed), and
 is left to that pipeline's owner.
+
+## Phase 8 result — the forward test passed its floor (2026-11-03)
+
+Full report: `backend/reports/forward_validation.md`. Numbers come from
+`scripts/phase8_report.py`.
+
+**Pre-registered: both criteria pass.** Data: 8,259 timely, resolved
+launches (191 losses) from 2026-10-19 to 2026-11-03.
+
+| Criterion | Result |
+|---|---|
+| Buyer-loss PR-AUC above the base rate | 0.108 against 0.023; interval of the difference +0.055 to +0.124 |
+| 7-day pull rate, self-deployed vs launchpad | 89.2% against 0.63% |
+
+**Calibration fails.** Brier is 0.038, against 0.023 for the base rate,
+and the mean prediction is 8.7% against 2.3% observed. Precision at ≥ 0.5
+is 20%.
+
+**Post hoc, labelled as such:**
+
+* **The buyer-loss label does not see liquidity pulls.** It is the hour-6
+  price, and a pull leaves the last price standing. 3,557 pools were
+  pulled by hour 6 and only 6 are labelled losses. Phase 6 defined the
+  label on non-rugged tokens, so this is the training definition carried
+  over, not a resolver bug.
+* **On the not-pulled population** (4,703 tokens, 3.9% losses), the model
+  works: PR-AUC 0.152 and ROC 0.78. It beats launch type (0.033) and the
+  checkers (0.031).
+* **With pulls counted as losses**, launch type alone beats the model:
+  0.837 against 0.671. The right order is launch type first, then the
+  model on launchpad tokens. That is the paper agent's policy.
+* **Both fixed rule checkers sit at the base rate forward** (PR-AUC 0.024
+  and 0.025). The model beats them by +0.05 to +0.13.
+
+**Not changed:** the model stays frozen and the test keeps running. A
+recalibrated model, or one trained on a pull-aware label, would be a new,
+separately reported record.
+
+**UI:** the Fresh Launches forward panel now says the score is a ranking,
+not a probability, when its Brier is worse than the base rate's. It also
+says that pulled pools count as no loss.
+
+**Effect of the Phase 10 scoring guard on this record** (measured
+2026-11-03, before PR #6 merged): of the 8,275 timely, scored, resolved
+launches, 2 had no decodable swaps. Both were self-deployed and neither was
+a loss. PR-AUC is 0.1082 with or without them. The guard changes which
+launches are scored from 2026-11-03 onward and is logged with its reason.
+It does not alter the result above.
