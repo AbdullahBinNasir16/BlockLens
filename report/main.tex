@@ -1,3 +1,8 @@
+% Chapters open on the next page rather than the next right-hand page:
+% the template's double-sided openings leave a blank page before most
+% chapters, which is right for binding and wrong for a PDF. No content
+% is affected.
+\PassOptionsToClass{openany}{book}
 \documentclass{fast-nuces-bs}
 
 \usepackage{mathptmx}% Times Roman font
@@ -36,9 +41,9 @@
 \degreemonth{October}
 \degreename{Computer Science}
 \campuscity{Islamabad}
-\authorone{Abbas \todo{full name}}{i230803}
-\authortwo{Abdullah Bin Nasir}{i230733}
-\authorthree{Shahmir Khan Lughmani}{i220556}
+\authorone{Shahmir Khan Lughmani}{i220556}
+\authortwo{Abbas}{i230803}
+\authorthree{Abdullah Bin Nasir}{i230733}
 \supervisor{Ms. Noshina Tariq}
 \sessionduration{2023-2027}
 \deanname{Dr. Dean Computing}
@@ -50,7 +55,7 @@
 
 \begin{document}
 
-\cleardoublepage
+\clearpage
 \pagenumbering{roman}
 \input{chapters/01_students_submission}
 \input{chapters/02_anti_plagiarism}
@@ -60,7 +65,7 @@
 \input{chapters/06_executive_summary}
 \input{chapters/07_abbreviations}
 
-\cleardoublepage
+\clearpage
 \pagenumbering{arabic}
 \input{chapters/chapter1_introduction}
 \input{chapters/chapter2_research}
@@ -81,6 +86,6 @@
 \input{chapters/appendix_diagrams}
 \input{chapters/appendix_meetings}
 
-\bibliographystyle{plainnat}
+\bibliographystyle{IEEEtranN}
 \bibliography{references/references}
 \end{document}

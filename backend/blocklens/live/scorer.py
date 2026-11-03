@@ -261,6 +261,15 @@ class Scorer:
         if row is None:
             l.status = "not scored: no pool row"
             return
+        # The screen counted Swap events in the pool, but the backfill, which
+        # decodes a swap from the token's own transfers, found none: the pool
+        # settles trades without ERC-20 transfers (hook or claim accounting
+        # the training data never contained). An all-zero feature row would
+        # score as a quiet launch; the honest answer is no score.
+        if not row.get("t_swaps") and (l.swaps_by_cutoff or 0) > 0:
+            l.status = "not scored: trades settled without token transfers"
+            l.notes.append(f"screen saw {l.swaps_by_cutoff} swaps; none decodable from transfers")
+            return
         l.launch_type = "launchpad" if row["r_mint_in_window"] else "self-deployed"
         l.buyers_by_cutoff = int(row["t_unique_buyers"])
         l.run_up_by_cutoff = float(2.718281828 ** row["t_log_price_drift"])

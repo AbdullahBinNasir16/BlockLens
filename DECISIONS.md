@@ -1457,3 +1457,21 @@ trades beside a real record), the social and narrative sections, and the
 chain selector's three unmeasured chains. The three hand-built profiles
 remain as labelled case studies. The Portfolio page is the paper agent's
 real book, trade by trade, from `/api/paper-agent/trades`.
+
+## Phase 10 note — a pool can trade without moving the token (2026-10-22)
+
+Six launchpad V4 pools in the first hour of a local run were scored with
+an all-zero feature row: the minute-5 screen had counted four `Swap`
+events in each pool, but the backfill, which decodes a swap from the
+token's own `Transfer` logs, found only the mint. These pools settle trades
+without ERC-20 transfers (hook or ERC-6909 claim accounting), which the
+training data never contained, so the model was reading "a launch nobody
+touched" for a launch that traded.
+
+**Rule, effective now:** when the screen saw trades and none are decodable
+from transfers, the launch is not scored and the reason is shown ("trades
+settled without token transfers"). The training conditions are the model's
+contract, and this case is outside them. Decoding such swaps from the
+`Swap` events' own amounts, independent of transfers, is a backfill change
+for the research pipeline (it affects the dataset, not just the feed), and
+is left to that pipeline's owner.

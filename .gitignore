@@ -37,3 +37,5 @@ playwright-report/
 test-results/
 backend/coverage.xml
 backend/.coverage
+.vercel
+.vercel/
