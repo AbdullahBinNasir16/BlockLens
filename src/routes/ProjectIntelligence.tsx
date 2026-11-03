@@ -11,8 +11,10 @@ import { GithubSection } from '../components/research/GithubSection';
 import { RoadmapSection } from '../components/research/RoadmapSection';
 import { RiskSection } from '../components/research/RiskSection';
 import { FinalAssessment } from '../components/research/FinalAssessment';
+import { LiveSection } from '../components/research/LiveSection';
 
 const INDEX = [
+  { id: 'live', n: 'L', label: 'Live' },
   { id: 'overview', n: '00', label: 'Overview' },
   { id: 'fundamentals', n: '01', label: 'Fundamentals' },
   { id: 'developer', n: '02', label: 'Developer' },
@@ -24,7 +26,7 @@ const INDEX = [
 ];
 
 function ContentsRail() {
-  const [active, setActive] = useState('overview');
+  const [active, setActive] = useState('live');
 
   useEffect(() => {
     const els = INDEX.map((i) => document.getElementById(i.id)).filter(Boolean) as HTMLElement[];
@@ -85,6 +87,7 @@ function ResearchBody() {
       <ContentsRail />
       <div className="bl-research__body">
         <ProjectHeader />
+        <LiveSection />
         <Overview />
         <Fundamentals />
         <DeveloperSection />

@@ -2,6 +2,7 @@ import { ScoreRing } from '../primitives/ScoreRing';
 import { DotScale } from '../primitives/Meters';
 import { useInView } from '../../lib/hooks';
 import { useProject } from '../../lib/project-context';
+import { ProvenanceChip } from './Section';
 import { bandColor, riskBand, signalColor } from '../../lib/format';
 
 const MARK: Record<string, string> = { positive: '+', negative: '−', neutral: '~' };
@@ -16,8 +17,12 @@ export function FinalAssessment() {
   return (
     <section className="bl-final" id="assessment" ref={ref}>
       <div className="bl-final__head">
-        <span className="eyebrow eyebrow-ink">11 — Final</span>
+        <span className="eyebrow eyebrow-ink">Final</span>
         <h2 className="display d2">Overall Assessment</h2>
+        <ProvenanceChip section="assessment" />
+        <p className="meta">
+          An illustrative case-study verdict, not a BlockLens finding and not the model's output.
+        </p>
       </div>
 
       <div className="bl-final__body">
