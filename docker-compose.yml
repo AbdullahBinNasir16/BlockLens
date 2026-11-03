@@ -1,0 +1,61 @@
+# The whole product, built from this checkout, with one command:
+#
+#   docker compose up --build
+#
+# then open http://localhost:8080. Every setting comes from the environment
+# (a .env file next to this one is read automatically; see .env.example) and
+# every one has a default, so no keys are needed. See RUNNING.md.
+#
+# docker-compose.prod.yml runs the same stack from the published images.
+services:
+  db:
+    image: timescale/timescaledb:2.17.2-pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-blocklens}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-blocklens}
+      POSTGRES_DB: ${POSTGRES_DB:-blocklens}
+      TIMESCALEDB_TELEMETRY: "off"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-blocklens} -d ${POSTGRES_DB:-blocklens}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-blocklens}:${POSTGRES_PASSWORD:-blocklens}@db:5432/${POSTGRES_DB:-blocklens}
+      BLOCKLENS_LIVE: ${BLOCKLENS_LIVE:-1}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      RPC_URL: ${RPC_URL:-https://base.gateway.tenderly.co}
+      DEXSCREENER_URL: ${DEXSCREENER_URL:-https://api.dexscreener.com}
+      GECKOTERMINAL_URL: ${GECKOTERMINAL_URL:-https://api.geckoterminal.com/api/v2}
+      GOPLUS_URL: ${GOPLUS_URL:-https://api.gopluslabs.io}
+      UPSTREAM_MAX_CALLS_PER_DAY: ${UPSTREAM_MAX_CALLS_PER_DAY:-50000}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+    volumes:
+      - apidata:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  apidata:

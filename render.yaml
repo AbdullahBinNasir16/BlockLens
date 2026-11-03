@@ -12,7 +12,7 @@ services:
     rootDir: backend
     dockerfilePath: ./Dockerfile
     plan: starter
-    healthCheckPath: /api/health
+    healthCheckPath: /api/health?probe=false
     envVars:
       - key: DATABASE_URL
         fromDatabase:

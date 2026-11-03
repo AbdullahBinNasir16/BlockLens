@@ -30,6 +30,9 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
+      - name: The API contract has not drifted from src/data/api.ts
+        run: node scripts/contract.mjs --check
+
       - name: Unit tests, with a coverage floor
         run: npm run test:coverage
 
@@ -179,3 +182,40 @@ jobs:
             test-results
             api.log
           retention-days: 7
+
+  compose:
+    # The clean-machine path of RUNNING.md, for real: a fresh runner, the
+    # repository, and one command. If a step is missing from RUNNING.md,
+    # this job is where it shows.
+    name: Clean machine · docker compose up
+    runs-on: ubuntu-latest
+    needs: [frontend, backend]
+    env:
+      BLOCKLENS_LIVE: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - name: docker compose up --build (RUNNING.md, step 2)
+        run: docker compose up --build -d
+      - name: The API is healthy and the model is loaded
+        run: |
+          for i in $(seq 1 60); do curl -fsS http://127.0.0.1:8080/api/health > health.json && break; sleep 3; done
+          cat health.json
+          python3 -c "import json; h = json.load(open('health.json')); assert h['database']['ok'] and h['model']['loaded'], h"
+      - name: The built front end is served, with client-side routes
+        run: |
+          curl -fsS http://127.0.0.1:8080/ | grep -q '<div id="root">'
+          curl -fsS http://127.0.0.1:8080/app/trending | grep -q '<div id="root">'
+      - name: The bundle calls no third party itself
+        run: |
+          docker compose cp web:/usr/share/nginx/html ./served
+          ! grep -rqE "api\.geckoterminal|api\.dexscreener|api\.gopluslabs|/gt/|/ds/|/gp/" served/assets
+      - name: Every route answers in the contract through nginx
+        run: |
+          curl -fsS http://127.0.0.1:8080/api/token-risk/0x1111111111111111111111111111111111111111 | grep -q '"out_of_scope"'
+          echo "trending through nginx: $(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/trending)"
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --no-color | tail -200
+      - name: Down
+        if: always()
+        run: docker compose down -v
