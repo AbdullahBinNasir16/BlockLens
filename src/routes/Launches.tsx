@@ -4,6 +4,8 @@ import { Icon } from '../components/app/Icons';
 import { Drawer } from '../components/primitives/Bits';
 import { Explain } from '../components/live/Explain';
 import { bandColor, shortAddr, int } from '../lib/format';
+import { ProvChip } from '../components/primitives/Bits';
+import { SAMPLE_FEED, SNAPSHOT_AT } from '../data/snapshots';
 import { fetchFeed, fetchSymbols, riskBand, type Feed, type ForwardRecord, type Launch } from '../lib/live/launches';
 import { openScoredStream } from '../lib/live/product';
 
@@ -31,10 +33,14 @@ function ago(iso: string): string {
   return `${Math.floor(m / 60)}h ${Math.round(m % 60)}m`;
 }
 
+const SNAP_DAY = new Date(SNAPSHOT_AT).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
 export function Launches() {
   const nav = useNavigate();
   const [feed, setFeed] = useState<Feed | null>(null);
   const [err, setErr] = useState('');
+  const [sample, setSample] = useState(false);
+  const gotLive = useRef(false);
   const [show, setShow] = useState<Show>('scored');
   const [names, setNames] = useState<Record<string, { symbol: string; name: string }>>({});
   const [, tick] = useState(0);
@@ -60,7 +66,7 @@ export function Launches() {
         if (notifyRef.current === 'on' && agentWouldBuy(l)) {
           try {
             new Notification('BlockLens · low-risk launchpad launch', {
-              body: `${shortAddr(l.token, 8, 6)} · risk ${Math.round((l.risk ?? 0) * 100)}% · ${l.buyers_by_cutoff ?? 0} buyers by minute 5`,
+              body: `${shortAddr(l.token, 8, 6)} · score ${(l.risk ?? 0).toFixed(2)} · ${l.buyers_by_cutoff ?? 0} buyers by minute 5`,
               tag: l.token,
             });
           } catch {
@@ -89,6 +95,8 @@ export function Launches() {
         const f = await fetchFeed();
         if (!alive) return;
         setFeed(f);
+        gotLive.current = true;
+        setSample(false);
         setErr('');
         const want = f.launches.filter((l) => l.status === 'scored').map((l) => l.token);
         const missing = want.filter((t) => !(t in names));
@@ -97,7 +105,12 @@ export function Launches() {
           if (alive) setNames((n) => ({ ...n, ...got }));
         }
       } catch (e) {
-        if (alive) setErr(e instanceof Error ? e.message : String(e));
+        if (!alive) return;
+        setErr(e instanceof Error ? e.message : String(e));
+        if (!gotLive.current) {
+          setFeed(SAMPLE_FEED);
+          setSample(true);
+        }
       }
     };
     reload.current = load;
@@ -143,6 +156,7 @@ export function Launches() {
           </p>
         </div>
         <div className="bl-page__headr bl-live">
+          {feed && <ProvChip live={!sample} why={`snapshot of ${SNAP_DAY}, not live`} />}
           <span className="bl-live__state" data-status={err ? 'error' : feed ? 'live' : 'loading'}>
             <span className="bl-live__dot" />
             {err ? 'API unreachable' : feed ? 'Live' : 'Connecting'}
@@ -172,6 +186,13 @@ export function Launches() {
         </div>
       </header>
 
+      {sample && (
+        <p className="bl-samplebar" role="alert">
+          <strong>Sample data.</strong> The BlockLens API could not be reached, so this is the feed as it stood when captured on{' '}
+          {SNAP_DAY}. Nothing on this page is live until the API answers; the page keeps retrying.
+        </p>
+      )}
+
       {toasts.length > 0 && (
         <div className="bl-toasts" role="status" aria-live="polite">
           {toasts.map((l) => (
@@ -180,7 +201,7 @@ export function Launches() {
               <span className="bl-toast__t num">{names[l.token]?.symbol || shortAddr(l.token, 8, 6)}</span>
               <span className="bl-toast__d meta">
                 {l.launch_type === 'launchpad' ? 'launchpad' : 'self-deployed'} · risk{' '}
-                <b style={{ color: bandColor[riskBand(l.risk ?? 0)] }}>{Math.round((l.risk ?? 0) * 100)}%</b>
+                <b style={{ color: bandColor[riskBand(l.risk ?? 0)] }}>{(l.risk ?? 0).toFixed(2)}</b>
                 {agentWouldBuy(l) ? ' · agent would buy' : ''}
               </span>
             </button>
@@ -254,7 +275,7 @@ export function Launches() {
               <th>Launched</th>
               <th>Token</th>
               <th>Launch type</th>
-              <th className="bl-th--r">Buyer-loss risk</th>
+              <th className="bl-th--r" title="The model's raw output: a ranking, not a probability. Forward, scores ran about four times too high.">Buyer-loss score</th>
               <th className="bl-th--r">Swaps by 5m</th>
               <th className="bl-th--r">Buyers by 5m</th>
               <th className="bl-th--r">Run-up by 5m</th>
@@ -303,7 +324,7 @@ export function Launches() {
               <span className="bl-stat">
                 <span className="bl-stat__l eyebrow">Buyer-loss risk</span>
                 <span className="bl-stat__v num" style={{ color: bandColor[riskBand(why.risk ?? 0)] }}>
-                  {why.risk == null ? '—' : `${Math.round(why.risk * 100)}%`}
+                  {why.risk == null ? '—' : why.risk.toFixed(2)}
                 </span>
                 <span className="bl-stat__s meta">scored {why.scored_at ? `${ago(why.scored_at)} ago` : ''}</span>
               </span>
@@ -370,7 +391,7 @@ function Row({ l, name, onOpen, onWhy }: { l: Launch; name?: { symbol: string; n
               <span style={{ width: `${Math.round(l.risk * 100)}%`, background: bandColor[band!] }} />
             </span>
             <span className="num" style={{ color: bandColor[band!] }}>
-              {Math.round(l.risk * 100)}%
+              {l.risk.toFixed(2)}
             </span>
           </span>
         )}

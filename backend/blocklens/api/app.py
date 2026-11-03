@@ -12,13 +12,15 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import threading
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
-from typing import Iterator
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import text
@@ -29,70 +31,44 @@ from ..live import resolver
 from ..live.scorer import Scorer
 from ..store import write
 from ..store.db import session_factory
+from . import screener as screener_corpus
+from .deps import CHAIN, STATE, get_session  # noqa: F401 - get_session is the tests' override point
+from .deps import address as _address
+from .deps import db_call as _db
+from .deps import scorer as _s
+from .routes import health as r_health
+from .routes import project as r_project
+from .routes import screener as r_screener
+from .routes import token_risk as r_token_risk
+from .routes import trending as r_trending
 
-CHAIN = "base"
-_scorer: Scorer | None = None
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
+                    format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    global _scorer
-    _scorer = Scorer()
+    STATE.scorer = Scorer()
     if os.environ.get("BLOCKLENS_LIVE", "1") == "1":
-        threading.Thread(target=_scorer.run_forever, name="live-scorer", daemon=True).start()
+        threading.Thread(target=STATE.scorer.run_forever, name="live-scorer", daemon=True).start()
+        # the screener's corpus takes tens of seconds to build: start it now
+        screener_corpus.corpus(session_factory)
     yield
 
 
-app = FastAPI(title="BlockLens API", version="0.2.0", lifespan=lifespan)
-
-
-def _s() -> Scorer:
-    if _scorer is None:
-        raise HTTPException(503, "scorer not started")
-    return _scorer
-
-
-def get_session() -> Iterator[Session]:
-    """A database session per request. Tests override this with a session on
-    a transaction that is rolled back afterwards."""
-    try:
-        s = session_factory()()
-    except Exception as e:  # noqa: BLE001
-        raise HTTPException(503, f"database unavailable: {type(e).__name__}") from e
-    try:
-        yield s
-    finally:
-        s.close()
-
-
-def _address(a: str) -> str:
-    a = a.strip().lower()
-    if not (a.startswith("0x") and len(a) == 42 and all(c in "0123456789abcdef" for c in a[2:])):
-        raise HTTPException(400, "not a contract address")
-    return a
-
-
-def _db(fn, s: Session):
-    try:
-        return fn(s)
-    except HTTPException:
-        raise
-    except Exception as e:  # noqa: BLE001 - a dead database is a 503, not a 500
-        s.rollback()
-        raise HTTPException(503, f"database error: {type(e).__name__}") from e
+app = FastAPI(title="BlockLens API", version="0.3.0", lifespan=lifespan)
+app.add_middleware(GZipMiddleware, minimum_size=2048)
+# A front end built with VITE_API_URL calls the API from another origin.
+# CORS_ORIGINS: comma-separated origins, or * (the default).
+_origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()]
+app.add_middleware(CORSMiddleware, allow_origins=_origins, allow_methods=["GET", "POST", "DELETE"],
+                   allow_headers=["Content-Type", "Accept"])
+# Phase 7: one route module per screen, each answering in the contract
+for r in (r_health, r_trending, r_project, r_token_risk, r_screener):
+    app.include_router(r.router)
 
 
 # ---- the feed (Phase 7) ----------------------------------------------------
-
-@app.get("/api/health")
-def health() -> dict:
-    s = _s()
-    snap = s.snapshot()
-    return {"ok": True, "last_run": snap["last_run"], "last_error": snap["last_error"],
-            "scanned_to_block": snap["scanned_to_block"], "tracked": len(snap["launches"]),
-            "alerts": {"enabled": s.notifier.enabled, "sent": s.notifier.sent,
-                       "last_error": s.notifier.last_error}}
-
 
 @app.get("/api/model")
 def model() -> dict:

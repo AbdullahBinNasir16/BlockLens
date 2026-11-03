@@ -1,3 +1,4 @@
+import { API_URL } from '../api';
 /* The live system's own health, from /api/model/health, and the series the
    Model Health page draws from it. */
 
@@ -43,7 +44,7 @@ export interface Health {
 }
 
 export async function fetchHealth(): Promise<Health> {
-  const r = await fetch('/api/model/health');
+  const r = await fetch(API_URL + '/api/model/health');
   if (!r.ok) throw new Error(`API ${r.status}`);
   return r.json();
 }

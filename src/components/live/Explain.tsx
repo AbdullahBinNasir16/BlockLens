@@ -18,13 +18,13 @@ export function Explain({ why, compact = false }: { why: Explanation; compact?: 
     <div className="bl-why" data-compact={compact}>
       <div className="bl-why__head">
         <span className="meta">
-          Base rate <b className="num">{pct(why.base_rate)}</b>
+          Model score, base <b className="num">{pct(why.base_rate)}</b>
         </span>
         <span className="bl-why__arrow" aria-hidden="true">
           →
         </span>
         <span className="meta">
-          This launch <b className="num">{pct(why.risk)}</b>
+          this launch <b className="num">{pct(why.risk)}</b>
         </span>
       </div>
       <ul className="bl-why__list">

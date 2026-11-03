@@ -1,3 +1,4 @@
+import { API_URL } from '../api';
 /* The paper agent's book, from /api/paper-agent/trades, and the arithmetic
    the Paper Agent page shows. Every number on that page is derived here
    from the trade rows; nothing about performance is stored. The policies
@@ -46,7 +47,7 @@ export const POLICY_RULE: Record<Policy, string> = {
 };
 
 export async function fetchPaperBook(): Promise<PaperBook> {
-  const r = await fetch('/api/paper-agent/trades?limit=2000');
+  const r = await fetch(API_URL + '/api/paper-agent/trades?limit=2000');
   if (!r.ok) throw new Error(`API ${r.status}`);
   return r.json();
 }

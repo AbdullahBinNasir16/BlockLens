@@ -191,18 +191,28 @@ export function FilterChip({
   applied,
   onToggle,
   onChange,
+  unsupported,
 }: {
   def: CheckDefinition;
   /** undefined while the filter is off */
   applied?: AppliedCheck;
   onToggle: () => void;
   onChange: (next: AppliedCheck) => void;
+  /** why this corpus cannot answer this filter, when it cannot */
+  unsupported?: string;
 }) {
-  const on = applied !== undefined;
+  const on = applied !== undefined && !unsupported;
 
   return (
-    <span className="bl-chip" data-on={on}>
-      <button type="button" className="bl-chip__l" onClick={onToggle} aria-pressed={on}>
+    <span className="bl-chip" data-on={on} data-unsupported={!!unsupported}>
+      <button
+        type="button"
+        className="bl-chip__l"
+        onClick={onToggle}
+        aria-pressed={on}
+        disabled={!!unsupported}
+        title={unsupported ? `Not available on this corpus: ${unsupported}` : undefined}
+      >
         {def.derivation === 'derived' && <DerivedRing />}
         {def.label}
       </button>

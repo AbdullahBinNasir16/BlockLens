@@ -416,6 +416,11 @@ export interface WalletProjectPosition {
   soldFirstPump: boolean;
   wentToZero: boolean;
   honeypot: boolean;
+  /** ms epoch the record stops observing this position. The live store
+   *  holds each launch's first 24 hours, so an open position there is
+   *  "still held at the end of what was seen", and is measured to here,
+   *  never to the corpus clock. Absent: observed to the corpus clock. */
+  observedUntil?: number;
 }
 
 export interface WalletRecord {

@@ -40,5 +40,5 @@ def test_forward_record_endpoint_answers(client):
 
 
 def test_health_reports_the_alert_channel_state(client):
-    r = client.get("/api/health").json()
+    r = client.get("/api/health?probe=false").json()       # no upstream probe: no network
     assert r["alerts"]["enabled"] is False and r["alerts"]["sent"] == 0

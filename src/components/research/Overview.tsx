@@ -3,6 +3,7 @@ import { ScoreRing } from '../primitives/ScoreRing';
 import { MiniRing, Radar, BarScale } from '../primitives/Meters';
 import { useInView } from '../../lib/hooks';
 import { useProject } from '../../lib/project-context';
+import { ProvenanceChip } from './Section';
 import { bandColor, qualityBand, qualityColor, riskBand, signalColor } from '../../lib/format';
 
 export function Overview() {
@@ -16,6 +17,12 @@ export function Overview() {
 
   return (
     <section className="bl-ov" id="overview" ref={ref}>
+      <p className="bl-samplebar">
+        <strong>Sample data.</strong> These rings are an illustrative case-study score, written by hand
+        to show the intended layout. They are not the BlockLens model, which gives no 0–100 score: its
+        view of this token is in the Live section above.{' '}
+        <ProvenanceChip section="overview" />
+      </p>
       {/* ---------------- headline scores ---------------- */}
       <div className="bl-ov__scores">
         <div className="bl-ov__rings">

@@ -65,6 +65,11 @@ class Config:
         # sustained ~1.4 req/s across 580 calls with zero errors.
         "rpc": RateLimit(rate=float(os.environ.get("RPC_PER_SEC", "4")), burst=4),
         "alchemy": RateLimit(rate=float(os.environ.get("ALCHEMY_PER_SEC", "15")), burst=15),
+        # Phase 7, served to the front end. GeckoTerminal's free limit is far
+        # tighter than its documented 30/min (429s after a handful of calls),
+        # and GoPlus answers one token per call on its free tier.
+        "geckoterminal": RateLimit(rate=_int("GECKOTERMINAL_PER_MIN", 10) / 60.0, burst=2),
+        "goplus": RateLimit(rate=_int("GOPLUS_PER_MIN", 30) / 60.0, burst=2),
     })
 
     # Alchemy's monthly allowance. Only consumed when the Alchemy source is on.
@@ -75,6 +80,22 @@ class Config:
 
     # A run that would exceed this stops cleanly and says so in ingest_run.
     default_max_calls_per_run: int = _int("MAX_CALLS_PER_RUN", 20_000)
+
+    # ---- serving layer (Phase 7) ----
+    # The API proxies the three public market sources so the browser never
+    # calls a third party. Responses are cached per route for these TTLs,
+    # shared by every viewer.
+    geckoterminal_url: str = _str("GECKOTERMINAL_URL", "https://api.geckoterminal.com/api/v2")
+    goplus_url: str = _str("GOPLUS_URL", "https://api.gopluslabs.io")
+    trending_ttl_s: int = _int("TRENDING_TTL_S", 60)
+    prices_ttl_s: int = _int("PRICES_TTL_S", 10)
+    holders_ttl_s: int = _int("HOLDERS_TTL_S", 900)
+    market_ttl_s: int = _int("MARKET_TTL_S", 30)
+    # the screener corpus is rebuilt from the store when older than this
+    screener_max_age_s: int = _int("SCREENER_MAX_AGE_S", 86_400)
+    upstream_timeout_s: float = float(os.environ.get("UPSTREAM_TIMEOUT_S", "8"))
+    # A day's ceiling on upstream calls from the serving layer, all sources.
+    upstream_max_calls_per_day: int = _int("UPSTREAM_MAX_CALLS_PER_DAY", 50_000)
 
     # ---- X / twitter ----
     # The only source in the project that can cost real money: ~half a US cent

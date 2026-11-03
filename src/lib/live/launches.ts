@@ -1,3 +1,5 @@
+import { API_URL, apiGet } from '../api';
+import type { SymbolsResponse } from '../../data/api';
 /* The live launch feed, from the BlockLens API (backend/blocklens/api). */
 
 /** One term of a score's anatomy (backend/blocklens/live/explain.py). */
@@ -91,29 +93,25 @@ export interface Feed {
 }
 
 export async function fetchFeed(): Promise<Feed> {
-  const r = await fetch('/api/launches');
+  const r = await fetch(API_URL + '/api/launches');
   if (!r.ok) throw new Error(`API ${r.status}`);
   return r.json();
 }
 
 export async function fetchTracked(address: string): Promise<Launch | null> {
-  const r = await fetch(`/api/token/${address}`);
+  const r = await fetch(`${API_URL}/api/token/${address}`);
   if (!r.ok) return null;
   const d = await r.json();
   return d.tracked ? d.launch : null;
 }
 
-/** Symbols for display, from DexScreener (≤ 30 per call). */
+/** Symbols for display, from the API (which asks DexScreener and caches). */
 export async function fetchSymbols(tokens: string[]): Promise<Record<string, { symbol: string; name: string }>> {
   const out: Record<string, { symbol: string; name: string }> = {};
-  for (let i = 0; i < tokens.length; i += 30) {
+  for (let i = 0; i < tokens.length; i += 120) {
     try {
-      const r = await fetch(`/ds/tokens/v1/base/${tokens.slice(i, i + 30).join(',')}`);
-      if (!r.ok) continue;
-      for (const p of (await r.json()) ?? []) {
-        const a = String(p?.baseToken?.address ?? '').toLowerCase();
-        if (a && !out[a]) out[a] = { symbol: p.baseToken.symbol ?? '', name: p.baseToken.name ?? '' };
-      }
+      const r = await apiGet<SymbolsResponse>(`/api/symbols?tokens=${tokens.slice(i, i + 120).join(',')}`);
+      Object.assign(out, r.symbols);
     } catch {
       /* names are a nicety; the feed stands without them */
     }

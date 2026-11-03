@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FunnelStage, ScreenerQuery, WalletMatch } from '../data/types';
 import { CHECK_BY_ID } from '../data/checks';
 import { chainMeta } from '../data/projects';
-import { CORPUS_NOTE, WALLET_CORPUS } from '../data/wallets';
 import { emptyQuery, windowRange } from '../data/presets';
 import { evaluateQuery } from '../lib/screener';
+import { type Corpus, CorpusProvider, SAMPLE_CORPUS, liveCorpus } from '../lib/corpus';
+import { apiGet, liveEnabled } from '../lib/api';
+import type { ScreenerResponse } from '../data/api';
 import { int } from '../lib/format';
 import { ProvChip } from '../components/primitives/Bits';
 import { FilterPanel, searchableCount } from '../components/screener/FilterPanel';
@@ -29,10 +31,11 @@ type View = 'list' | 'bubbles';
  *  zero state is only useful if it offers the next move, not a diagnosis. */
 function relaxation(
   q: ScreenerQuery,
-  stage: FunnelStage
+  stage: FunnelStage,
+  now: number
 ): { label: string; apply: () => ScreenerQuery } | null {
   if (stage.id === 'scope') {
-    const ytd = windowRange('ytd');
+    const ytd = windowRange('ytd', now);
     if (q.scope.from > ytd.from) {
       return {
         label: 'Widen the window to year-to-date',
@@ -73,8 +76,54 @@ function relaxation(
 
 const same = (a: ScreenerQuery, b: ScreenerQuery) => JSON.stringify(a) === JSON.stringify(b);
 
+const INDEX_RETRY_MS = 30_000;
+
 export function Screener() {
+  /* The live corpus: the token index first, then each search's wallets.
+     Until the index answers (the API builds it at start-up) or when the
+     API is down, the sample corpus is searched, under its badge. */
+  const [index, setIndex] = useState<ScreenerResponse | null>(null);
+  const [indexWhy, setIndexWhy] = useState(liveEnabled('screener') ? 'loading the live corpus' : 'live data is switched off for this screen');
+  const [scoped, setScoped] = useState<ScreenerResponse | null>(null);
+  useEffect(() => {
+    if (!liveEnabled('screener')) return;
+    let alive = true;
+    let t: number | undefined;
+    const load = () =>
+      apiGet<ScreenerResponse>('/api/screener', 20_000)
+        .then((r) => alive && setIndex(r))
+        .catch((e) => {
+          if (!alive) return;
+          setIndexWhy(String(e?.message ?? e));
+          t = window.setTimeout(load, INDEX_RETRY_MS);
+        });
+    load();
+    return () => {
+      alive = false;
+      window.clearTimeout(t);
+    };
+  }, []);
+  const corpus: Corpus = useMemo(
+    () => (index ? liveCorpus({ ...index, wallets: scoped?.wallets ?? [] }) : SAMPLE_CORPUS),
+    [index, scoped]
+  );
+  const live = corpus.provenance === 'live';
+
   const [draft, setDraft] = useState<ScreenerQuery>(() => emptyQuery());
+  /* the live corpus has its own clock and tokens: start its question afresh */
+  useEffect(() => {
+    if (!index) return;
+    const c = liveCorpus(index);
+    /* filters the live corpus cannot answer are dropped, never kept silently */
+    setDraft((q) => ({
+      ...q,
+      scope: { ...q.scope, contracts: [], ...windowRange('ytd', c.now) },
+      walletChecks: q.walletChecks.filter((x) => !c.unsupported[x.checkId]),
+      projectRule: { ...q.projectRule, checks: q.projectRule.checks.filter((x) => !c.unsupported[x.checkId]) },
+    }));
+    setSearched(null);
+    setScoped(null);
+  }, [index]);
   const [searched, setSearched] = useState<ScreenerQuery | null>(null);
   const [searching, setSearching] = useState(false);
   const [view, setView] = useState<View>('list');
@@ -87,8 +136,8 @@ export function Screener() {
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
   const result = useMemo(
-    () => (searched ? evaluateQuery(searched, WALLET_CORPUS) : null),
-    [searched]
+    () => (searched ? evaluateQuery(searched, corpus.wallets, corpus) : null),
+    [searched, corpus]
   );
 
   const rows = useMemo(() => {
@@ -99,10 +148,25 @@ export function Screener() {
 
   const stale = searched !== null && !same(draft, searched);
 
-  const search = (q: ScreenerQuery = draft) => {
-    if (searchableCount(q) === 0) return;
+  const search = async (q: ScreenerQuery = draft) => {
+    if (searchableCount(q, corpus) === 0) return;
     setOpen(null);
     setSearching(true);
+    if (index) {
+      /* fetch only the wallets that traded the searched contracts */
+      try {
+        const want = q.scope.contracts.map((c) => c.trim().toLowerCase()).join(',');
+        setScoped(await apiGet<ScreenerResponse>(`/api/screener?contracts=${want}`, 30_000));
+      } catch (e) {
+        setIndex(null);
+        setScoped(null);
+        setIndexWhy(`the search could not reach the API (${String((e as Error)?.message ?? e)})`);
+        setSearched(null);
+        setSearching(false);
+        setDraft(emptyQuery());
+        return;
+      }
+    }
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     window.clearTimeout(timer.current);
     /* A beat long enough to read as a search, short enough not to be
@@ -125,9 +189,10 @@ export function Screener() {
     }
   };
 
-  const relax = result?.limitingStage && searched ? relaxation(searched, result.limitingStage) : null;
+  const relax = result?.limitingStage && searched ? relaxation(searched, result.limitingStage, corpus.now) : null;
 
   return (
+    <CorpusProvider value={corpus}>
     <div className="bl-page bl-screener">
       <header className="bl-page__head">
         <div>
@@ -138,9 +203,23 @@ export function Screener() {
           </p>
         </div>
         <div className="bl-page__headr">
-          <ProvChip live={false} note={CORPUS_NOTE} />
+          <ProvChip live={live} why={`${indexWhy}; generated wallets`} note={corpus.note} />
         </div>
       </header>
+
+      {!live && (
+        <p className="bl-samplebar" role="alert">
+          <strong>Sample data.</strong> The live wallet corpus is not available ({indexWhy}), so this
+          screens 400 generated wallets over the three case-study tokens. They are not real wallets and
+          the results are not findings. {liveEnabled('screener') ? 'The page keeps trying the API.' : ''}
+        </p>
+      )}
+      {live && (
+        <p className="meta" style={{ margin: '0 0 12px' }}>
+          {corpus.note} Add one of the indexed contracts below, or paste any of the{' '}
+          {Object.keys(corpus.registry).length} indexed launch addresses.
+        </p>
+      )}
 
       <FilterPanel query={draft} onChange={setDraft} onSearch={() => search()} searching={searching} />
 
@@ -155,7 +234,11 @@ export function Screener() {
               <circle cx="92" cy="38" r="8" fill="none" stroke="var(--rule-strong)" />
             </svg>
             <p className="bl-idle__t">
-              {searching ? `Screening ${int(WALLET_CORPUS.length)} wallets…` : 'No search yet.'}
+              {searching
+                ? live
+                  ? 'Fetching the wallets that traded these contracts…'
+                  : `Screening ${int(corpus.wallets.length)} sample wallets…`
+                : 'No search yet.'}
             </p>
             <p className="bl-idle__d meta">
               Choose a chain, add at least one contract, switch on filters, then search. Results
@@ -268,8 +351,9 @@ export function Screener() {
             )}
 
             <p className="bl-page__foot meta">
-              {int(result.scopedWallets)} of {int(WALLET_CORPUS.length)} wallets traded these
-              contracts in the window. {CORPUS_NOTE}
+              {int(result.scopedWallets)} of {int(corpus.wallets.length)} wallets{' '}
+              {live ? 'that traded these contracts' : 'in the sample corpus'} were active in the window.{' '}
+              {corpus.note}
             </p>
           </>
         )}
@@ -277,5 +361,6 @@ export function Screener() {
 
       {searched && <WalletDrawer match={open} query={searched} onClose={() => setOpen(null)} />}
     </div>
+    </CorpusProvider>
   );
 }

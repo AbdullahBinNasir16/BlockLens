@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import type { AppliedCheck, ScreenerQuery, WalletMatch, WalletProjectPosition } from '../../data/types';
 import { CHECK_BY_ID, QUANTIFIER_LABEL } from '../../data/checks';
-import { datasets } from '../../data/projects';
-import { CORPUS_NOW } from '../../data/wallets';
+import { useCorpus } from '../../lib/corpus';
 import {
   compare,
   holdingMinutes,
@@ -40,7 +39,17 @@ const FUNDING_LABEL: Record<string, string> = Object.fromEntries(
 
 /* ---------------- cumulative realized PnL ---------------- */
 
-function PnlLine({ positions, from, to }: { positions: WalletProjectPosition[]; from: number; to: number }) {
+function PnlLine({
+  positions,
+  from,
+  to,
+  now,
+}: {
+  positions: WalletProjectPosition[];
+  from: number;
+  to: number;
+  now: number;
+}) {
   const W = 440;
   const H = 132;
   const padL = 6;
@@ -56,7 +65,7 @@ function PnlLine({ positions, from, to }: { positions: WalletProjectPosition[]; 
       .map((p) => ({ t: p.lastSell as number, v: realizedPnl(p) }))
       .sort((a, b) => a.t - b.t);
 
-    const end = Math.min(to, CORPUS_NOW);
+    const end = Math.min(to, now);
     const pts: { t: number; v: number }[] = [{ t: from, v: 0 }];
     let run = 0;
     for (const e of events) {
@@ -164,16 +173,17 @@ export function WalletDrawer({
   query: ScreenerQuery;
   onClose: () => void;
 }) {
+  const corpus = useCorpus();
   const [copied, copy] = useCopy();
 
   const positions = useMemo(
-    () => (match ? scopedPositions(match.wallet, query) : []),
-    [match, query]
+    () => (match ? scopedPositions(match.wallet, query, corpus) : []),
+    [match, query, corpus]
   );
 
   if (!match) return null;
   const w = match.wallet;
-  const ctx: MetricCtx = { from: query.scope.from, to: query.scope.to, now: CORPUS_NOW };
+  const ctx: MetricCtx = { from: query.scope.from, to: query.scope.to, now: corpus.now };
 
   const invested = positions.reduce((a, p) => a + p.invested, 0);
   const unrealized = positions.reduce((a, p) => a + unrealizedPnl(p), 0);
@@ -228,7 +238,7 @@ export function WalletDrawer({
         <KV k="Last active" v={dateShort(match.lastActive)} />
       </div>
 
-      <PnlLine positions={positions} from={query.scope.from} to={query.scope.to} />
+      <PnlLine positions={positions} from={query.scope.from} to={query.scope.to} now={corpus.now} />
 
       {/* ---- positions ---- */}
       <h3 className="eyebrow eyebrow-ink bl-wd__sub">
@@ -236,7 +246,7 @@ export function WalletDrawer({
       </h3>
       <div className="bl-wd__positions">
         {positions.map((p) => {
-          const project = datasets[p.projectId]?.project;
+          const project = corpus.registry[p.projectId];
           const rp = realizedPnl(p);
           const roi = roiMultiple(p);
           return (
@@ -274,7 +284,7 @@ export function WalletDrawer({
                 </div>
                 <div>
                   <dt className="meta">Held</dt>
-                  <dd className="num">{duration(holdingMinutes(p, CORPUS_NOW))}</dd>
+                  <dd className="num">{duration(holdingMinutes(p, corpus.now))}</dd>
                 </div>
                 <div>
                   <dt className="meta">Invested</dt>
@@ -322,7 +332,7 @@ export function WalletDrawer({
                 <tr>
                   <th>Filter</th>
                   {projectIds.map((id) => {
-                    const p = datasets[id]?.project;
+                    const p = corpus.registry[id];
                     return (
                       <th key={id} className="bl-th--c" title={p?.name}>
                         {p?.ticker ?? id}

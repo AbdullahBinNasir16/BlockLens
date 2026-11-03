@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { WalletMatch } from '../../data/types';
-import { datasets } from '../../data/projects';
+import { useCorpus } from '../../lib/corpus';
 import { TokenMark } from '../primitives/TokenMark';
 import { Icon } from '../app/Icons';
 import { useCopy } from '../../lib/hooks';
@@ -71,6 +71,7 @@ export function ResultsTable({
   onSort: (k: SortKey) => void;
   onOpen: (m: WalletMatch) => void;
 }) {
+  const corpus = useCorpus();
   const scroller = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
   const [viewport, setViewport] = useState(600);
@@ -170,7 +171,7 @@ export function ResultsTable({
                   <td>
                     <span className="bl-matched">
                       {marks.map((id) => {
-                        const p = datasets[id]?.project;
+                        const p = corpus.registry[id];
                         if (!p) return null;
                         return (
                           <TokenMark key={id} logo={p.logo} monogram={p.monogram} size={20} radius={6} />

@@ -149,7 +149,9 @@
   gap: 9px;
   margin-bottom: 24px;
 }
-.bl-live {
+/* was .bl-live, which collided with the live pages' header container
+   (trending.css) and squeezed it to 6px wide */
+.bl-livedot {
   width: 6px;
   height: 6px;
   border-radius: 99px;
@@ -626,4 +628,14 @@
   .bl-inputrow {
     border-radius: 20px;
   }
+}
+
+/* chains BlockLens does not measure: visible, never selectable */
+.bl-chainchip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.bl-chainchip__soon {
+  font-size: 0.85em;
+  opacity: 0.8;
 }
