@@ -26,11 +26,15 @@ REASONS = [
     ("untradeable", "untradeable price"),
     ("outage", "missed during an outage"),
     ("could not read", "could not read the chain"),
+    ("without token transfers", "trades not decodable"),
 ]
 
 
 def reason_of(status: str) -> str:
-    for needle, label in REASONS:
+    # "scored" is matched exactly: every other status contains the word.
+    if status == "scored":
+        return "scored"
+    for needle, label in REASONS[1:]:
         if needle in status:
             return label
     return "other"

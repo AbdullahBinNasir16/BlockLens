@@ -114,12 +114,13 @@ meaningful branches and automated tests, and the report.
    compiled by the `Report` workflow, with this scope as section 1.6 and
    `DECISIONS.md` as the evidence base for chapters 2 and 5.
 
-## 6. Branch protection (to be switched on by the repository owner)
+## 6. Branch protection
 
-Settings → Branches → Add rule, for `main` and again for `develop`:
-require a pull request before merging, require 1 approval, require status
-checks to pass (select **Frontend** and **Backend** from the CI workflow),
-and do not allow bypassing. This needs admin on the repository.
+On since 22 October 2026, when the repository was made public (GitHub
+offers protection rules on a private repository only on a paid plan): a
+pull request into `develop` or `main` needs an approving review before it
+can merge, and the author cannot approve their own. The CI checks are
+required to be green.
 
 ## 7. Timeline
 

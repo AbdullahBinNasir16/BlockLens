@@ -13,7 +13,8 @@ automated gates that implies. This page is the whole process.
 | `fix/<topic>` | a bug fix, branched from `develop` (or `main` for a hotfix) | by pull request |
 
 Never commit straight to `main` or `develop`. Both are protected: a pull
-request needs the CI check green and one review before it can merge.
+request needs the CI checks green and one approving review before it can
+merge, and you cannot approve your own.
 
 ## The loop
 
