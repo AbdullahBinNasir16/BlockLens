@@ -1,0 +1,247 @@
+{
+  "generated_at": "2026-11-03T10:13:19.775677+00:00",
+  "pre_registered": {
+    "protocol": "DECISIONS.md, Phase 8 (pre-registered 2026-10-19)",
+    "report_floor": {
+      "resolved": 200,
+      "losses": 20
+    },
+    "logged": 25585,
+    "scored": 8686,
+    "since": "2026-10-19 07:32:19+05:00",
+    "late_scored_excluded": 290,
+    "buyer_loss": {
+      "resolved": 8260,
+      "losses": 191,
+      "base_rate": 0.0231,
+      "mean_predicted": 0.0869,
+      "brier": 0.0379,
+      "brier_base_rate": 0.0226,
+      "flagged_at_0_5": 232,
+      "precision_at_0_5": 0.2026,
+      "pr_auc": 0.1083,
+      "roc_auc": 0.671,
+      "pr_auc_minus_base_rate_ci": [
+        0.054,
+        0.1277
+      ],
+      "reliability": [
+        {
+          "bin": "0.0-0.1",
+          "n": 6048,
+          "mean_predicted": 0.0273,
+          "observed": 0.0169
+        },
+        {
+          "bin": "0.1-0.2",
+          "n": 1190,
+          "mean_predicted": 0.1398,
+          "observed": 0.0168
+        },
+        {
+          "bin": "0.2-0.3",
+          "n": 618,
+          "mean_predicted": 0.2509,
+          "observed": 0.0146
+        },
+        {
+          "bin": "0.3-0.4",
+          "n": 94,
+          "mean_predicted": 0.3401,
+          "observed": 0.1064
+        },
+        {
+          "bin": "0.4-0.5",
+          "n": 78,
+          "mean_predicted": 0.4486,
+          "observed": 0.0385
+        },
+        {
+          "bin": "0.5-0.6",
+          "n": 69,
+          "mean_predicted": 0.5495,
+          "observed": 0.1159
+        },
+        {
+          "bin": "0.6-0.7",
+          "n": 39,
+          "mean_predicted": 0.6438,
+          "observed": 0.0513
+        },
+        {
+          "bin": "0.7-0.8",
+          "n": 65,
+          "mean_predicted": 0.7522,
+          "observed": 0.4462
+        },
+        {
+          "bin": "0.8-0.9",
+          "n": 36,
+          "mean_predicted": 0.8469,
+          "observed": 0.0556
+        },
+        {
+          "bin": "0.9-1.0",
+          "n": 23,
+          "mean_predicted": 0.9369,
+          "observed": 0.2609
+        }
+      ],
+      "reportable": true
+    },
+    "launch_type": {
+      "1d": {
+        "self-deployed": {
+          "resolved": 3990,
+          "pulled": 3432,
+          "rate": 0.8602
+        },
+        "launchpad": {
+          "resolved": 4104,
+          "pulled": 27,
+          "rate": 0.0066
+        }
+      },
+      "7d": {
+        "self-deployed": {
+          "resolved": 2480,
+          "pulled": 2212,
+          "rate": 0.8919
+        },
+        "launchpad": {
+          "resolved": 2370,
+          "pulled": 15,
+          "rate": 0.0063
+        }
+      }
+    }
+  },
+  "post_hoc": {
+    "label_scope": {
+      "pulled_by_6h": 3557,
+      "pulled_by_6h_labelled_loss": 6,
+      "not_pulled_by_6h (the model's population)": {
+        "tokens": 4703,
+        "losses": 185,
+        "base_rate": 0.0393,
+        "model_pr_auc": 0.1516,
+        "model_roc_auc": 0.7776,
+        "launch_type_only_pr_auc": 0.0327,
+        "checker_phase6_pr_auc": 0.0309,
+        "model_minus_launch_type_only_ci": [
+          0.0829,
+          0.1624
+        ],
+        "model_minus_checker_phase6_ci": [
+          0.0865,
+          0.1662
+        ]
+      },
+      "all, pull counted as loss": {
+        "tokens": 8260,
+        "losses": 3742,
+        "base_rate": 0.453,
+        "model_pr_auc": 0.671,
+        "model_roc_auc": 0.798,
+        "launch_type_only_pr_auc": 0.8372,
+        "checker_phase6_pr_auc": 0.3105,
+        "model_minus_launch_type_only_ci": [
+          -0.187,
+          -0.1472
+        ],
+        "model_minus_checker_phase6_ci": [
+          0.3479,
+          0.3739
+        ]
+      }
+    },
+    "vs_rule_checkers": {
+      "tokens": 8260,
+      "losses": 191,
+      "base_rate": 0.0231,
+      "model": {
+        "pr_auc": 0.1083,
+        "roc_auc": 0.671
+      },
+      "checker_phase5": {
+        "pr_auc": 0.0243,
+        "roc_auc": 0.4747,
+        "flagged": 5619,
+        "precision": 0.0233
+      },
+      "checker_phase6": {
+        "pr_auc": 0.0246,
+        "roc_auc": 0.5186,
+        "flagged": 6259,
+        "precision": 0.0225
+      },
+      "launch_type_only": {
+        "pr_auc": 0.0146,
+        "roc_auc": 0.2703
+      },
+      "model_minus_checker_phase5_ci": [
+        0.049,
+        0.1247
+      ],
+      "model_minus_checker_phase6_ci": [
+        0.0534,
+        0.1257
+      ],
+      "model_minus_launch_type_only_ci": [
+        0.0625,
+        0.1396
+      ]
+    },
+    "by_launch_type": {
+      "launchpad": {
+        "tokens": 4109,
+        "losses": 183,
+        "base_rate": 0.0445,
+        "mean_predicted": 0.069,
+        "model_pr_auc": 0.1713,
+        "model_roc_auc": 0.795,
+        "pr_auc_minus_base_rate_ci": [
+          0.0883,
+          0.1752
+        ]
+      },
+      "self-deployed": {
+        "tokens": 4151,
+        "losses": 8,
+        "base_rate": 0.0019,
+        "mean_predicted": 0.1045,
+        "model_pr_auc": 0.0252,
+        "model_roc_auc": 0.8125,
+        "pr_auc_minus_base_rate_ci": [
+          0.0027,
+          0.0935
+        ]
+      }
+    },
+    "coverage": {
+      "first": "2026-10-19T07:32:19+05:00",
+      "last": "2026-11-03T09:10:17+05:00",
+      "longest_gap_hours": 33.1,
+      "longest_gap_from": "2026-10-19T22:05:21+05:00",
+      "gaps_over_2h": 16,
+      "scored_resolved_per_day": {
+        "2026-10-19": 627,
+        "2026-10-21": 619,
+        "2026-10-22": 757,
+        "2026-10-23": 777,
+        "2026-10-24": 704,
+        "2026-10-25": 271,
+        "2026-10-26": 716,
+        "2026-10-27": 760,
+        "2026-10-28": 700,
+        "2026-10-29": 326,
+        "2026-10-30": 272,
+        "2026-10-31": 525,
+        "2026-11-01": 318,
+        "2026-11-02": 745,
+        "2026-11-03": 143
+      }
+    },
+    "features_missing": 0
+  }
+}
