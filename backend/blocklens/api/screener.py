@@ -10,9 +10,11 @@ the window the store holds for each (its first 24 hours).
   transaction, exactly as the model's features do (`token_features.py`):
   `swap.wallet_address` is never filled, because on an aggregator route the
   pool's counterparty is the router, not the wallet.
-* **Money is in ETH**, not USD: the store has quote amounts, and no keyless
-  source gives a historical ETH price per block. The response says so
-  (`unit: "ETH"`) and the screen labels it.
+* **Money is in USD**, converted trade by trade at that day's ETH close
+  (GeckoTerminal's daily candles for the deepest WETH/USDC pool on Base,
+  `market.eth_usd_daily`). The store holds ETH amounts; the screener's
+  checks are in USD, so the conversion is made once, here, at the trade's
+  own date, never at a single assumed rate.
 * **Built once in the background** and written to `data/screener_corpus.json`
   (it takes tens of seconds); served from memory after that.
 """
@@ -29,6 +31,7 @@ from pathlib import Path
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from ..config import CONFIG
 from ..model import token_features as tf
 
 log = logging.getLogger("blocklens.screener")
@@ -36,8 +39,8 @@ log = logging.getLogger("blocklens.screener")
 CHAIN = "base"
 ETH_QUOTES = ("0x4200000000000000000000000000000000000006", "0x0000000000000000000000000000000000000000")
 CACHE = Path(__file__).resolve().parents[2] / "data" / "screener_corpus.json"
-MAX_AGE_S = 24 * 3600
 FUNDING = {"fresh", "cex", "bridge", "cluster", "unknown"}
+WINDOW_MS = 24 * 3600 * 1000           # FEATURE_WINDOW_HOURS: what the store holds per launch
 
 _lock = threading.Lock()
 _state: dict = {"doc": None, "building": False, "error": None}
@@ -47,8 +50,22 @@ def _ms(dt) -> float:
     return dt.timestamp() * 1000
 
 
-def build(s: Session) -> dict:
+def _px(prices: dict[str, float], dt: datetime) -> float:
+    """The ETH close on `dt`'s day, or the nearest earlier day held."""
+    day = dt.astimezone(timezone.utc).date().isoformat()
+    if day in prices:
+        return prices[day]
+    earlier = [d for d in prices if d <= day]
+    if not earlier:
+        raise ValueError(f"no ETH price at or before {day}")
+    return prices[max(earlier)]
+
+
+def build(s: Session, prices: dict[str, float] | None = None) -> dict:
     t0 = time.perf_counter()
+    if prices is None:
+        from .market import eth_usd_daily
+        prices = eth_usd_daily()
     ctx = tf.Context(s, CHAIN)
     tokens = s.execute(text("""
         select ts.token_address, ts.pool_key, ts.dex, p.created_ts, l.label,
@@ -94,13 +111,14 @@ def build(s: Session) -> dict:
 
         by_wallet: dict[str, list[tuple[datetime, str, float, float]]] = defaultdict(list)
         for (tx, w, side), amount in trades.items():
-            by_wallet[w].append((ts_of[tx], side, amount, quote_of[tx]))
+            # (time, side, tokens, USD at that day's ETH close)
+            by_wallet[w].append((ts_of[tx], side, amount, quote_of[tx] * _px(prices, ts_of[tx])))
         # Holdings are valued at the last trade's own price, quote per token in
         # transfer units, so spent and held are in the same units. (The swap
         # table's token amounts are not always in the transfers' units.)
         last = max(((ts_of[tx], quote_of[tx] / a) for (tx, _, _), a in trades.items() if a > 0),
                    default=(None, 0.0))
-        last_price = last[1]
+        last_price = last[1] * (_px(prices, last[0]) if last[0] else 0.0)   # USD per token
         start = created_ts or min(ts_of.values())
         for w, rows in by_wallet.items():
             rows.sort()
@@ -116,10 +134,10 @@ def build(s: Session) -> dict:
                 "firstBuy": _ms(buys[0][0]),
                 "lastSell": _ms(sells[-1][0]) if sells and sold >= bought * 0.999 else None,
                 "buys": len(buys), "sells": len(sells),
-                "invested": round(sum(r[3] for r in buys), 8),
+                "invested": round(sum(r[3] for r in buys), 2),
                 "soldFraction": round(sold / bought, 6) if bought else 0.0,
-                "proceeds": round(sum(r[3] for r in sells), 8),
-                "remainingValue": round(max(0.0, bought - sold) * last_price, 8)
+                "proceeds": round(sum(r[3] for r in sells), 2),
+                "remainingValue": round(max(0.0, bought - sold) * last_price, 2)
                 if label != "RUG" else 0.0,
                 "entryDelay": max(0.0, _ms(buys[0][0]) - _ms(start)),
                 "averagedDown": any(r[2] and r[3] / r[2] < first_px for r in buys[1:]),
@@ -127,6 +145,9 @@ def build(s: Session) -> dict:
                                       and sells[0][3] / sells[0][2] >= 2 * first_px),
                 "wentToZero": label == "RUG",
                 "honeypot": False,
+                # the store holds each launch's first 24 hours: an open
+                # position is "still held when the record stops"
+                "observedUntil": _ms(start) + WINDOW_MS,
             })
         meta.append({"address": token, "symbol": symbol, "name": name,
                      "launchedAt": _ms(start), "wallets": len(by_wallet)})
@@ -153,7 +174,7 @@ def build(s: Session) -> dict:
         })
     log.info(json.dumps({"event": "screener_built", "tokens": len(meta), "wallets": len(wallets),
                          "seconds": round(time.perf_counter() - t0, 1)}))
-    return {"provenance": "live", "asOf": datetime.now(timezone.utc).isoformat(), "unit": "ETH",
+    return {"provenance": "live", "asOf": datetime.now(timezone.utc).isoformat(), "unit": "USD",
             "tokens": sorted(meta, key=lambda m: -m["wallets"]), "wallets": wallets}
 
 
@@ -183,7 +204,7 @@ def corpus(factory) -> tuple[dict | None, str]:
             except ValueError:
                 pass
         doc = _state["doc"]
-        fresh = CACHE.exists() and time.time() - CACHE.stat().st_mtime < MAX_AGE_S
+        fresh = CACHE.exists() and time.time() - CACHE.stat().st_mtime < CONFIG.screener_max_age_s
         if (doc is None or not fresh) and not _state["building"]:
             _state["building"] = True
             threading.Thread(target=_build_in_background, args=(factory,), daemon=True,

@@ -211,6 +211,26 @@ class Driver(BaseModel):
     direction: Direction
 
 
+class Symbols(BaseModel):
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    symbol: str
+    name: str
+
+
+class SymbolsResponse(BaseModel):
+    """
+    Display names for a batch of tokens (DexScreener, cached server side).
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    provenance: Provenance
+    symbols: dict[str, Symbols]
+
+
 class ScreenerToken(BaseModel):
     model_config = ConfigDict(
         extra='forbid',
@@ -361,7 +381,13 @@ class RiskScore(BaseModel):
     scoredAt: str
     band: ForwardBand | None
     drivers: list[Driver]
-    baseRate: float
+    rest: float = Field(
+        ...,
+        description='what every feature outside `drivers` contributed, together (log-odds)',
+    )
+    baseRate: float = Field(
+        ..., description="the model's score for a launch about which nothing is known"
+    )
 
 
 class WalletProjectPosition(BaseModel):
@@ -397,6 +423,10 @@ class WalletProjectPosition(BaseModel):
     soldFirstPump: bool
     wentToZero: bool
     honeypot: bool
+    observedUntil: float | None = Field(
+        None,
+        description='ms epoch the record stops observing this position. The live store holds each launch\'s first 24 hours, so an open position there is "still held at the end of what was seen", and is measured to here, never to the corpus clock. Absent: observed to the corpus clock.',
+    )
 
 
 class TokenRiskResponse(BaseModel):
@@ -452,9 +482,13 @@ class ScreenerResponse(BaseModel):
     )
     provenance: Provenance
     asOf: str
-    unit: Literal['ETH'] = Field(
+    unit: Literal['USD'] = Field(
         ...,
-        description='money in positions is in this unit, not USD (see DECISIONS.md)',
+        description="positions' money: ETH amounts from the store, converted at each trade's own day's ETH close (GeckoTerminal daily candles, WETH/USDC on Base)",
     )
     tokens: list[ScreenerToken]
+    contracts: list[str] = Field(
+        ...,
+        description='the contracts asked for; wallets are those with a position in one of them, with all their positions. Empty when only the index was asked.',
+    )
     wallets: list[WalletRecord]

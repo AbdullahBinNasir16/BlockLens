@@ -108,6 +108,7 @@ def token_risk(s: Session | None, address: str, *, meta: dict, forward: dict | N
                       "launchTs": launch_ts.isoformat(), "scoredAt": scored_at.isoformat(),
                       "band": band(forward, float(risk)),
                       "drivers": why.get("drivers") or [],
+                      "rest": round(float(why.get("rest", 0.0)), 4),
                       "baseRate": round(float(why.get("base_rate", base_rate)), 4)}}
 
 

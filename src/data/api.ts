@@ -115,6 +115,12 @@ export interface ProjectLiveResponse {
   risk: TokenRiskResponse;
 }
 
+/** Display names for a batch of tokens (DexScreener, cached server side). */
+export interface SymbolsResponse {
+  provenance: Provenance;
+  symbols: Record<string, { symbol: string; name: string }>;
+}
+
 /* ---------------- model risk ---------------- */
 
 export type RiskState = 'scored' | 'pending' | 'not_scored' | 'out_of_scope';
@@ -162,6 +168,9 @@ export interface RiskScore {
   scoredAt: string;
   band: ForwardBand | null;
   drivers: Driver[];
+  /** what every feature outside `drivers` contributed, together (log-odds) */
+  rest: number;
+  /** the model's score for a launch about which nothing is known */
   baseRate: number;
 }
 
@@ -189,9 +198,13 @@ export interface ScreenerToken {
 export interface ScreenerResponse {
   provenance: Provenance;
   asOf: string;
-  /** money in positions is in this unit, not USD (see DECISIONS.md) */
-  unit: 'ETH';
+  /** positions' money: ETH amounts from the store, converted at each trade's
+   *  own day's ETH close (GeckoTerminal daily candles, WETH/USDC on Base) */
+  unit: 'USD';
   tokens: ScreenerToken[];
+  /** the contracts asked for; wallets are those with a position in one of
+   *  them, with all their positions. Empty when only the index was asked. */
+  contracts: string[];
   wallets: WalletRecord[];
 }
 

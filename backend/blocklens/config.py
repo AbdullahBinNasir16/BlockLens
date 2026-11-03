@@ -91,7 +91,8 @@ class Config:
     prices_ttl_s: int = _int("PRICES_TTL_S", 10)
     holders_ttl_s: int = _int("HOLDERS_TTL_S", 900)
     market_ttl_s: int = _int("MARKET_TTL_S", 30)
-    screener_ttl_s: int = _int("SCREENER_TTL_S", 600)
+    # the screener corpus is rebuilt from the store when older than this
+    screener_max_age_s: int = _int("SCREENER_MAX_AGE_S", 86_400)
     upstream_timeout_s: float = float(os.environ.get("UPSTREAM_TIMEOUT_S", "8"))
     # A day's ceiling on upstream calls from the serving layer, all sources.
     upstream_max_calls_per_day: int = _int("UPSTREAM_MAX_CALLS_PER_DAY", 50_000)

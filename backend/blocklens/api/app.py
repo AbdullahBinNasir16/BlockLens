@@ -19,6 +19,8 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import text
@@ -55,6 +57,12 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(title="BlockLens API", version="0.3.0", lifespan=lifespan)
+app.add_middleware(GZipMiddleware, minimum_size=2048)
+# A front end built with VITE_API_URL calls the API from another origin.
+# CORS_ORIGINS: comma-separated origins, or * (the default).
+_origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()]
+app.add_middleware(CORSMiddleware, allow_origins=_origins, allow_methods=["GET", "POST", "DELETE"],
+                   allow_headers=["Content-Type", "Accept"])
 # Phase 7: one route module per screen, each answering in the contract
 for r in (r_health, r_trending, r_project, r_token_risk, r_screener):
     app.include_router(r.router)

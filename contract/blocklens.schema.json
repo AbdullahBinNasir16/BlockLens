@@ -604,8 +604,13 @@
             "$ref": "#/definitions/Driver"
           }
         },
+        "rest": {
+          "type": "number",
+          "description": "what every feature outside `drivers` contributed, together (log-odds)"
+        },
         "baseRate": {
-          "type": "number"
+          "type": "number",
+          "description": "the model's score for a launch about which nothing is known"
         }
       },
       "required": [
@@ -615,6 +620,7 @@
         "scoredAt",
         "band",
         "drivers",
+        "rest",
         "baseRate"
       ],
       "additionalProperties": false
@@ -691,6 +697,39 @@
       ],
       "additionalProperties": false
     },
+    "SymbolsResponse": {
+      "type": "object",
+      "properties": {
+        "provenance": {
+          "$ref": "#/definitions/Provenance"
+        },
+        "symbols": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "symbol": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "symbol",
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "provenance",
+        "symbols"
+      ],
+      "additionalProperties": false,
+      "description": "Display names for a batch of tokens (DexScreener, cached server side)."
+    },
     "ScreenerToken": {
       "type": "object",
       "properties": {
@@ -731,14 +770,21 @@
         },
         "unit": {
           "type": "string",
-          "const": "ETH",
-          "description": "money in positions is in this unit, not USD (see DECISIONS.md)"
+          "const": "USD",
+          "description": "positions' money: ETH amounts from the store, converted at each trade's own day's ETH close (GeckoTerminal daily candles, WETH/USDC on Base)"
         },
         "tokens": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ScreenerToken"
           }
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "the contracts asked for; wallets are those with a position in one of them, with all their positions. Empty when only the index was asked."
         },
         "wallets": {
           "type": "array",
@@ -752,6 +798,7 @@
         "asOf",
         "unit",
         "tokens",
+        "contracts",
         "wallets"
       ],
       "additionalProperties": false
@@ -871,6 +918,10 @@
         },
         "honeypot": {
           "type": "boolean"
+        },
+        "observedUntil": {
+          "type": "number",
+          "description": "ms epoch the record stops observing this position. The live store holds each launch's first 24 hours, so an open position there is \"still held at the end of what was seen\", and is measured to here, never to the corpus clock. Absent: observed to the corpus clock."
         }
       },
       "required": [

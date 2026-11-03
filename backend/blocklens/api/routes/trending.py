@@ -7,7 +7,7 @@ from typing import Literal
 from fastapi import APIRouter, HTTPException
 
 from .. import market
-from ..contract import TrendingResponse
+from ..contract import SymbolsResponse, TrendingResponse
 from ..upstream import UpstreamError
 
 router = APIRouter()
@@ -20,3 +20,10 @@ def trending(window: Literal["m5", "h1", "h6", "h24"] = "h24", pages: int = 2) -
     except UpstreamError as e:
         # no ranking has ever loaded: the front end falls back to its sample
         raise HTTPException(503, f"trending unavailable: {e}") from e
+
+
+@router.get("/api/symbols", response_model=SymbolsResponse, response_model_exclude_unset=True)
+def symbols(tokens: str = "") -> dict:
+    """`tokens` is a comma-separated list of addresses, at most 120."""
+    want = [t.strip().lower() for t in tokens.split(",") if t.strip()][:120]
+    return {"provenance": "live", "symbols": market.symbols(want)}

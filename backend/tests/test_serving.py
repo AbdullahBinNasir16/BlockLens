@@ -110,8 +110,9 @@ def test_health_validates_and_reports_each_source(client):
 
 
 def test_screener_validates_against_the_contract(client, monkeypatch):
-    doc = {"provenance": "live", "asOf": "2026-11-03T00:00:00+00:00", "unit": "ETH",
+    doc = {"provenance": "live", "asOf": "2026-11-03T00:00:00+00:00", "unit": "USD",
            "tokens": [{"address": TOKEN, "symbol": "", "name": "", "launchedAt": 1.0, "wallets": 1}],
+           "contracts": [],
            "wallets": [{"address": "0x" + "01" * 20, "firstSeen": 1.0, "fundingSource": "unknown",
                         "clusterSize": 1, "smartMoney": False, "insiderLinked": False,
                         "positions": [{"projectId": TOKEN, "chain": "base", "firstBuy": 1.0,
@@ -122,7 +123,12 @@ def test_screener_validates_against_the_contract(client, monkeypatch):
     monkeypatch.setattr(screener_mod, "corpus", lambda f: (doc, "ready"))
     r = client.get("/api/screener")
     assert r.status_code == 200
-    C.ScreenerResponse.model_validate(r.json())
+    index = C.ScreenerResponse.model_validate(r.json())
+    assert index.wallets == [] and len(index.tokens) == 1        # the index alone
+    r = client.get(f"/api/screener?contracts={TOKEN.upper()}")
+    scoped = C.ScreenerResponse.model_validate(r.json())
+    assert scoped.contracts == [TOKEN] and len(scoped.wallets) == 1
+    assert client.get("/api/screener?contracts=0x" + "99" * 20).json()["wallets"] == []
 
 
 def test_screener_says_so_while_building(client, monkeypatch):

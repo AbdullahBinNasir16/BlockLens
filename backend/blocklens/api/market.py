@@ -116,6 +116,53 @@ def token_market(address: str, up: Upstream = UPSTREAM) -> dict | None:
     return out
 
 
+# The deepest WETH/USDC pool on Base (Uniswap V3, 0.05%). Its daily candles,
+# priced in USD for the quote side (WETH), are the ETH price the screener
+# converts each trade at.
+ETH_USD_POOL = "0xd0b53d9277642d899df5c87a3966a349a798f224"
+
+
+def eth_usd_daily(up: Upstream = UPSTREAM, pages: int = 2) -> dict[str, float]:
+    """ISO date -> WETH close in USD, about 180 days a call; two calls reach
+    back to November 2025, before the earliest launch in the store."""
+    out: dict[str, float] = {}
+    before = ""
+    for _ in range(pages):
+        try:
+            d = up.get("geckoterminal", f"/networks/base/pools/{ETH_USD_POOL}/ohlcv/day"
+                       f"?limit=200&currency=usd&token=quote{before}", 86_400)
+        except UpstreamError:
+            if out:
+                break           # an older page failing still leaves the recent ones
+            raise
+        rows = ((d or {}).get("data") or {}).get("attributes", {}).get("ohlcv_list") or []
+        if not rows:
+            break
+        for ts, _o, _h, _l, close, _v in rows:
+            out.setdefault(datetime.fromtimestamp(ts, timezone.utc).date().isoformat(), float(close))
+        before = f"&before_timestamp={int(min(r[0] for r in rows))}"
+    return out
+
+
+def symbols(tokens: list[str], up: Upstream = UPSTREAM) -> dict[str, dict]:
+    """Names for display, ≤ 30 tokens a call. A failed batch is skipped:
+    names are a nicety, never a reason to fail a page."""
+    out: dict[str, dict] = {}
+    toks = sorted({t.lower() for t in tokens})
+    for i in range(0, len(toks), 30):
+        try:
+            rows = up.get("dexscreener", f"/tokens/v1/base/{','.join(toks[i:i + 30])}",
+                          up.config.holders_ttl_s) or []
+        except UpstreamError:
+            continue
+        for p in rows if isinstance(rows, list) else []:
+            b = p.get("baseToken") or {}
+            a = str(b.get("address", "")).lower()
+            if a and a not in out:
+                out[a] = {"symbol": str(b.get("symbol") or ""), "name": str(b.get("name") or "")}
+    return out
+
+
 # ---- the trending list ----------------------------------------------------
 
 def _rank(window: str, pages: int, up: Upstream) -> list[dict]:
