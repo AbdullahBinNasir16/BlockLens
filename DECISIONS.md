@@ -1516,3 +1516,10 @@ separately reported record.
 **UI:** the Fresh Launches forward panel now says the score is a ranking,
 not a probability, when its Brier is worse than the base rate's. It also
 says that pulled pools count as no loss.
+
+**Effect of the Phase 10 scoring guard on this record** (measured
+2026-11-03, before PR #6 merged): of the 8,275 timely, scored, resolved
+launches, 2 had no decodable swaps. Both were self-deployed and neither was
+a loss. PR-AUC is 0.1082 with or without them. The guard changes which
+launches are scored from 2026-11-03 onward and is logged with its reason.
+It does not alter the result above.
