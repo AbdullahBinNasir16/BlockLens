@@ -62,7 +62,7 @@ export function MoonRug() {
     <section className="bl-mr" ref={ref}>
       <div className="bl-mr__sticky">
         <div className="bl-mr__inner">
-          <p className="eyebrow bl-mr__eyebrow">Two contracts · deployed the same hour</p>
+          <p className="eyebrow bl-mr__eyebrow">Illustration, not data · two contracts deployed the same hour</p>
 
           <div className="bl-mr__charts">
             {/* ---------------- Project A ---------------- */}
