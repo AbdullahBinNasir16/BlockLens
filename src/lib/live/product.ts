@@ -1,3 +1,4 @@
+import { API_URL } from '../api';
 /* Product state and push, from the BlockLens API (backend/blocklens/api).
    Single-user by design at this stage: no accounts, one watchlist. */
 
@@ -41,24 +42,24 @@ export const PRODUCT_EVENT = 'bl:product';
 const announce = () => window.dispatchEvent(new Event(PRODUCT_EVENT));
 
 export const fetchWatchlist = () =>
-  j<{ items: WatchItem[] }>(fetch('/api/watchlist')).then((d) => d.items);
+  j<{ items: WatchItem[] }>(fetch(API_URL + '/api/watchlist')).then((d) => d.items);
 
 export async function addWatch(address: string, label?: string): Promise<void> {
-  await j(fetch('/api/watchlist', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify({ address, label }) }));
+  await j(fetch(API_URL + '/api/watchlist', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify({ address, label }) }));
   announce();
 }
 
 export async function removeWatch(address: string): Promise<void> {
-  await j(fetch(`/api/watchlist/${address.toLowerCase()}`, { method: 'DELETE' }));
+  await j(fetch(`${API_URL}/api/watchlist/${address.toLowerCase()}`, { method: 'DELETE' }));
   announce();
 }
 
 export const fetchHistory = (limit = 100) =>
-  j<{ items: HistoryEntry[] }>(fetch(`/api/history?limit=${limit}`)).then((d) => d.items);
+  j<{ items: HistoryEntry[] }>(fetch(`${API_URL}/api/history?limit=${limit}`)).then((d) => d.items);
 
 /** Fire and forget: a failed history write must never break a page. */
 export function recordInvestigation(address: string, outcome: Outcome): void {
-  fetch('/api/history', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify({ address, outcome }) })
+  fetch(API_URL + '/api/history', { method: 'POST', headers: JSON_HEADERS, body: JSON.stringify({ address, outcome }) })
     .then((r) => r.ok && announce())
     .catch(() => undefined);
 }
@@ -69,7 +70,7 @@ export function openScoredStream(
   onState?: (connected: boolean) => void
 ): () => void {
   if (typeof EventSource === 'undefined') return () => undefined;
-  const es = new EventSource('/api/stream');
+  const es = new EventSource(API_URL + '/api/stream');
   es.addEventListener('scored', (e) => {
     try {
       onScored(JSON.parse((e as MessageEvent).data) as Launch);

@@ -34,7 +34,7 @@ test('fresh launches shows the model and its validation record', async ({ page }
   await page.goto('/app/launches');
   await expect(page.getByText(/buyer-loss risk · buyer-loss-v1/i)).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText(/PR-AUC/).first()).toBeVisible();
-  await expect(page.getByText(/^Live$/)).toBeVisible();
+  await expect(page.getByText(/^Live$/).first()).toBeVisible();
 });
 
 test('model health reads the forward log', async ({ page }) => {

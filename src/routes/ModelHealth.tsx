@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { ProvChip } from '../components/primitives/Bits';
+import { SAMPLE_FEED, SAMPLE_HEALTH, SNAPSHOT_AT } from '../data/snapshots';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { EmptyNote, Stat } from '../components/primitives/Bits';
 import { int } from '../lib/format';
 import { fetchFeed, type Feed } from '../lib/live/launches';
@@ -23,19 +25,35 @@ function ago(iso: string | null): string {
   return `${Math.floor(m / 1440)} d ago`;
 }
 
+const SNAP_DAY = new Date(SNAPSHOT_AT).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
 export function ModelHealth() {
   const [health, setHealth] = useState<Load<Health>>({ state: 'loading' });
   const [feed, setFeed] = useState<Feed | null>(null);
+  const [sample, setSample] = useState(false);
+  const gotLive = useRef(false);
 
   useEffect(() => {
     let alive = true;
     const load = () => {
       fetchHealth()
-        .then((h) => alive && setHealth({ state: 'ok', value: h }))
-        .catch((e) => alive && setHealth({ state: 'error', msg: String(e?.message ?? e) }));
+        .then((h) => {
+          if (!alive) return;
+          gotLive.current = true;
+          setSample(false);
+          setHealth({ state: 'ok', value: h });
+        })
+        .catch((e) => {
+          if (!alive) return;
+          if (gotLive.current) setHealth({ state: 'error', msg: String(e?.message ?? e) });
+          else {
+            setHealth({ state: 'ok', value: SAMPLE_HEALTH });
+            setSample(true);
+          }
+        });
       fetchFeed()
         .then((f) => alive && setFeed(f))
-        .catch(() => alive && setFeed(null));
+        .catch(() => alive && setFeed((f) => f ?? SAMPLE_FEED));
     };
     load();
     const t = setInterval(load, 60_000);
@@ -64,12 +82,20 @@ export function ModelHealth() {
           </p>
         </div>
         <div className="bl-page__headr bl-live">
+          {h && <ProvChip live={!sample} why={`snapshot of ${SNAP_DAY}, not live`} />}
           <span className="bl-live__state" data-status={health.state === 'error' ? 'error' : running ? 'live' : h ? 'limited' : 'loading'}>
             <span className="bl-live__dot" />
             {health.state === 'error' ? 'API unreachable' : running ? 'Scorer running' : h ? 'Scorer stale' : 'Loading'}
           </span>
         </div>
       </header>
+
+      {sample && (
+        <p className="bl-samplebar" role="alert">
+          <strong>Sample data.</strong> The BlockLens API could not be reached, so this is the system's health as it stood when captured on{' '}
+          {SNAP_DAY}. Nothing on this page is live until the API answers; the page keeps retrying.
+        </p>
+      )}
 
       {health.state === 'error' && (
         <EmptyNote title="The BlockLens API is not answering" detail={`${health.msg}. Start it with: uvicorn blocklens.api.app:app --port 8000`} />
