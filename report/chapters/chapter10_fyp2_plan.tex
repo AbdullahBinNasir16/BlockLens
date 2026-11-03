@@ -14,7 +14,7 @@ The FYP-2 scope is the set M7--M11 of \code{docs/FYP1_SCOPE.md}: one investigati
 M7 & One investigation flow & \code{/app/new} resolves any Base address to the token page; the case studies are reached from a ``Case studies'' link; the research animation is retired\\
 M8 & Persistence & notes on watchlist items; alert preferences; history filters; export of the forward record as CSV\\
 M9 & Early-buyer screener & ``which wallets bought tracked launches in their first six hours and what did they realise'' over the backend's transfers and swaps; \code{evaluateQuery} becomes a POST; an ETH/USD series from GeckoTerminal OHLCV for dollar PnL; the generated corpus deleted\\
-M10 & Model v2 & retrain buyer loss on the forward record once the floor is passed; a new, separately reported forward record; the old one kept\\
+M10 & Model v2 & retrain buyer loss on the forward record with a pull-aware label (first step: the Phase 11 calibrated and pull-aware shadow scores, pre-registered 3 November 2026); a new, separately reported forward record; the old one kept\\
 M11 & Hosting & the compose stack on a cloud VM with \code{restart: unless-stopped}; the deploy hook wired; uptime shown on Model Health\\
 \bottomrule
 \end{tabular}
@@ -85,7 +85,7 @@ When & Milestone and definition of done\\
 26 Oct 2026 & first 7-day liquidity results on the forward record; shown on Fresh Launches\\
 before the mid evaluation & pull requests \#1--\#5 merged; branch protection on; release \code{v0.1.0}; this report submitted\\
 Nov 2026 & M7 merged: any address resolves to the token page; case studies reachable as such\\
-Nov--Dec 2026 & M11 trial: the compose stack on a host with a public URL; buyer-loss forward floor expected to be reached\\
+Nov--Dec 2026 & M11 trial: the compose stack on a host with a public URL; buyer-loss forward floor reached on 3 November 2026; Phase 11 shadow scores evaluated from 4 November\\
 Dec 2026 & FYP-1 final report\\
 Jan--Feb 2027 & M9: screener over stored early buyers with dollar PnL; generated corpus deleted; M8 persistence\\
 Mar--Apr 2027 & M10: model v2 trained on the forward record with its own pre-registered record; M11 production hosting with uptime on Model Health\\

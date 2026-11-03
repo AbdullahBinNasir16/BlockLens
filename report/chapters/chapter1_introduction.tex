@@ -23,7 +23,7 @@ A trader opens BlockLens and sees every launch on Base judged within minutes of 
   \item Build an ingestion and labelling pipeline for Base on free, keyless sources, capable of a random cohort of at least 450 alive launches with outcome labels at 90 days. \emph{Achieved: 458 random-cohort tokens, 1,066 alive tokens in total.}
   \item Train and validate at least one launch-time signal that beats a pre-registered rule checker on a held-out, out-of-time set. \emph{Achieved: launch type, and buyer-loss PR-AUC 0.83 vs 0.37 in period, 0.76 vs 0.33 out of time.}
   \item Score every new Base launch live, within one minute of its five-minute mark, and serve it through an API with its validation record. \emph{Achieved; median scoring delay is reported on the Model Health page.}
-  \item Keep a pre-registered forward record and report nothing below a floor of 200 resolved predictions with 20 losses. \emph{Running: 850 resolved, 14 losses as of 21 October 2026.}
+  \item Keep a pre-registered forward record and report nothing below a floor of 200 resolved predictions with 20 losses. \emph{Floor passed: 8,259 resolved, 191 losses as of 3 November 2026.}
   \item Explain every score exactly, as additive per-feature terms that sum to the model's own output. \emph{Achieved, asserted by a unit test to 1e-3.}
   \item Deliver both halves through a CI/CD pipeline with automated unit, API and end-to-end tests, protected branches and published artefacts. \emph{Achieved: 161 backend, 33 frontend and 7 end-to-end tests; images on GHCR.}
 \end{enumerate}
@@ -76,7 +76,7 @@ M6 & Product surfaces & Fresh Launches, token page, Paper Agent, Model Health, T
 \begin{enumerate}
   \item Every new Base Uniswap pool appears in the feed within one scan interval (60 s) and is scored or given a reason within one minute of its five-minute mark.
   \item Each signal's validation record is served with every score, and no score is shown without it.
-  \item The forward record's success criteria, fixed on 19 October 2026 before any outcome, are met or the failure is reported: forward PR-AUC above the base rate with a bootstrap interval above zero, and a self-deployed 7-day pull rate above launchpad's.
+  \item The forward record's success criteria, fixed on 19 October 2026 before any outcome, are met or the failure is reported: forward PR-AUC above the base rate with a bootstrap interval above zero, and a self-deployed 7-day pull rate above launchpad's. \emph{Both met on 3 November 2026 (PR-AUC 0.108 against 0.023, interval $+0.055$ to $+0.124$; 89.2\% against 0.63\%). Calibration was not a criterion and fails; it is reported.}
   \item The paper agent's mean return beats the buy-everything control with the interval above zero. \emph{Met on 21 October 2026.}
   \item A pull request cannot merge into \code{develop} or \code{main} with a failing check.
 \end{enumerate}
