@@ -1523,3 +1523,50 @@ launches, 2 had no decodable swaps. Both were self-deployed and neither was
 a loss. PR-AUC is 0.1082 with or without them. The guard changes which
 launches are scored from 2026-11-03 onward and is logged with its reason.
 It does not alter the result above.
+
+# Phase 11 — shadow scores, pre-registered (2026-11-03, before any fit)
+
+The forward result found two fixable problems with `buyer-loss-v1`:
+
+- its probabilities are about four times too high;
+- its label does not count liquidity pulls.
+
+The v1 record stays frozen, as Phase 8 requires. These are two new scores,
+reported separately. Each is a function of two values the live log already
+records at minute 5: v1's `risk` and the `launch_type`. Because of that,
+no live code changes, and each score can be recomputed exactly for any
+logged launch.
+
+* **Score A — calibrated buyer loss.**
+  - Platt scaling: a logistic regression of `buyer_loss` on `logit(risk)`.
+  - Same label as v1.
+* **Score B — buyer outcome, pull-aware.** A logistic regression of `y_B`
+  on three inputs:
+  - `self_deployed`;
+  - `logit(risk)`;
+  - their product.
+
+  The label is `y_B = buyer_loss OR pulled by hour 6`. "Pulled" means the
+  hour-6 reserve is at or below 10% of the larger of the minute-5 and
+  hour-6 reserves, as in Phase 8.
+* **Fitting set:** every timely, resolved, scored launch with
+  `launch_ts < 2026-11-03 12:00 PKT`. Fitted once; the parameters are
+  written to `backend/data/models/shadow_v1.json` and never refitted.
+  `risk` is clipped to [1e-4, 1 − 1e-4] before the logit.
+* **Evaluation set:** timely, resolved, scored launches with
+  `launch_ts ≥ 2026-11-04 00:00 PKT`. These are launches that had not
+  happened when this was written. The 12 hours in between are used for
+  neither.
+* **Floor:** no result before 2,000 resolved launches in the evaluation set
+  with at least 50 buyer losses.
+* **Success criteria, fixed now** (95% bootstrap intervals, 1,000
+  resamples, seed 20261104):
+  - **A:** its Brier score is below that of a constant prediction equal to
+    the fitting set's base rate, with the interval of the difference below
+    zero. Its ten-bin reliability is reported.
+  - **B:** its PR-AUC exceeds that of launch type alone for `y_B`, with the
+    interval of the difference above zero. Its Brier score is below that of
+    the fitting set's constant `y_B` rate.
+  - Failing either criterion is reported as a failure.
+* **Not changed:** the v1 headline record, the paper agent and the live
+  feed's displayed risk.
