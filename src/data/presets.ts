@@ -21,8 +21,8 @@ export const WINDOW_PRESETS: { id: string; label: string; days: number | 'ytd' }
   { id: 'ytd', label: 'YTD', days: 'ytd' },
 ];
 
-export function windowRange(id: string): { from: number; to: number } {
-  const to = CORPUS_NOW;
+export function windowRange(id: string, now: number = CORPUS_NOW): { from: number; to: number } {
+  const to = now;
   if (id === 'ytd') return { from: Date.UTC(new Date(to).getUTCFullYear(), 0, 1), to };
   const preset = WINDOW_PRESETS.find((w) => w.id === id);
   const days = typeof preset?.days === 'number' ? preset.days : 90;
@@ -38,9 +38,9 @@ export function makeCheck(checkId: string, operator?: CheckOperator, value?: Che
   };
 }
 
-export function emptyQuery(): ScreenerQuery {
+export function emptyQuery(now: number = CORPUS_NOW): ScreenerQuery {
   return {
-    scope: { chain: 'base', contracts: [], ...windowRange('90d') },
+    scope: { chain: 'base', contracts: [], ...windowRange('90d', now) },
     projectRule: { quantifier: 'atLeast', count: 1, checks: [] },
     walletChecks: [],
   };

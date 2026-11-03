@@ -10,8 +10,7 @@ import type {
   WalletRecord,
 } from '../data/types';
 import { CHECK_BY_ID } from '../data/checks';
-import { CORPUS_NOW } from '../data/wallets';
-import { datasets } from '../data/projects';
+import { type Corpus, SAMPLE_CORPUS } from './corpus';
 
 /* ============================================================
    BACKEND SEAM
@@ -38,10 +37,6 @@ import { datasets } from '../data/projects';
    the one place this evaluator is coarser than the real thing.
    ============================================================ */
 
-/** project id → lowercase contract, built once */
-const CONTRACT_OF: Record<string, string> = Object.fromEntries(
-  Object.values(datasets).map((d) => [d.project.id, d.project.contract.toLowerCase()])
-);
 
 const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
@@ -67,8 +62,13 @@ export const totalPnl = (p: WalletProjectPosition) => realizedPnl(p) + unrealize
 export const roiMultiple = (p: WalletProjectPosition) =>
   p.invested > 0 ? (p.proceeds + p.remainingValue) / p.invested : 0;
 
+/** When an open position stops being observed: the corpus clock, or the
+ *  end of the record's window for this position when it has one. */
+export const openUntil = (p: WalletProjectPosition, now: number) =>
+  p.observedUntil != null ? Math.min(now, p.observedUntil) : now;
+
 export const holdingMinutes = (p: WalletProjectPosition, now: number) =>
-  Math.max(0, ((p.lastSell ?? now) - p.firstBuy) / MINUTE);
+  Math.max(0, ((p.lastSell ?? openUntil(p, now)) - p.firstBuy) / MINUTE);
 
 /** A position counts toward win rate once it has realised something. An
  *  untouched open position is not yet a win or a loss. */
@@ -253,11 +253,17 @@ export function quantifierHolds(q: string, count: number, target: number): boole
 
 /** A position is in scope when its project's contract was added, it sits
  *  on the searched chain, and its activity range overlaps the window. */
-function inScope(p: WalletProjectPosition, q: ScreenerQuery, wanted: Set<string>): boolean {
+function inScope(
+  p: WalletProjectPosition,
+  q: ScreenerQuery,
+  wanted: Set<string>,
+  corpus: Corpus
+): boolean {
   if (p.chain !== q.scope.chain) return false;
-  if (!wanted.has(CONTRACT_OF[p.projectId])) return false;
+  const contract = corpus.registry[p.projectId]?.contract;
+  if (!contract || !wanted.has(contract)) return false;
   const start = p.firstBuy;
-  const end = p.lastSell ?? CORPUS_NOW;
+  const end = p.lastSell ?? openUntil(p, corpus.now);
   return end >= q.scope.from && start <= q.scope.to;
 }
 
@@ -272,17 +278,23 @@ interface Candidate {
   matched: string[];
 }
 
-export function evaluateQuery(query: ScreenerQuery, corpus: WalletRecord[]): ScreenerResult {
-  const ctx: MetricCtx = { from: query.scope.from, to: query.scope.to, now: CORPUS_NOW };
+/** `wallets` is what is searched; `corpus` resolves its contracts and
+ *  supplies its clock (the sample corpus unless told otherwise). */
+export function evaluateQuery(
+  query: ScreenerQuery,
+  wallets: WalletRecord[],
+  corpus: Corpus = SAMPLE_CORPUS
+): ScreenerResult {
+  const ctx: MetricCtx = { from: query.scope.from, to: query.scope.to, now: corpus.now };
   const wanted = contractSet(query);
   const rule = query.projectRule;
   const funnel: FunnelStage[] = [];
 
-  funnel.push({ id: 'population', label: 'Wallets', remaining: corpus.length, removed: 0 });
+  funnel.push({ id: 'population', label: 'Wallets', remaining: wallets.length, removed: 0 });
 
   let candidates: Candidate[] = [];
-  for (const wallet of corpus) {
-    const positions = wallet.positions.filter((p) => inScope(p, query, wanted));
+  for (const wallet of wallets) {
+    const positions = wallet.positions.filter((p) => inScope(p, query, wanted, corpus));
     if (positions.length) {
       candidates.push({
         wallet,
@@ -296,7 +308,7 @@ export function evaluateQuery(query: ScreenerQuery, corpus: WalletRecord[]): Scr
     id: 'scope',
     label: 'In scope',
     remaining: candidates.length,
-    removed: corpus.length - candidates.length,
+    removed: wallets.length - candidates.length,
   });
   const scopedWallets = candidates.length;
 
@@ -368,8 +380,9 @@ export function evaluateQuery(query: ScreenerQuery, corpus: WalletRecord[]): Scr
  *  evaluator used, or its per-check readout would disagree with the table. */
 export function scopedPositions(
   wallet: WalletRecord,
-  query: ScreenerQuery
+  query: ScreenerQuery,
+  corpus: Corpus = SAMPLE_CORPUS
 ): WalletProjectPosition[] {
   const wanted = contractSet(query);
-  return wallet.positions.filter((p) => inScope(p, query, wanted));
+  return wallet.positions.filter((p) => inScope(p, query, wanted, corpus));
 }
