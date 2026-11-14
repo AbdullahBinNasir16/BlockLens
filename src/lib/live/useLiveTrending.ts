@@ -1,36 +1,54 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  type HolderInfo,
-  type LivePool,
-  type Window,
-  RateLimited,
-  cachedHolders,
-  clearHolderQueue,
-  fetchHolders,
-  fetchPatches,
-  fetchTrending,
-  lastRanking,
-} from './trending';
+import type { TrendingResponse } from '../../data/api';
+import type { Provenance } from '../../data/types';
+import { SAMPLE_TRENDING } from '../../data/trending';
+import { liveEnabled } from '../api';
+import { type HolderInfo, type LivePool, type Window, fetchTrending, holderInfo } from './trending';
 
-const TRENDING_EVERY_MS = 60_000;
-const TRENDING_RETRY_MS = 15_000;
-const PRICES_EVERY_MS = 10_000;
+const EVERY_MS = 10_000;
 
 export type LiveStatus = 'loading' | 'live' | 'limited' | 'error';
 
-/** Live Base trending list. The ranking comes from GeckoTerminal once a
- *  minute; prices tick from DexScreener every ten seconds; holder counts
- *  (GoPlus) fill in behind, rank order first. Everything stops while the tab is
- *  hidden or `paused` is set. */
-export function useLiveTrending(win: Window, pages: number, paused: boolean) {
-  const [pools, setPools] = useState<LivePool[]>(() => lastRanking(win, pages)?.pools ?? []);
-  const [holders, setHolders] = useState<Record<string, HolderInfo>>({});
-  const [status, setStatus] = useState<LiveStatus>('loading');
-  const [updatedAt, setUpdatedAt] = useState(() => lastRanking(win, pages)?.at ?? 0);
-  const [error, setError] = useState('');
+export interface TrendingState {
+  pools: LivePool[];
+  holders: Record<string, HolderInfo>;
+  status: LiveStatus;
+  error: string;
+  updatedAt: number;
+  running: boolean;
+  provenance: Provenance;
+  /** why the list is sample, or why a live list is stale */
+  reason: string;
+}
+
+function split(r: TrendingResponse) {
+  const holders: Record<string, HolderInfo> = {};
+  for (const p of r.pools) {
+    const h = holderInfo(p.holders);
+    if (h) holders[p.token] = h;
+  }
+  return { pools: r.pools, holders };
+}
+
+/** Live Base trending from `/api/trending`, polled every ten seconds; the
+ *  API's shared cache decides how often the sources are actually asked.
+ *  Until a live list arrives, or when the API is down, the frozen sample
+ *  ranking is shown with `provenance: 'sample'`; a live list that later
+ *  fails to refresh stays on screen, marked stale, rather than being
+ *  swapped for sample numbers. Stops while the tab is hidden or paused. */
+export function useLiveTrending(win: Window, pages: number, paused: boolean): TrendingState {
+  const enabled = liveEnabled('trending');
+  const [state, setState] = useState<TrendingState>(() => ({
+    ...split(SAMPLE_TRENDING),
+    status: enabled ? 'loading' : 'error',
+    error: '',
+    updatedAt: 0,
+    running: false,
+    provenance: 'sample',
+    reason: enabled ? 'loading live data' : 'live data is switched off for this screen',
+  }));
   const [visible, setVisible] = useState(!document.hidden);
-  const poolsRef = useRef<LivePool[]>([]);
-  poolsRef.current = pools;
+  const live = useRef(false);
 
   useEffect(() => {
     const on = () => setVisible(!document.hidden);
@@ -38,44 +56,53 @@ export function useLiveTrending(win: Window, pages: number, paused: boolean) {
     return () => document.removeEventListener('visibilitychange', on);
   }, []);
 
-  const running = visible && !paused;
+  const running = enabled && visible && !paused;
 
-  /* ranking — refetched on window/page change and once a minute */
-  const lastKey = useRef('');
+  /* a new window or page count is a new list: back to loading */
   useEffect(() => {
-    if (!running) return;
-    let alive = true;
-    const key = `${win}:${pages}`;
-    if (key !== lastKey.current) {
-      lastKey.current = key;
-      setStatus('loading');
-      /* show this browser's last ranking for the new key, if it has one */
-      const cached = lastRanking(win, pages);
-      if (cached) {
-        setPools(cached.pools);
-        setUpdatedAt(cached.at);
-      }
-    }
+    live.current = false;
+    setState((s) => ({ ...s, status: enabled ? 'loading' : 'error' }));
+  }, [win, pages, enabled]);
 
+  useEffect(() => {
+    if (!running) {
+      setState((s) => ({ ...s, running: false }));
+      return;
+    }
+    let alive = true;
     let t: ReturnType<typeof setTimeout>;
     const load = async () => {
-      let next = TRENDING_EVERY_MS;
       try {
-        const fresh = await fetchTrending(win, pages);
+        const r = await fetchTrending(win, pages);
         if (!alive) return;
-        setPools(fresh);
-        setStatus('live');
-        setError('');
-        setUpdatedAt(Date.now());
+        live.current = true;
+        setState({
+          ...split(r),
+          status: r.stale ? 'limited' : 'live',
+          error: '',
+          updatedAt: Date.parse(r.asOf) || Date.now(),
+          running: true,
+          provenance: 'live',
+          reason: r.stale ? 'GeckoTerminal is throttling; showing the last good ranking' : '',
+        });
       } catch (e) {
         if (!alive) return;
-        const limited = e instanceof RateLimited;
-        setStatus(limited ? 'limited' : 'error');
-        setError(e instanceof Error ? e.message : String(e));
-        /* a failure retries sooner; a rate limit waits out the queue's backoff */
-        next = limited ? TRENDING_EVERY_MS : TRENDING_RETRY_MS;
+        const why = e instanceof Error ? e.message : String(e);
+        setState((s) =>
+          live.current
+            ? { ...s, status: 'error', error: why, reason: `last refresh failed: ${why}` }
+            : {
+                ...split(SAMPLE_TRENDING),
+                status: 'error',
+                error: why,
+                updatedAt: 0,
+                running: true,
+                provenance: 'sample',
+                reason: why,
+              }
+        );
       }
-      if (alive) t = setTimeout(load, next);
+      if (alive) t = setTimeout(load, EVERY_MS);
     };
     load();
     return () => {
@@ -84,63 +111,5 @@ export function useLiveTrending(win: Window, pages: number, paused: boolean) {
     };
   }, [win, pages, running]);
 
-  /* prices — DexScreener, every ten seconds */
-  useEffect(() => {
-    if (!running) return;
-    let alive = true;
-    const tick = async () => {
-      const ids = poolsRef.current.map((p) => p.pool);
-      if (!ids.length) return;
-      try {
-        const patches = await fetchPatches(ids);
-        if (!alive || !patches.size) return;
-        setPools((cur) =>
-          cur.map((p) => {
-            const d = patches.get(p.pool.toLowerCase());
-            if (!d) return p;
-            /* DexScreener has no maker counts; keep GeckoTerminal's */
-            return { ...p, ...d, logo: p.logo ?? d.logo, price: d.price || p.price };
-          })
-        );
-        setUpdatedAt(Date.now());
-      } catch {
-        /* a missed tick is fine — the next one will land */
-      }
-    };
-    const t = setInterval(tick, PRICES_EVERY_MS);
-    return () => {
-      alive = false;
-      clearInterval(t);
-    };
-  }, [running]);
-
-  /* holders — queued behind the ranking, cached for 15 minutes */
-  const tokenKey = pools.map((p) => p.token).join(',');
-  useEffect(() => {
-    if (!running || !tokenKey) return;
-    let alive = true;
-    const tokens = tokenKey.split(',');
-
-    const hits: Record<string, HolderInfo> = {};
-    for (const t of tokens) {
-      const h = cachedHolders(t);
-      if (h) hits[t] = h;
-    }
-    if (Object.keys(hits).length) setHolders((cur) => ({ ...cur, ...hits }));
-
-    tokens.forEach((t, i) => {
-      if (hits[t]) return;
-      fetchHolders(t, i + 1)
-        .then((h) => alive && setHolders((cur) => ({ ...cur, [t]: h })))
-        .catch(() => {
-          /* rate-limited or cancelled — retried on the next ranking */
-        });
-    });
-    return () => {
-      alive = false;
-      clearHolderQueue();
-    };
-  }, [tokenKey, running]);
-
-  return { pools, holders, status, error, updatedAt, running };
+  return { ...state, running };
 }

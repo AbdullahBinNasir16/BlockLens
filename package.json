@@ -11,7 +11,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "contract": "node scripts/contract.mjs && python backend/scripts/contract.py",
+    "contract:check": "node scripts/contract.mjs --check && python backend/scripts/contract.py --check"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -24,6 +26,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.2",
     "@vitest/coverage-v8": "^2.1.9",
+    "ts-json-schema-generator": "^2.9.0",
     "typescript": "^5.6.3",
     "vite": "^5.4.9",
     "vitest": "^2.1.9"

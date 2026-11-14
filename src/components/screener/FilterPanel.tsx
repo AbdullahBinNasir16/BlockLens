@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import type { AppliedCheck, Chain, CheckDefinition, CheckTier, Project, Quantifier, ScreenerQuery } from '../../data/types';
+import type { AppliedCheck, Chain, CheckDefinition, CheckTier, Quantifier, ScreenerQuery } from '../../data/types';
 import { CATEGORY_LABEL, CATEGORY_ORDER, CHECKS, QUANTIFIER_LABEL } from '../../data/checks';
-import { CHAINS, chainMeta, datasets, findByContract } from '../../data/projects';
+import { CHAINS, chainMeta } from '../../data/projects';
+import { type Corpus, type CorpusToken, SAMPLE_CORPUS, findInCorpus, useCorpus } from '../../lib/corpus';
 import { PRESETS, WINDOW_PRESETS, makeCheck, windowRange } from '../../data/presets';
 import { dateInput, dateShort, shortAddr } from '../../lib/format';
 import { TokenMark } from '../primitives/TokenMark';
@@ -22,29 +23,26 @@ const SOL = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const validFor = (chain: Chain, ca: string) => (chain === 'solana' ? SOL : EVM).test(ca);
 
 export type ContractStatus =
-  | { kind: 'ok'; project: Project }
-  | { kind: 'wrongChain'; project: Project }
+  | { kind: 'ok'; project: CorpusToken }
+  | { kind: 'wrongChain'; project: CorpusToken }
   | { kind: 'unknown' };
 
-/** What the product knows about a pasted address on the chosen chain. A
- *  backend would answer this from its token index when the address is
- *  added; here the registry stands in. */
-export function resolveContract(ca: string, chain: Chain): ContractStatus {
-  const hit = findByContract(ca);
+/** What the corpus knows about a pasted address on the chosen chain: the
+ *  live corpus's token index, or the sample registry. */
+export function resolveContract(ca: string, chain: Chain, corpus: Corpus = SAMPLE_CORPUS): ContractStatus {
+  const hit = findInCorpus(corpus, ca);
   if (!hit) return { kind: 'unknown' };
-  return hit.project.chain === chain
-    ? { kind: 'ok', project: hit.project }
-    : { kind: 'wrongChain', project: hit.project };
+  return hit.chain === chain ? { kind: 'ok', project: hit } : { kind: 'wrongChain', project: hit };
 }
 
-export const searchableCount = (q: ScreenerQuery) =>
-  q.scope.contracts.filter((c) => resolveContract(c, q.scope.chain).kind === 'ok').length;
+export const searchableCount = (q: ScreenerQuery, corpus: Corpus = SAMPLE_CORPUS) =>
+  q.scope.contracts.filter((c) => resolveContract(c, q.scope.chain, corpus).kind === 'ok').length;
 
 /* ---------------- window ---------------- */
 
-function activeWindow(from: number, to: number): string {
+function activeWindow(from: number, to: number, now: number): string {
   for (const w of WINDOW_PRESETS) {
-    const r = windowRange(w.id);
+    const r = windowRange(w.id, now);
     if (r.from === from && r.to === to) return w.id;
   }
   return 'custom';
@@ -97,10 +95,12 @@ function ContractsField({
 
   /* the prototype's index, offered as addresses rather than names — the
      product takes contracts, and a demo still needs something to paste */
-  const indexed = Object.values(datasets)
-    .map((d) => d.project)
+  const corpus = useCorpus();
+  const indexed = Object.values(corpus.registry)
     .filter((p) => p.chain === chain)
-    .filter((p) => !contracts.some((c) => c.toLowerCase() === p.contract.toLowerCase()));
+    .filter((p) => !contracts.some((c) => c.toLowerCase() === p.contract.toLowerCase()))
+    .sort((a, b) => (b.wallets ?? 0) - (a.wallets ?? 0))
+    .slice(0, 6);
 
   return (
     <div className="bl-cas">
@@ -135,7 +135,7 @@ function ContractsField({
       {contracts.length > 0 && (
         <ul className="bl-cas__list">
           {contracts.map((ca) => {
-            const s = resolveContract(ca, chain);
+            const s = resolveContract(ca, chain, corpus);
             return (
               <li key={ca} className="bl-ca" data-kind={s.kind}>
                 {s.kind === 'unknown' ? (
@@ -175,7 +175,7 @@ function ContractsField({
             ))}
           </>
         ) : contracts.length ? null : (
-          <span>No {chainName} contracts are indexed in this prototype.</span>
+          <span>No {chainName} contracts are indexed in this corpus.</span>
         )}
       </p>
     </div>
@@ -196,6 +196,7 @@ function ChipRows({
   onChange: (c: AppliedCheck) => void;
 }) {
   const applied = tier === 'project' ? query.projectRule.checks : query.walletChecks;
+  const corpus = useCorpus();
   return (
     <div className="bl-fcats">
       {CATEGORY_ORDER.map((cat) => {
@@ -212,6 +213,7 @@ function ChipRows({
                   applied={applied.find((a) => a.checkId === def.id)}
                   onToggle={() => onToggle(def)}
                   onChange={onChange}
+                  unsupported={corpus.unsupported[def.id]}
                 />
               ))}
             </div>
@@ -296,13 +298,14 @@ export function FilterPanel({
   onSearch: () => void;
   searching: boolean;
 }) {
+  const corpus = useCorpus();
   const { scope } = query;
-  const win = activeWindow(scope.from, scope.to);
+  const win = activeWindow(scope.from, scope.to, corpus.now);
   const [custom, setCustom] = useState(win === 'custom');
   const setScope = (patch: Partial<ScreenerQuery['scope']>) =>
     onChange({ ...query, scope: { ...scope, ...patch } });
 
-  const ready = searchableCount(query);
+  const ready = searchableCount(query, corpus);
   const filtersOn = query.projectRule.checks.length + query.walletChecks.length;
 
   const toggle = (def: CheckDefinition) => {
@@ -381,7 +384,7 @@ export function FilterPanel({
                 className="bl-seg__b"
                 data-on={win === w.id && !custom}
                 onClick={() => {
-                  setScope(windowRange(w.id));
+                  setScope(windowRange(w.id, corpus.now));
                   setCustom(false);
                 }}
               >

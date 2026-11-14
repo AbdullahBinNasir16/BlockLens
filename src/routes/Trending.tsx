@@ -6,6 +6,8 @@ import { compact, price, pct, int, shortAddr } from '../lib/format';
 import { findByContract } from '../data/projects';
 import type { HolderInfo, LivePool, Window } from '../lib/live/trending';
 import { useLiveTrending } from '../lib/live/useLiveTrending';
+import { ProvChip } from '../components/primitives/Bits';
+import { SAMPLE_TRENDING } from '../data/trending';
 
 type SortKey =
   | 'rank'
@@ -38,7 +40,7 @@ const MAX_AGE: { label: string; ms: number }[] = [
   { label: '< 30d', ms: 30 * 86_400_000 },
 ];
 
-const MAX_PAGES = 10;
+const MAX_PAGES = 5;            // the API serves at most five pages
 
 function age(ms: number): string {
   if (!ms) return '—';
@@ -77,7 +79,13 @@ export function Trending() {
   const [maxAge, setMaxAge] = useState(0);
   const [hideHoney, setHideHoney] = useState(true);
 
-  const { pools, holders, status, error, updatedAt, running } = useLiveTrending(win, pages, paused);
+  const { pools, holders, status, error, updatedAt, running, provenance, reason } = useLiveTrending(
+    win,
+    pages,
+    paused
+  );
+  const sample = provenance === 'sample';
+  const snapshot = new Date(SAMPLE_TRENDING.asOf).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
   /* "updated Ns ago" has to tick on its own */
   const [, setNow] = useState(0);
@@ -133,16 +141,23 @@ export function Trending() {
           <p className="eyebrow">Discovery · Base</p>
           <h1 className="display d2">Trending Tokens</h1>
           <p className="bl-page__sub">
-            Live from GeckoTerminal and DexScreener. Market data only — open a token to
-            investigate it.
+            Live from GeckoTerminal, DexScreener and GoPlus, through the BlockLens API. Market
+            data only — open a token to investigate it.
           </p>
         </div>
         <div className="bl-page__headr bl-live">
+          <ProvChip
+            live={!sample}
+            why={`snapshot of ${snapshot}, not live`}
+            note={sample ? `The API could not be used (${reason}). This is a frozen ranking.` : undefined}
+          />
           <span className="bl-live__state" data-status={running ? status : 'paused'}>
             <span className="bl-live__dot" />
             {!running
               ? 'Paused'
-              : status === 'loading'
+              : sample && status !== 'loading'
+                ? 'API unreachable — retrying'
+                : status === 'loading'
                 ? 'Connecting'
                 : status === 'limited'
                   ? pools.length ? 'Rate-limited — prices still live' : 'Rate-limited, retrying'
@@ -198,6 +213,13 @@ export function Trending() {
         </label>
       </div>
 
+      {sample && status !== 'loading' && (
+        <p className="bl-samplebar" role="alert">
+          <strong>Sample data.</strong> The BlockLens API could not be reached ({reason}), so this is a
+          frozen ranking captured on {snapshot}. Prices, volumes and liquidity are not live. Holder
+          counts are left out. The page keeps retrying every ten seconds.
+        </p>
+      )}
       <div className="bl-tablewrap">
         <table className="bl-table bl-table--live">
           <thead>
@@ -238,7 +260,7 @@ export function Trending() {
                     : status === 'limited' && !pools.length
                       ? 'GeckoTerminal rate limit hit — waiting a minute, then retrying.'
                       : status === 'error' && !pools.length
-                        ? `Could not load trending pools (${error || 'network error'}). Retrying in 15 seconds.`
+                        ? `Could not load trending pools (${error || 'network error'}). Retrying in 10 seconds.`
                       : 'No tokens match these filters.'}
                 </td>
               </tr>
