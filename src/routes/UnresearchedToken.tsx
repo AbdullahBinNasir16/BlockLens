@@ -5,11 +5,11 @@ import { EmptyNote, Stat } from '../components/primitives/Bits';
 import { Icon } from '../components/app/Icons';
 import { chainMeta } from '../data/projects';
 import { compact, price, pct, int, shortAddr } from '../lib/format';
-import { fetchLiveToken, isEvmAddress, type LiveToken } from '../lib/live/token';
-import { fetchHolders, type HolderInfo } from '../lib/live/trending';
-import { fetchTracked, riskBand, type Launch } from '../lib/live/launches';
-import { bandColor } from '../lib/format';
-import { Explain } from '../components/live/Explain';
+import { isEvmAddress } from '../lib/live/token';
+import { apiGet } from '../lib/api';
+import type { ProjectLiveResponse } from '../data/api';
+import { ProvChip } from '../components/primitives/Bits';
+import { RiskPanel } from '../components/live/RiskPanel';
 import { addWatch, fetchWatchlist, recordInvestigation, removeWatch } from '../lib/live/product';
 
 /* ============================================================
@@ -18,7 +18,9 @@ import { addWatch, fetchWatchlist, recordInvestigation, removeWatch } from '../l
    The one rule: never render a profile, a score or a sample section
    under a real token's name. This page says the project has not been
    researched and shows only what live public sources report about it
-   right now, each figure labelled with where it came from.
+   right now, each figure labelled with where it came from. All of it
+   comes through the BlockLens API (`/api/project`); when the API is down
+   the page says so, because there is no honest sample for a real token.
    ============================================================ */
 
 type Load<T> = { state: 'loading' } | { state: 'ok'; value: T } | { state: 'error'; msg: string };
@@ -39,41 +41,51 @@ export function UnresearchedToken() {
   const valid = isEvmAddress(address);
   const supported = chain === 'base';
 
-  const [market, setMarket] = useState<Load<LiveToken | null>>({ state: 'loading' });
-  const [holders, setHolders] = useState<Load<HolderInfo>>({ state: 'loading' });
-  const [tracked, setTracked] = useState<Launch | null>(null);
+  const [live, setLive] = useState<Load<ProjectLiveResponse>>({ state: 'loading' });
   const [watched, setWatched] = useState<boolean | null>(null);
   const logged = useRef('');
 
   useEffect(() => {
     if (!valid || !supported) return;
     let alive = true;
-    setMarket({ state: 'loading' });
-    setHolders({ state: 'loading' });
-    fetchLiveToken(address)
-      .then((v) => alive && setMarket({ state: 'ok', value: v }))
-      .catch((e) => alive && setMarket({ state: 'error', msg: String(e?.message ?? e) }));
-    fetchTracked(address.toLowerCase())
-      .then((t) => {
+    setLive({ state: 'loading' });
+    apiGet<ProjectLiveResponse>(`/api/project/${address.toLowerCase()}`, 20_000)
+      .then((v) => {
         if (!alive) return;
-        setTracked(t);
+        setLive({ state: 'ok', value: v });
         if (logged.current !== address) {
           logged.current = address;
-          recordInvestigation(address, t ? 'tracked' : 'live');
+          recordInvestigation(address, v.risk.state === 'out_of_scope' ? 'live' : 'tracked');
         }
       })
-      .catch(() => alive && setTracked(null));
+      .catch((e) => alive && setLive({ state: 'error', msg: String(e?.message ?? e) }));
     fetchWatchlist()
       .then((w) => alive && setWatched(w.some((i) => i.address === address.toLowerCase())))
       .catch(() => alive && setWatched(null));
-    fetchHolders(address.toLowerCase(), 0)
-      .then((v) => alive && setHolders({ state: 'ok', value: v }))
-      .catch((e) => alive && setHolders({ state: 'error', msg: String(e?.message ?? e) }));
     return () => {
       alive = false;
     };
   }, [address, valid, supported]);
 
+  const v = live.state === 'ok' ? live.value : null;
+  type MarketData = NonNullable<ProjectLiveResponse['market']['data']>;
+  type SecurityData = NonNullable<ProjectLiveResponse['security']['data']>;
+  const market: Load<MarketData | null> =
+    live.state === 'loading'
+      ? { state: 'loading' }
+      : live.state === 'error'
+        ? { state: 'error', msg: live.msg }
+        : v!.market.error
+          ? { state: 'error', msg: v!.market.error }
+          : { state: 'ok', value: v!.market.data ?? null };
+  const holders: Load<SecurityData | null> =
+    live.state === 'loading'
+      ? { state: 'loading' }
+      : live.state === 'error'
+        ? { state: 'error', msg: live.msg }
+        : v!.security.error
+          ? { state: 'error', msg: v!.security.error }
+          : { state: 'ok', value: v!.security.data ?? null };
   const tok = market.state === 'ok' ? market.value : null;
   const top = tok?.pairs[0];
   const h = holders.state === 'ok' ? holders.value : null;
@@ -126,8 +138,8 @@ export function UnresearchedToken() {
         <p className="bl-unres__lede">BlockLens has not researched this project yet.</p>
         <p className="meta">
           There is no hand-built research profile for this token, and no sample section is shown
-          under its name. Everything below is live market data from public sources,
-          fetched just now. It is not an assessment.
+          under its name. Everything below is live, fetched just now through the BlockLens API:
+          market data, holder data, and the model's view where the model was built to give one.
         </p>
       </div>
 
@@ -146,14 +158,20 @@ export function UnresearchedToken() {
           <section className="bl-unres__sec">
             <div className="bl-unres__sech">
               <h2 className="eyebrow">Market</h2>
-              <span className="bl-live__state" data-status={market.state === 'ok' ? 'live' : market.state === 'error' ? 'error' : 'loading'}>
-                <span className="bl-live__dot" />
-                {market.state === 'loading' ? 'Fetching' : market.state === 'error' ? 'Unavailable' : 'Live · DexScreener'}
-              </span>
+              {market.state === 'ok' ? (
+                <ProvChip live note="DexScreener, through the BlockLens API, fetched just now" />
+              ) : market.state === 'error' ? (
+                <ProvChip live={false} empty why="unavailable right now" />
+              ) : (
+                <span className="meta">Fetching…</span>
+              )}
             </div>
             {market.state === 'loading' && <p className="meta">Looking up Base pairs…</p>}
             {market.state === 'error' && (
-              <EmptyNote title="DexScreener could not be reached" detail={market.msg} />
+              <EmptyNote
+                title="Market data could not be fetched"
+                detail={`${market.msg}. No sample figures are shown for a real token.`}
+              />
             )}
             {market.state === 'ok' && !tok && (
               <EmptyNote
@@ -166,7 +184,7 @@ export function UnresearchedToken() {
                 <Stat label="Price" value={price(top.price)} sub={top.change24h ? `${pct(top.change24h)} 24h` : undefined}
                   tone={undefined} />
                 <Stat label="Liquidity" value={`$${compact(Math.round(top.liquidity))}`} sub={`deepest pool · ${top.quote}`} />
-                <Stat label="Volume 24h" value={`$${compact(Math.round(top.volume24h))}`} sub={`${int(top.txns24h)} txns`} />
+                <Stat label="Volume 24h" value={`$${compact(Math.round(top.volume24h))}`} sub={`${int(top.buys24h + top.sells24h)} txns`} />
                 <Stat label="Market cap" value={top.marketCap ? `$${compact(Math.round(top.marketCap))}` : '—'}
                   sub={top.fdv ? `FDV $${compact(Math.round(top.fdv))}` : undefined} />
                 <Stat label="Pool age" value={age(top.createdAt)} sub={top.dex} />
@@ -177,22 +195,35 @@ export function UnresearchedToken() {
           <section className="bl-unres__sec">
             <div className="bl-unres__sech">
               <h2 className="eyebrow">Holders &amp; contract flags</h2>
-              <span className="bl-live__state" data-status={holders.state === 'ok' ? 'live' : holders.state === 'error' ? 'error' : 'loading'}>
-                <span className="bl-live__dot" />
-                {holders.state === 'loading' ? 'Fetching' : holders.state === 'error' ? 'Unavailable' : 'Live · GoPlus'}
-              </span>
+              {holders.state === 'ok' ? (
+                <ProvChip live note="GoPlus Security, through the BlockLens API, fetched just now" />
+              ) : holders.state === 'error' ? (
+                <ProvChip live={false} empty why="unavailable right now" />
+              ) : (
+                <span className="meta">Fetching…</span>
+              )}
             </div>
             {holders.state === 'loading' && <p className="meta">Asking GoPlus…</p>}
             {holders.state === 'error' && (
-              <EmptyNote title="GoPlus could not be reached" detail={holders.msg} />
+              <EmptyNote
+                title="Holder data could not be fetched"
+                detail={`${holders.msg}. No sample figures are shown for a real token.`}
+              />
+            )}
+            {holders.state === 'ok' && !h && (
+              <EmptyNote title="GoPlus has no record of this address" detail="It may not be a token on Base." />
             )}
             {h && (
               <div className="bl-unres__grid">
-                <Stat label="Holders" value={h.count == null ? '—' : int(h.count)} />
+                <Stat
+                  label="Holders"
+                  value={h.holders ? int(h.holders) : '—'}
+                  sub={h.holders === 0 ? 'not yet indexed by GoPlus' : undefined}
+                />
                 <Stat
                   label="Top 10 hold"
-                  value={h.top10 == null ? '—' : `${h.top10.toFixed(1)}%`}
-                  tone={h.top10 != null && h.top10 >= 80 ? 'var(--neg)' : h.top10 != null && h.top10 >= 50 ? 'var(--warn)' : undefined}
+                  value={h.top10Pct == null ? '—' : `${h.top10Pct.toFixed(1)}%`}
+                  tone={h.top10Pct != null && h.top10Pct >= 80 ? 'var(--neg)' : h.top10Pct != null && h.top10Pct >= 50 ? 'var(--warn)' : undefined}
                 />
                 <Stat
                   label="Honeypot"
@@ -204,46 +235,10 @@ export function UnresearchedToken() {
             )}
           </section>
 
-          {tracked && (
-            <section className="bl-unres__sec">
-              <div className="bl-unres__sech">
-                <h2 className="eyebrow">Launch signals · scored at minute 5</h2>
-                <span className="bl-live__state" data-status="live">
-                  <span className="bl-live__dot" />
-                  Model · buyer-loss-v1
-                </span>
-              </div>
-              <div className="bl-unres__grid">
-                <Stat
-                  label="Launch type"
-                  value={tracked.launch_type === 'self-deployed' ? 'Self-deployed' : tracked.launch_type === 'launchpad' ? 'Launchpad' : '—'}
-                  sub={tracked.launch_type === 'self-deployed'
-                    ? 'deployer holds withdrawable liquidity; pulled in 109 of 113 held-out launches'
-                    : tracked.launch_type === 'launchpad' ? 'liquidity locked at launch; pulled in 0 of 74' : undefined}
-                  tone={tracked.launch_type === 'self-deployed' ? 'var(--neg)' : undefined}
-                />
-                <Stat
-                  label="Buyer-loss risk"
-                  value={tracked.risk == null ? 'Not scored' : `${Math.round(tracked.risk * 100)}%`}
-                  sub={tracked.risk == null ? tracked.status.replace('not scored: ', '')
-                    : 'chance a minute-5 buy is worth ≤ half at hour 6'}
-                  tone={tracked.risk == null ? undefined : bandColor[riskBand(tracked.risk)]}
-                />
-                <Stat label="Swaps by minute 5" value={tracked.swaps_by_cutoff ?? '—'} />
-                <Stat label="Buyers by minute 5" value={tracked.buyers_by_cutoff ?? '—'} />
-              </div>
-              {tracked.why && (
-                <div className="bl-unres__why">
-                  <p className="eyebrow">Why this score</p>
-                  <Explain why={tracked.why} />
-                </div>
-              )}
-              <p className="meta" style={{ marginTop: 14 }}>
-                A model estimate, validated on 2026 Base launches (see Fresh Launches for the record).
-                It describes the launch at minute 5, not the token today.
-              </p>
-            </section>
-          )}
+          <RiskPanel
+            risk={v?.risk ?? null}
+            unavailable={live.state === 'error' ? live.msg : undefined}
+          />
 
           {tok && tok.pairs.length > 0 && (
             <section className="bl-unres__sec">
@@ -297,7 +292,8 @@ export function UnresearchedToken() {
       <p className="bl-page__foot meta">
         Market data: DexScreener. Holders, top-10 share and honeypot flag: GoPlus Security. Both
         are third-party readings at the moment of loading and can be wrong; neither is a BlockLens
-        finding. A full investigation requires this project to be researched.
+        finding. The model risk comes from the BlockLens live feed and is shown only for launches it
+        scored at their own minute 5. A full investigation requires this project to be researched.
       </p>
     </div>
   );

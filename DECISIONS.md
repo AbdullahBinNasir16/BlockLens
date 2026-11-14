@@ -1475,3 +1475,130 @@ contract, and this case is outside them. Decoding such swaps from the
 `Swap` events' own amounts, independent of transfers, is a backfill change
 for the research pipeline (it affects the dataset, not just the feed), and
 is left to that pipeline's owner.
+
+# Phase 7 — serving layer and the honest demo (2026-11-03)
+
+## KOL scoring is descoped
+
+**Why:** the X API has no free tier for reading posts. It charges per post
+read (about $0.005 each, published price), and no keyless substitute
+exists.
+
+**The cost was never measured on a paid call.** No key was bought, and
+`xapi.py` is locked at 0 posts. The estimate multiplies the measured
+forward launch rate (about 700 scored a day) by an assumed 20 post reads
+per launch: about **$70 a day, or $2,100 a month**, before scoring any
+promoter's history. That was not justified against what the module adds.
+
+**What it removes from the proposal:**
+- the KOL directory;
+- the KOL and social sections of the intelligence profile;
+- any social model input.
+
+**What replaces it: nothing,** and nothing poses as a substitute. The
+product's two signals are on-chain only. Written up in `SCOPE.md` and in
+the report (Chapter 1, out of scope).
+
+## The KOL and Portfolio pages
+
+- **KOL:** removed from navigation, and its code removed, in PR #3
+  (2026-10-22). It is recoverable from git history. Recommended and kept:
+  removed. A "planned" page with no numbers still invites the question
+  "planned by when", and the answer is never.
+- **Portfolio:** not a planned page. It is the live paper agent (Phase 9),
+  a real forward record. The invented simulation beside it was removed in
+  PR #3.
+
+## The model window rule for serving
+
+`/api/token-risk/{address}` returns a score only for a launch the live
+feed scored at its own launch + 5 minutes: the question the model was
+trained to answer. Every other case gets an explicit state and a sentence
+saying why:
+
+| State | Meaning |
+|---|---|
+| `pending` | waiting for minute 5 |
+| `not_scored` | seen, not scored, with the scorer's reason |
+| `out_of_scope` | never seen launching |
+
+Each response carries the model version, the training launches
+(2026-01-20 to 2026-07-16) and the date the model was trained
+(2026-10-19).
+
+The feed watches pools, not tokens. A new pool for an old token
+(Nockchain, 2026-10-28) is "a pool opened", not "the token launched".
+None has been scored so far (20 such rows, 0 scored), but nothing yet
+prevents one: open item.
+
+## How the score is presented, and why not 0–100
+
+The model's raw output is **not** a calibrated probability: forward, it
+ran about four times too high (Phase 8 result). It is shown as:
+- **"About N in 100".** "Of 70 launches the model scored like this since 19
+  Oct, 34 lost half their value or more by hour 6": the forward
+  reliability bin's observed rate. It is a frequency measured on unseen
+  launches.
+- **The raw score as a two-decimal number,** labelled "a ranking, not a
+  probability". It is never a percentage.
+- **The top contributing features,** exact tree-SHAP terms, which sum to
+  the score with an "everything else" term.
+
+There is no 0–100 ring for the model. The case studies' rings stay, badged
+as illustrative and stating that they are not the model.
+
+## Live and sample
+
+Provenance is per section: `live` or `sample`, and a third,
+neutral "No data" chip when nothing is shown at all.
+- **Snapshot sections:** the case studies' sourced sections are a
+  9 Sep 2026 snapshot, so they are badged sample with that date. They are
+  not live.
+- **API down:** every model screen falls back to a dated snapshot
+  captured from the API. Those are Trending, Fresh Launches, Model Health
+  and the Paper Agent, each under an amber badge and a banner.
+- **The screener** falls back to its generated corpus.
+- **Watchlist and History** have no sample: a sample of the user's own
+  records would be fake personal data. They say the API is unreachable.
+- **A real token never gets a sample score.**
+
+## The screener on real wallets
+
+- **Positions** come from stored transfers and swaps over each labelled
+  launch's first 24 hours: 771 launches and 70,480 wallets. The trader is
+  recovered from token transfers, because `swap.wallet_address` is never
+  filled.
+- **Money is converted per trade at that day's ETH close,** from
+  GeckoTerminal daily candles for the deepest WETH/USDC pool, never at an
+  assumed rate.
+- **Open positions** are measured only to the end of the observed window
+  (`observedUntil`).
+- **Payload:** the corpus is about 50 MB, so the API serves the index, then
+  per search only the wallets that traded the searched contracts. The
+  evaluator is unchanged.
+- **Contract drift:** the query logic reached for the sample registry and
+  the sample clock, so a corpus is now handed to it explicitly.
+
+## The revised work split
+
+The brief assumes Shahmir's FYP-1 lane was X ingestion, call matching and
+the KOL prototype, and that he now has no module. The repository says
+otherwise. His merged work (PRs #1–#6) is:
+- CI/CD, containers and the production compose;
+- the Phase 10 backend (score explanations, alerts, the paper book,
+  health, product state);
+- the product rework;
+- CI hardening and end-to-end tests;
+- the FYP-1 report;
+- the hosting blueprints.
+
+So the parallel-work argument holds, along a different line:
+- **Research and model** (the store, labels, the model, the forward record,
+  Phase 11's shadow scores, M9's data, M10's v2).
+- **Platform and product** (the serving layer's upkeep, deployment and
+  hosting, M11, the product surfaces M7 and M8).
+
+Recommended: Shahmir takes platform and product, including this serving
+layer from here and M11 hosting, which would also end the outage gaps in
+the forward test. "The portfolio agent" is not a new module: it exists.
+The team should agree this split and record it in the report.

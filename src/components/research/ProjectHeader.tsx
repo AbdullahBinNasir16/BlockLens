@@ -1,29 +1,21 @@
 import { useEffect, useState } from 'react';
 import { chainMeta } from '../../data/projects';
-import { useProject } from '../../lib/project-context';
+import { SNAPSHOT_DATE, useProject, useProjectLive } from '../../lib/project-context';
 import { TokenMark, ChainMark } from '../primitives/TokenMark';
 import { XAvatar } from '../primitives/XAvatar';
-import { Sparkline } from '../primitives/Charts';
+import { ProvChip } from '../primitives/Bits';
 import { Icon } from '../app/Icons';
 import { useCopy } from '../../lib/hooks';
 import { compact, price, pct, int, shortAddr } from '../../lib/format';
 import { addWatch, fetchWatchlist, removeWatch } from '../../lib/live/product';
 
-function sparkFor(change: number, seed: number) {
-  let s = seed >>> 0;
-  const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
-  const drift = Math.max(-1, Math.min(1, change / 60));
-  const out: number[] = [];
-  let v = 50 - drift * 22;
-  for (let i = 0; i < 16; i++) {
-    v += drift * 2.75 + (rnd() - 0.5) * 9;
-    out.push(Math.max(4, Math.min(96, v)));
-  }
-  return out;
-}
-
 export function ProjectHeader() {
   const { project } = useProject();
+  const live = useProjectLive();
+  const mk = live.provenance === 'live' ? live.data?.market.data ?? null : null;
+  const sec = live.provenance === 'live' ? live.data?.security.data ?? null : null;
+  const top = mk?.pairs[0];
+  const isLive = !!top;
   const [copied, copy] = useCopy();
   const [watched, setWatched] = useState(false);
   const [canWatch, setCanWatch] = useState(false);
@@ -61,29 +53,67 @@ export function ProjectHeader() {
     ...(project.links.extra ?? []).map((e) => ({ k: e.label, v: e.url })),
   ].filter((l) => l.v) as { k: string; v: string }[];
 
-  const metrics = [
-    {
-      k: 'Price',
-      v: price(m.price),
-      s: pct(m.priceChange24h),
-      tone: up ? 'var(--pos)' : 'var(--neg)',
-    },
-    { k: 'Market cap', v: `$${compact(m.marketCap)}`, s: `FDV $${compact(m.fdv)}` },
-    {
-      k: 'Volume 24h',
-      v: `$${compact(m.volume24h)}`,
-      s: `${int(m.txns24h.buys + m.txns24h.sells)} txns`,
-    },
-    {
-      k: 'Liquidity',
-      v: `$${compact(m.liquidity)}`,
-      s: `${((m.liquidity / m.marketCap) * 100).toFixed(1)}% of cap`,
-      tone: m.liquidity / m.marketCap < 0.05 ? 'var(--warn)' : undefined,
-    },
-    { k: 'Holders', v: int(m.holders), s: pct(m.holdersChange24h), tone: 'var(--pos)' },
-    { k: 'Pair age', v: m.ageLabel, s: `since ${project.deployedAt}` },
-    { k: 'Category', v: project.category, s: project.categoryDetail },
-  ];
+  /* Live from the API when it answers; otherwise the dated snapshot the
+     case study was built from, under a Sample badge. Never a mix. */
+  const ageOf = (ms: number) => {
+    const d = (Date.now() - ms) / 86_400_000;
+    return d < 1 ? `${Math.max(1, Math.round(d * 24))}h` : d < 60 ? `${Math.round(d)}d` : `${(d / 30.44).toFixed(1)}mo`;
+  };
+  const metrics = top
+    ? [
+        {
+          k: 'Price',
+          v: price(top.price),
+          s: pct(top.change24h),
+          tone: top.change24h >= 0 ? 'var(--pos)' : 'var(--neg)',
+        },
+        {
+          k: 'Market cap',
+          v: top.marketCap ? `$${compact(top.marketCap)}` : '—',
+          s: top.fdv ? `FDV $${compact(top.fdv)}` : '',
+        },
+        {
+          k: 'Volume 24h',
+          v: `$${compact(top.volume24h)}`,
+          s: `${int(top.buys24h + top.sells24h)} txns`,
+        },
+        {
+          k: 'Liquidity',
+          v: `$${compact(top.liquidity)}`,
+          s: top.marketCap ? `${((top.liquidity / top.marketCap) * 100).toFixed(1)}% of cap` : `deepest pool · ${top.quote}`,
+          tone: top.marketCap && top.liquidity / top.marketCap < 0.05 ? 'var(--warn)' : undefined,
+        },
+        {
+          k: 'Holders',
+          v: sec?.holders == null ? '—' : int(sec.holders),
+          s: sec?.top10Pct == null ? 'GoPlus' : `top 10 hold ${sec.top10Pct.toFixed(0)}%`,
+        },
+        { k: 'Pair age', v: top.createdAt ? ageOf(top.createdAt) : '—', s: top.dex },
+        { k: 'Category', v: project.category, s: project.categoryDetail },
+      ]
+    : [
+        {
+          k: 'Price',
+          v: price(m.price),
+          s: pct(m.priceChange24h),
+          tone: up ? 'var(--pos)' : 'var(--neg)',
+        },
+        { k: 'Market cap', v: `$${compact(m.marketCap)}`, s: `FDV $${compact(m.fdv)}` },
+        {
+          k: 'Volume 24h',
+          v: `$${compact(m.volume24h)}`,
+          s: `${int(m.txns24h.buys + m.txns24h.sells)} txns`,
+        },
+        {
+          k: 'Liquidity',
+          v: `$${compact(m.liquidity)}`,
+          s: `${((m.liquidity / m.marketCap) * 100).toFixed(1)}% of cap`,
+          tone: m.liquidity / m.marketCap < 0.05 ? 'var(--warn)' : undefined,
+        },
+        { k: 'Holders', v: int(m.holders), s: pct(m.holdersChange24h) },
+        { k: 'Pair age', v: m.ageLabel, s: `since ${project.deployedAt}` },
+        { k: 'Category', v: project.category, s: project.categoryDetail },
+      ];
 
   return (
     <header className="bl-ph">
@@ -123,15 +153,15 @@ export function ProjectHeader() {
         </div>
 
         <div className="bl-ph__right">
-          <div className="bl-ph__spark">
-            <Sparkline
-              values={sparkFor(m.priceChange24h, project.id.length * 977)}
-              width={132}
-              height={38}
-              color={up ? 'var(--pos)' : 'var(--neg)'}
-            />
-            <span className="meta">24h</span>
-          </div>
+          <ProvChip
+            live={isLive}
+            why={live.loading ? 'loading live market data' : `snapshot of ${SNAPSHOT_DATE}, not live`}
+            note={
+              isLive
+                ? 'Market figures from DexScreener and GoPlus, through the BlockLens API, fetched just now.'
+                : `The API could not be used (${live.reason}). These are the figures captured on ${SNAPSHOT_DATE}.`
+            }
+          />
           <button
             className="bl-btn bl-btn--sm bl-btn--ghost"
             onClick={toggleWatch}
