@@ -80,14 +80,18 @@ Liquidity-pull: launchpad pulled & 0 of 74 & -- & EVAL random cohort\\
 Buyer-loss PR-AUC, in period & 0.833 & 0.370 (checker) & CAL, 179 tokens, base rate 0.36\\
 Buyer-loss PR-AUC, out of time & 0.758 & 0.331 & Mar--Apr, trained before Mar\\
 Regime check May--Jul & 5 flagged of 78, all 3 losses caught & -- & few examples\\
-Forward resolved predictions & 850 & floor 200 / 20 losses (14 so far) & since 19 Oct\\
+Forward resolved predictions & 8,259 (191 losses) & floor 200 / 20 losses & 19 Oct--3 Nov\\
+Buyer-loss PR-AUC, forward & 0.108 & 0.023 base rate; 0.025 checker & CI of difference $+0.055$ to $+0.124$\\
+Buyer-loss PR-AUC, forward, not pulled by hour 6 & 0.152 & 0.039 base rate; 0.033 launch type & post hoc\\
+Buyer-loss Brier, forward & 0.038 & 0.023 base rate & calibration fails\\
+Self-deployed pulled within 7 days (forward) & 89.2\% (2,480) & 0.63\% launchpad (2,370) & pre-registered\\
 Paper agent mean return & $+49.3\%$ (315 trades) & $-33.4\%$ control (832) & CI $+55\%$ to $+110\%$\\
 Self-deployed pulled within a day (forward) & 86\% & 0.4\% launchpad & forward\\
 \bottomrule
 \end{tabular}
 \caption{Validation results. Sources: \codex{model\_card\_v2.md}, \codex{model\_card\_phase6.md}, \codex{paper\_agent.md}.}
 \end{table}
-The paper agent's pre-registered success criterion is met. The buyer-loss forward record is below its floor for losses and no forward accuracy claim is made; the page shows the counts and says ``too early''.
+The paper agent's pre-registered success criterion is met, and so are both forward criteria (\codex{forward\_validation.md}). Two limits are reported with them. The forward probabilities are about four times too high, so the score is shown as a ranking. The buyer-loss label is the hour-6 price, which a liquidity pull leaves standing: of 3,557 pools pulled by hour 6, 6 are labelled losses. On the pools not pulled, the model beats launch type and both checkers; with pulls counted as losses, launch type alone ranks better (0.837 against 0.671), which is why the paper agent applies launch type first. Both fixed rule checkers sit at the base rate forward.
 
 \section{Edge and Failure Cases}
 \begin{itemize}
