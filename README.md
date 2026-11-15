@@ -55,6 +55,14 @@ At launch + 5 minutes on Base:
 
 ## Run it
 
+**From nothing, with one command:** `docker compose up --build`, then open
+<http://localhost:8080>. The clean-machine steps, settings and what a fresh
+install shows are in [RUNNING.md](RUNNING.md); every setting is listed in
+[.env.example](.env.example). What is in and out of scope, and why KOL scoring
+was descoped, is in [SCOPE.md](SCOPE.md).
+
+For development:
+
 ```bash
 # backend: PostgreSQL 16, then
 cd backend && python -m pip install -e . && python -m alembic upgrade head
@@ -62,7 +70,7 @@ uvicorn blocklens.api.app:app --port 8000          # API + live scorer
 
 # front end
 npm install
-npm run dev        # http://localhost:5173, proxies /api and the public sources
+npm run dev        # http://localhost:5173, proxies /api (the API calls the public sources)
 npm run build      # type-check + production bundle
 npm test           # vitest unit tests
 ```
@@ -165,14 +173,21 @@ must-pass-in-N-of-M rule) and **whole wallet**. Everything combines with AND.
 Results come as a list or bubbles with a funnel above them, and every match
 carries the reason it matched.
 
-The corpus is **generated** and the page says so: `src/data/wallets.ts`
+**Phase 7: the screener runs on real wallets** when the API is up: 70,480
+wallets from 771 labelled Base launches, rebuilt from stored transfers and
+swaps over each launch's first 24 hours, with money converted at each trade's
+own day's ETH close (`backend/blocklens/api/screener.py`). Filters the live
+corpus has no data for are shown disabled with the reason. When the API is
+down, the generated sample corpus below is screened instead, under a Sample
+badge.
+
+The sample corpus is **generated** and the page says so: `src/data/wallets.ts`
 builds 400 wallets from a seeded generator, so the same query always returns
 the same rows. No address corresponds to a real wallet. The evaluator,
 `evaluateQuery` in `src/lib/screener.ts`, is pure and unit-tested; the README's
 acceptance query (Base, three contracts, Jun–Sep 2026, PnL ≥ $2,000 and hold
 ≥ 15 min in at least two projects, win rate ≥ 55%) returns eight wallets and
-that is asserted in `src/lib/screener.test.ts`. Replacing the corpus with the
-backend's early-buyer cohorts is FYP-2 work (`docs/FYP1_SCOPE.md`, M9).
+that is asserted in `src/lib/screener.test.ts`.
 
 ## Data model
 

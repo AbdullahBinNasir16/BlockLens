@@ -251,3 +251,43 @@
   border: 1px dashed var(--rule-strong);
   border-radius: 18px;
 }
+
+/* ---------------- the model's view of one token (Phase 7) ---------------- */
+.bl-risk-panel__lede {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 70ch;
+  margin: 4px 0 14px;
+}
+.bl-risk-panel[data-state='out_of_scope'] .bl-risk-panel__scope,
+.bl-risk-panel[data-state='not_scored'] .bl-risk-panel__scope {
+  padding: 12px 14px;
+  border: 1.5px dashed var(--ink-4);
+  border-radius: 10px;
+}
+.bl-risk-panel__card {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 18px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+.bl-risk-panel__card > div {
+  display: contents;
+}
+.bl-risk-panel__card dt {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-4);
+}
+.bl-risk-panel__card dd {
+  margin: 0;
+  color: var(--ink-3);
+}
+@media (max-width: 640px) {
+  .bl-risk-panel__card {
+    grid-template-columns: 1fr;
+  }
+}

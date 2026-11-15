@@ -1,3 +1,5 @@
+import { ProvChip } from '../components/primitives/Bits';
+import { SAMPLE_BOOK, SAMPLE_FEED, SNAPSHOT_AT } from '../data/snapshots';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../components/app/Icons';
@@ -38,10 +40,13 @@ function when(iso: string): string {
   return `${d.toISOString().slice(5, 10)} ${d.toISOString().slice(11, 16)}`;
 }
 
+const SNAP_DAY = new Date(SNAPSHOT_AT).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
 export function Portfolio() {
   const nav = useNavigate();
   const [book, setBook] = useState<Load<PaperBook>>({ state: 'loading' });
   const [forward, setForward] = useState<ForwardRecord | null>(null);
+  const [sample, setSample] = useState(false);
   const [filter, setFilter] = useState<Filter>('AGENT');
   const [sort, setSort] = useState<'time' | 'return' | 'risk'>('time');
 
@@ -49,10 +54,14 @@ export function Portfolio() {
     let alive = true;
     fetchPaperBook()
       .then((b) => alive && setBook({ state: 'ok', value: b }))
-      .catch((e) => alive && setBook({ state: 'error', msg: String(e?.message ?? e) }));
+      .catch(() => {
+        if (!alive) return;
+        setBook({ state: 'ok', value: SAMPLE_BOOK });
+        setSample(true);
+      });
     fetchFeed()
       .then((f) => alive && setForward(f.forward))
-      .catch(() => alive && setForward(null));
+      .catch(() => alive && setForward(SAMPLE_FEED.forward));
     return () => {
       alive = false;
     };
@@ -94,18 +103,26 @@ export function Portfolio() {
           <h1 className="display d2">Paper Agent</h1>
           <p className="bl-page__sub">
             BlockLens puts its own signal on the line. The agent buys a launch at minute 5 only when it is a
-            launchpad launch with buyer-loss risk under {book.state === 'ok' ? `${Math.round(book.value.max_risk * 100)}%` : '20%'},
+            launchpad launch with a buyer-loss model score under {book.state === 'ok' ? book.value.max_risk.toFixed(2) : '0.20'},
             sells at hour 6, and pays {book.state === 'ok' ? `${Math.round(book.value.cost * 100)}%` : '3%'} per round trip. Rules fixed before the first outcome.
           </p>
         </div>
         <div className="bl-page__headr bl-live">
-          <span className="bl-live__state" data-status={book.state === 'ok' ? 'live' : book.state === 'error' ? 'error' : 'loading'}>
+          {book.state === 'ok' && <ProvChip live={!sample} why={`snapshot of ${SNAP_DAY}, latest 400 trades, not live`} />}
+          <span className="bl-live__state" data-status={sample ? 'error' : book.state === 'ok' ? 'live' : book.state === 'error' ? 'error' : 'loading'}>
             <span className="bl-live__dot" />
-            {book.state === 'ok' ? 'Live' : book.state === 'error' ? 'API unreachable' : 'Loading'}
+            {sample ? 'API unreachable' : book.state === 'ok' ? 'Live' : book.state === 'error' ? 'API unreachable' : 'Loading'}
           </span>
           {a && <span className="meta num">{int(a.trades)} agent trades</span>}
         </div>
       </header>
+
+      {sample && (
+        <p className="bl-samplebar" role="alert">
+          <strong>Sample data.</strong> The BlockLens API could not be reached, so this is the latest 400 paper trades as they stood when captured on{' '}
+          {SNAP_DAY}. Nothing on this page is live until the API answers; the page keeps retrying.
+        </p>
+      )}
 
       {book.state === 'error' && (
         <EmptyNote
@@ -229,7 +246,7 @@ export function Portfolio() {
                 <span className="eyebrow">Sort</span>
                 {(['time', 'return', 'risk'] as const).map((s) => (
                   <button key={s} className="bl-fchip" data-on={sort === s} onClick={() => setSort(s)}>
-                    {s === 'time' ? 'Newest' : s === 'return' ? 'Return' : 'Risk'}
+                    {s === 'time' ? 'Newest' : s === 'return' ? 'Return' : 'Score'}
                   </button>
                 ))}
               </div>
@@ -242,7 +259,7 @@ export function Portfolio() {
                     <th>Launched (UTC)</th>
                     <th>Token</th>
                     <th>Launch type</th>
-                    <th className="bl-th--r">Risk</th>
+                    <th className="bl-th--r">Score</th>
                     <th className="bl-th--r">Price at 6h</th>
                     <th>Liquidity</th>
                     <th className="bl-th--r">Return</th>
@@ -283,7 +300,7 @@ function TradeRow({ t, onOpen }: { t: PaperTrade; onOpen: () => void }) {
         </span>
       </td>
       <td className="bl-td--r num" style={t.risk != null ? { color: bandColor[riskBand(t.risk)] } : undefined}>
-        {t.risk == null ? '—' : `${Math.round(t.risk * 100)}%`}
+        {t.risk == null ? '—' : t.risk.toFixed(2)}
       </td>
       <td className="bl-td--r num">{t.price_6h_vs_cutoff == null ? '—' : `×${t.price_6h_vs_cutoff.toFixed(2)}`}</td>
       <td className="meta">{t.pulled ? <span style={{ color: 'var(--neg)' }}>pulled</span> : 'held'}</td>

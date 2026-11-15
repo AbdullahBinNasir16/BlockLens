@@ -1,28 +1,12 @@
 import { defineConfig, type ProxyOptions } from 'vite';
 import react from '@vitejs/plugin-react';
 
-/* The live trending page calls GeckoTerminal, DexScreener and GoPlus through
-   these same-origin paths. GeckoTerminal sends its 429s without CORS
-   headers, so called directly a rate limit reads as a network failure;
-   through the proxy the page sees the real status and backs off. */
+/* The dev server proxies only the BlockLens API. Since Phase 7 the browser
+   never calls a third party: the API proxies GeckoTerminal, DexScreener and
+   GoPlus itself (backend/blocklens/api/market.py), so a production build
+   needs no proxy for them. Set VITE_API_URL to point a build elsewhere. */
 const proxy: Record<string, ProxyOptions> = {
-  /* The BlockLens API (backend/blocklens/api), for the live launch feed. */
   '/api': { target: 'http://127.0.0.1:8000', changeOrigin: true },
-  '/gt': {
-    target: 'https://api.geckoterminal.com/api/v2',
-    changeOrigin: true,
-    rewrite: (p) => p.replace(/^\/gt/, ''),
-  },
-  '/ds': {
-    target: 'https://api.dexscreener.com',
-    changeOrigin: true,
-    rewrite: (p) => p.replace(/^\/ds/, ''),
-  },
-  '/gp': {
-    target: 'https://api.gopluslabs.io',
-    changeOrigin: true,
-    rewrite: (p) => p.replace(/^\/gp/, ''),
-  },
 };
 
 export default defineConfig({

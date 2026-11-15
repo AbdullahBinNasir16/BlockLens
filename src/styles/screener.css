@@ -1133,3 +1133,12 @@ button.bl-chip__op:hover {
     display: none;
   }
 }
+
+/* a filter the current corpus has no data for: visible, never usable */
+.bl-chip[data-unsupported='true'] {
+  opacity: 0.42;
+}
+.bl-chip[data-unsupported='true'] .bl-chip__l {
+  cursor: not-allowed;
+  text-decoration: line-through;
+}

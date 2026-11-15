@@ -1,11 +1,13 @@
 # The web half: a static bundle served by nginx, which also proxies /api to
-# the API container and the keyless public sources the live pages read, so
-# the browser only ever talks to one origin (as the Vite dev proxy does).
+# the API container, so the browser only ever talks to one origin. Set the
+# VITE_API_URL build argument to point the bundle at an API elsewhere.
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
+ARG VITE_API_URL=""
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 FROM nginx:1.27-alpine

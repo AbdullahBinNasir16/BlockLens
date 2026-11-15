@@ -11,35 +11,74 @@
   max-width: 1300px;
 }
 
-/* ---------------- provenance chip ---------------- */
+/* ---------------- provenance chip ----------------
+   Phase 7: loud on purpose. Sample is a filled amber chip with its reason
+   in words; live is green. */
 .bl-prov {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   font-family: var(--mono);
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 4px 10px 3px;
+  padding: 5px 11px 4px;
   border-radius: 99px;
-  border: 1px dashed var(--rule-strong);
-  color: var(--ink-4);
+  border: 1.5px solid var(--warn);
+  background: var(--warn-soft);
+  color: var(--warn);
   white-space: nowrap;
   cursor: help;
 }
 .bl-prov__dot {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   border-radius: 99px;
+  background: var(--warn);
+}
+.bl-prov__why {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  opacity: 0.9;
+}
+.bl-prov[data-empty='true'] {
+  border: 1.5px dashed var(--ink-4);
+  background: transparent;
+  color: var(--ink-3);
+}
+.bl-prov[data-empty='true'] .bl-prov__dot {
   background: var(--ink-4);
 }
 .bl-prov[data-live='true'] {
-  border-style: solid;
-  border-color: color-mix(in srgb, var(--pos) 32%, transparent);
+  border-color: color-mix(in srgb, var(--pos) 45%, transparent);
+  background: var(--pos-soft);
   color: var(--pos);
 }
 .bl-prov[data-live='true'] .bl-prov__dot {
   background: var(--pos);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pos) 18%, transparent);
+}
+
+/* a whole-section sample notice, for tables and feeds */
+.bl-samplebar {
+  margin: 0 0 14px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--warn);
+  border-radius: 10px;
+  background: var(--warn-soft);
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.bl-samplebar strong {
+  color: var(--warn);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--mono);
+  font-size: 12px;
+  margin-right: 6px;
 }
 
 .bl-body {

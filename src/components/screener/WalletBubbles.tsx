@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { WalletMatch } from '../../data/types';
-import { datasets } from '../../data/projects';
+import { useCorpus } from '../../lib/corpus';
 import { cropBox, spiralPack } from '../../lib/pack';
 import { dateShort, duration, int, shortAddr, signedUsd } from '../../lib/format';
 import { TokenMark } from '../primitives/TokenMark';
@@ -73,6 +73,7 @@ export function WalletBubbles({
   desc: boolean;
   onOpen: (m: WalletMatch) => void;
 }) {
+  const corpus = useCorpus();
   const shown = useMemo(() => rows.slice(0, LIMIT), [rows]);
 
   const { circles, box } = useMemo(() => {
@@ -197,7 +198,7 @@ export function WalletBubbles({
             </dl>
             <span className="bl-wbub__marks">
               {[...new Set(active.matchedProjects)].map((id) => {
-                const p = datasets[id]?.project;
+                const p = corpus.registry[id];
                 return p ? (
                   <TokenMark key={id} logo={p.logo} monogram={p.monogram} size={22} radius={7} />
                 ) : null;
