@@ -27,20 +27,38 @@ export function Tag({
 /** Presentational half of the provenance marker. Research sections read the
  *  flag from project context; surfaces outside a project — the screener —
  *  pass it directly. Both render the same chip so the convention holds. */
-export function ProvChip({ live, note }: { live: boolean; note?: string }) {
+/** Where a section's numbers come from, on the section itself.
+ *  Phase 7: unmissable. Sample data carries a filled amber chip with its
+ *  reason in words, not in a tooltip, so nobody can claim to have been
+ *  misled; live data carries a green one. Nothing in between. */
+export function ProvChip({
+  live,
+  note,
+  why,
+  empty = false,
+}: {
+  live: boolean;
+  note?: string;
+  why?: string;
+  /** nothing is shown at all (an outage, no record): not sample, not live */
+  empty?: boolean;
+}) {
   return (
     <span
       className="bl-prov"
       data-live={live}
+      data-empty={empty}
+      role="status"
       title={
         note ??
         (live
-          ? 'Figures in this section come from public sources.'
+          ? 'Fetched live from public sources or the BlockLens API.'
           : 'Illustrative data. Shapes are representative; the numbers are not findings.')
       }
     >
-      <span className="bl-prov__dot" />
-      {live ? 'Sourced' : 'Sample'}
+      <span className="bl-prov__dot" aria-hidden="true" />
+      <span className="bl-prov__l">{live ? 'Live' : empty ? 'No data' : 'Sample data'}</span>
+      {!live && <span className="bl-prov__why">{why ?? 'not live'}</span>}
     </span>
   );
 }

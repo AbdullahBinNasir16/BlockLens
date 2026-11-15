@@ -1,5 +1,5 @@
 import { useInView } from '../../lib/hooks';
-import { useProvenance } from '../../lib/project-context';
+import { useProvenance, useSampleReason } from '../../lib/project-context';
 import { ProvChip, SectionHead } from '../primitives/Bits';
 
 export interface SectionProps {
@@ -12,18 +12,22 @@ export interface SectionProps {
   wide?: boolean;
 }
 
-/** Marks whether a section's figures were fetched from a public source or
- *  are illustrative. With real projects on screen, that distinction has to
- *  be visible on the section itself, not buried in a footnote. */
+/** Marks a section as live or sample, on the section itself. Research
+ *  sections are never live (Phase 7): sourced ones are a dated snapshot,
+ *  the rest illustrative, and the chip says which. */
 export function ProvenanceChip({ section }: { section: string }) {
   const live = useProvenance(section) === 'live';
+  const why = useSampleReason(section);
   return (
     <ProvChip
       live={live}
+      why={why}
       note={
         live
-          ? 'Figures in this section come from public sources — market data, the repository, or the project’s own site.'
-          : 'Illustrative data. Shapes are representative; the numbers are not findings about this project.'
+          ? 'Fetched live through the BlockLens API.'
+          : why.startsWith('snapshot')
+            ? 'Captured from public sources on that date and frozen. It is not refreshed.'
+            : 'Illustrative data. Shapes are representative; the numbers are not findings about this project.'
       }
     />
   );

@@ -1475,3 +1475,225 @@ contract, and this case is outside them. Decoding such swaps from the
 `Swap` events' own amounts, independent of transfers, is a backfill change
 for the research pipeline (it affects the dataset, not just the feed), and
 is left to that pipeline's owner.
+
+## Phase 8 result — the forward test passed its floor (2026-11-03)
+
+Full report: `backend/reports/forward_validation.md`. Numbers come from
+`scripts/phase8_report.py`.
+
+**Pre-registered: both criteria pass.** Data: 8,259 timely, resolved
+launches (191 losses) from 2026-10-19 to 2026-11-03.
+
+| Criterion | Result |
+|---|---|
+| Buyer-loss PR-AUC above the base rate | 0.108 against 0.023; interval of the difference +0.055 to +0.124 |
+| 7-day pull rate, self-deployed vs launchpad | 89.2% against 0.63% |
+
+**Calibration fails.** Brier is 0.038, against 0.023 for the base rate,
+and the mean prediction is 8.7% against 2.3% observed. Precision at ≥ 0.5
+is 20%.
+
+**Post hoc, labelled as such:**
+
+* **The buyer-loss label does not see liquidity pulls.** It is the hour-6
+  price, and a pull leaves the last price standing. 3,557 pools were
+  pulled by hour 6 and only 6 are labelled losses. Phase 6 defined the
+  label on non-rugged tokens, so this is the training definition carried
+  over, not a resolver bug.
+* **On the not-pulled population** (4,703 tokens, 3.9% losses), the model
+  works: PR-AUC 0.152 and ROC 0.78. It beats launch type (0.033) and the
+  checkers (0.031).
+* **With pulls counted as losses**, launch type alone beats the model:
+  0.837 against 0.671. The right order is launch type first, then the
+  model on launchpad tokens. That is the paper agent's policy.
+* **Both fixed rule checkers sit at the base rate forward** (PR-AUC 0.024
+  and 0.025). The model beats them by +0.05 to +0.13.
+
+**Not changed:** the model stays frozen and the test keeps running. A
+recalibrated model, or one trained on a pull-aware label, would be a new,
+separately reported record.
+
+**UI:** the Fresh Launches forward panel now says the score is a ranking,
+not a probability, when its Brier is worse than the base rate's. It also
+says that pulled pools count as no loss.
+
+**Effect of the Phase 10 scoring guard on this record** (measured
+2026-11-03, before PR #6 merged): of the 8,275 timely, scored, resolved
+launches, 2 had no decodable swaps. Both were self-deployed and neither was
+a loss. PR-AUC is 0.1082 with or without them. The guard changes which
+launches are scored from 2026-11-03 onward and is logged with its reason.
+It does not alter the result above.
+
+# Phase 7 — serving layer and the honest demo (2026-11-03)
+
+## KOL scoring is descoped
+
+**Why:** the X API has no free tier for reading posts. It charges per post
+read (about $0.005 each, published price), and no keyless substitute
+exists.
+
+**The cost was never measured on a paid call.** No key was bought, and
+`xapi.py` is locked at 0 posts. The estimate multiplies the measured
+forward launch rate (about 700 scored a day) by an assumed 20 post reads
+per launch: about **$70 a day, or $2,100 a month**, before scoring any
+promoter's history. That was not justified against what the module adds.
+
+**What it removes from the proposal:**
+- the KOL directory;
+- the KOL and social sections of the intelligence profile;
+- any social model input.
+
+**What replaces it: nothing,** and nothing poses as a substitute. The
+product's two signals are on-chain only. Written up in `SCOPE.md` and in
+the report (Chapter 1, out of scope).
+
+## The KOL and Portfolio pages
+
+- **KOL:** removed from navigation, and its code removed, in PR #3
+  (2026-10-22). It is recoverable from git history. Recommended and kept:
+  removed. A "planned" page with no numbers still invites the question
+  "planned by when", and the answer is never.
+- **Portfolio:** not a planned page. It is the live paper agent (Phase 9),
+  a real forward record. The invented simulation beside it was removed in
+  PR #3.
+
+## The model window rule for serving
+
+`/api/token-risk/{address}` returns a score only for a launch the live
+feed scored at its own launch + 5 minutes: the question the model was
+trained to answer. Every other case gets an explicit state and a sentence
+saying why:
+
+| State | Meaning |
+|---|---|
+| `pending` | waiting for minute 5 |
+| `not_scored` | seen, not scored, with the scorer's reason |
+| `out_of_scope` | never seen launching |
+
+Each response carries the model version, the training launches
+(2026-01-20 to 2026-07-16) and the date the model was trained
+(2026-10-19).
+
+The feed watches pools, not tokens. A new pool for an old token
+(Nockchain, 2026-10-28) is "a pool opened", not "the token launched".
+None has been scored so far (20 such rows, 0 scored), but nothing yet
+prevents one: open item.
+
+## How the score is presented, and why not 0–100
+
+The model's raw output is **not** a calibrated probability: forward, it
+ran about four times too high (Phase 8 result). It is shown as:
+- **"About N in 100".** "Of 70 launches the model scored like this since 19
+  Oct, 34 lost half their value or more by hour 6": the forward
+  reliability bin's observed rate. It is a frequency measured on unseen
+  launches.
+- **The raw score as a two-decimal number,** labelled "a ranking, not a
+  probability". It is never a percentage.
+- **The top contributing features,** exact tree-SHAP terms, which sum to
+  the score with an "everything else" term.
+
+There is no 0–100 ring for the model. The case studies' rings stay, badged
+as illustrative and stating that they are not the model.
+
+## Live and sample
+
+Provenance is per section: `live` or `sample`, and a third,
+neutral "No data" chip when nothing is shown at all.
+- **Snapshot sections:** the case studies' sourced sections are a
+  9 Sep 2026 snapshot, so they are badged sample with that date. They are
+  not live.
+- **API down:** every model screen falls back to a dated snapshot
+  captured from the API. Those are Trending, Fresh Launches, Model Health
+  and the Paper Agent, each under an amber badge and a banner.
+- **The screener** falls back to its generated corpus.
+- **Watchlist and History** have no sample: a sample of the user's own
+  records would be fake personal data. They say the API is unreachable.
+- **A real token never gets a sample score.**
+
+## The screener on real wallets
+
+- **Positions** come from stored transfers and swaps over each labelled
+  launch's first 24 hours: 771 launches and 70,480 wallets. The trader is
+  recovered from token transfers, because `swap.wallet_address` is never
+  filled.
+- **Money is converted per trade at that day's ETH close,** from
+  GeckoTerminal daily candles for the deepest WETH/USDC pool, never at an
+  assumed rate.
+- **Open positions** are measured only to the end of the observed window
+  (`observedUntil`).
+- **Payload:** the corpus is about 50 MB, so the API serves the index, then
+  per search only the wallets that traded the searched contracts. The
+  evaluator is unchanged.
+- **Contract drift:** the query logic reached for the sample registry and
+  the sample clock, so a corpus is now handed to it explicitly.
+
+## The revised work split
+
+The brief assumes Shahmir's FYP-1 lane was X ingestion, call matching and
+the KOL prototype, and that he now has no module. The repository says
+otherwise. His merged work (PRs #1–#6) is:
+- CI/CD, containers and the production compose;
+- the Phase 10 backend (score explanations, alerts, the paper book,
+  health, product state);
+- the product rework;
+- CI hardening and end-to-end tests;
+- the FYP-1 report;
+- the hosting blueprints.
+
+So the parallel-work argument holds, along a different line:
+- **Research and model** (the store, labels, the model, the forward record,
+  Phase 11's shadow scores, M9's data, M10's v2).
+- **Platform and product** (the serving layer's upkeep, deployment and
+  hosting, M11, the product surfaces M7 and M8).
+
+Recommended: Shahmir takes platform and product, including this serving
+layer from here and M11 hosting, which would also end the outage gaps in
+the forward test. "The portfolio agent" is not a new module: it exists.
+The team should agree this split and record it in the report.
+
+# Phase 11 — shadow scores, pre-registered (2026-11-03, before any fit)
+
+The forward result found two fixable problems with `buyer-loss-v1`:
+
+- its probabilities are about four times too high;
+- its label does not count liquidity pulls.
+
+The v1 record stays frozen, as Phase 8 requires. These are two new scores,
+reported separately. Each is a function of two values the live log already
+records at minute 5: v1's `risk` and the `launch_type`. Because of that,
+no live code changes, and each score can be recomputed exactly for any
+logged launch.
+
+* **Score A — calibrated buyer loss.**
+  - Platt scaling: a logistic regression of `buyer_loss` on `logit(risk)`.
+  - Same label as v1.
+* **Score B — buyer outcome, pull-aware.** A logistic regression of `y_B`
+  on three inputs:
+  - `self_deployed`;
+  - `logit(risk)`;
+  - their product.
+
+  The label is `y_B = buyer_loss OR pulled by hour 6`. "Pulled" means the
+  hour-6 reserve is at or below 10% of the larger of the minute-5 and
+  hour-6 reserves, as in Phase 8.
+* **Fitting set:** every timely, resolved, scored launch with
+  `launch_ts < 2026-11-03 12:00 PKT`. Fitted once; the parameters are
+  written to `backend/data/models/shadow_v1.json` and never refitted.
+  `risk` is clipped to [1e-4, 1 − 1e-4] before the logit.
+* **Evaluation set:** timely, resolved, scored launches with
+  `launch_ts ≥ 2026-11-04 00:00 PKT`. These are launches that had not
+  happened when this was written. The 12 hours in between are used for
+  neither.
+* **Floor:** no result before 2,000 resolved launches in the evaluation set
+  with at least 50 buyer losses.
+* **Success criteria, fixed now** (95% bootstrap intervals, 1,000
+  resamples, seed 20261104):
+  - **A:** its Brier score is below that of a constant prediction equal to
+    the fitting set's base rate, with the interval of the difference below
+    zero. Its ten-bin reliability is reported.
+  - **B:** its PR-AUC exceeds that of launch type alone for `y_B`, with the
+    interval of the difference above zero. Its Brier score is below that of
+    the fitting set's constant `y_B` rate.
+  - Failing either criterion is reported as a failure.
+* **Not changed:** the v1 headline record, the paper agent and the live
+  feed's displayed risk.

@@ -5,9 +5,6 @@
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://blocklens-api.onrender.com/api/:path*" },
-    { "source": "/ds/:path*", "destination": "https://api.dexscreener.com/:path*" },
-    { "source": "/gt/:path*", "destination": "https://api.geckoterminal.com/api/v2/:path*" },
-    { "source": "/gp/:path*", "destination": "https://api.gopluslabs.io/:path*" },
-    { "source": "/((?!api/|ds/|gt/|gp/|assets/).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
   ]
 }
