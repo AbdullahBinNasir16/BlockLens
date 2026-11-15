@@ -110,7 +110,10 @@ class Scorer:
 
     # ---- the loop ---------------------------------------------------------
 
+    running = False
+
     def run_forever(self) -> None:
+        self.running = True
         while True:
             try:
                 self.tick()

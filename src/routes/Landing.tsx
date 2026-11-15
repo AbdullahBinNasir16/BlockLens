@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { apiGet } from '../lib/api';
+import type { HealthResponse } from '../data/api';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { BlockchainPlate } from '../components/landing/BlockchainPlate';
 import { MoonRug } from '../components/landing/MoonRug';
@@ -29,6 +31,17 @@ export function Landing() {
   const [ca, setCa] = useState('');
   const [chain, setChain] = useState('base');
   const [introRef, introSeen] = useInView<HTMLElement>();
+  const [health, setHealth] = useState<HealthResponse | null>(null);
+  const [healthDown, setHealthDown] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    apiGet<HealthResponse>('/api/health?probe=false')
+      .then((h) => alive && setHealth(h))
+      .catch(() => alive && setHealthDown(true));
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const go = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -69,7 +82,7 @@ export function Landing() {
 
         <div className="bl-hero__content">
           <p className="eyebrow bl-hero__eyebrow">
-            <span className="bl-live" aria-hidden="true" />
+            <span className="bl-livedot" aria-hidden="true" />
             Blockchain project intelligence
           </p>
 
@@ -103,10 +116,13 @@ export function Landing() {
                   type="button"
                   className="bl-chainchip"
                   data-on={chain === c}
+                  disabled={c !== 'base'}
+                  title={c !== 'base' ? 'Not supported: BlockLens measures Base only (SCOPE.md)' : undefined}
                   onClick={() => setChain(c)}
                 >
                   <ChainMark chain={c} size={13} />
                   {chainMeta[c].label}
+                  {c !== 'base' && <span className="bl-chainchip__soon"> · not supported</span>}
                 </button>
               ))}
             </div>
@@ -121,10 +137,18 @@ export function Landing() {
           </button>
         </div>
 
+        {/* Live from /api/health, or nothing: these used to be invented
+            constants (block 24,182,904; 12,480 projects) shown as readings. */}
         <div className="bl-hero__strip">
-          <span className="meta">BASE · BLOCK 24,182,904</span>
-          <span className="meta">TX / S · 41.2</span>
-          <span className="meta">PROJECTS TRACKED · 12,480</span>
+          {health ? (
+            <>
+              <span className="meta">BASE · SCANNED TO BLOCK {health.scorer.scannedToBlock?.toLocaleString() ?? '—'}</span>
+              <span className="meta">LAUNCHES IN THE LAST 6H · {health.scorer.tracked.toLocaleString()}</span>
+              <span className="meta">MODEL · {health.model.version ?? '—'}</span>
+            </>
+          ) : (
+            <span className="meta">BASE · LIVE FEED {healthDown ? 'OFFLINE' : 'CONNECTING'}</span>
+          )}
           <span className="meta bl-hero__scroll">SCROLL ↓</span>
         </div>
       </header>
