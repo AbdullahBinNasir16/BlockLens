@@ -1697,3 +1697,47 @@ logged launch.
   - Failing either criterion is reported as a failure.
 * **Not changed:** the v1 headline record, the paper agent and the live
   feed's displayed risk.
+
+# Base moved to 0.2-second blocks: the live record since then is invalid (2026-11-16)
+
+**Found 2026-11-16.** At block **53,556,128** (2026-11-05 18:00:01 UTC),
+Base went from 2-second to 0.2-second blocks. Every duration in the live
+system was counted in blocks at 2 seconds each, so from then on the live
+system was asking a different question than the one it was built for:
+
+| Intended | What actually happened after the switch |
+|---|---|
+| scored at launch + 5 minutes (150 blocks) | scored at **30 seconds**, out of the model's distribution |
+| outcome at hour 6 (10,800 blocks) | measured at **36 minutes** |
+| reserves at 1, 7, 30, 90 days | read 10× too early |
+| launch time from the block number | stamped up to 10× too far in the past, which broke the timely-only check |
+
+**Rule, written before the fix is deployed and before any post-fix data is
+looked at:**
+
+- **Excluded from every forward metric:** a prediction whose launch block
+  is after `53,556,128 − 10,800`, i.e. whose 6-hour window touches the new
+  regime, and which was recorded before the fix is deployed. That covers
+  the buyer-loss record, the launch-type record, the paper agent and
+  Phase 11. These rows stay in the log, append-only, and are counted
+  separately. Predictions recorded after the fix are judged by the
+  corrected, time-based clock.
+- **Kept:** predictions resolved entirely before the switch, including the
+  3 November Phase 8 result. That result is unaffected.
+- **Repairs, recorded as such:**
+  - `launch_ts` is recomputed from the block number with the two-regime
+    clock.
+  - Reserve readings taken at a block after the switch for a horizon
+    counted in old blocks (1d/7d/30d/90d) are cleared, and re-read at the
+    right time.
+- **Phase 11 (deviation from its pre-registration):** its evaluation set
+  began 2026-11-04 00:00 PKT. Only about 1.5 days of that ran before the
+  switch, too few to meet its floor, so the evaluation set now starts when
+  the fix is deployed. The fitted parameters (fitted on launches before 3
+  November) and the criteria are unchanged. The invalid result computed on
+  2026-11-16 (both scores "passed") is not reported as a finding.
+- **The fix:** durations become times, converted to blocks through one
+  clock that knows both regimes. That clock checks itself against the
+  chain head every tick, and stops scoring with an error on `/api/health`
+  if they drift apart. A future block-time change then halts the feed,
+  where this one silently changed its question.
