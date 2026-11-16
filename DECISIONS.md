@@ -1741,3 +1741,46 @@ looked at:**
   chain head every tick, and stops scoring with an error on `/api/health`
   if they drift apart. A future block-time change then halts the feed,
   where this one silently changed its question.
+
+**Fix deployed** 2026-11-16 05:49:54 UTC, before the exclusion cut-off
+`FIX_DEPLOYED_AT` = 06:30 UTC (conservative: the first 40 minutes of fixed
+predictions near the switch are excluded too).
+
+- **Clock:** `blocklens/chain_time.py`, two regimes. It matches real block
+  timestamps to within 0.4 s, from block 40M to the head.
+- **Drift alarm:** `Clock.drift` is checked every tick, and over 30 s
+  scoring stops with an error.
+- **Repair** (`scripts/repair_block_time.py`):
+  - 14,655 of 44,044 `launch_ts` values were wrong, by up to 138.9 h; all
+    were recomputed.
+  - 28,350 horizon reserve readings taken at the wrong block were cleared
+    (1d 1,833; 7d 5,092; 30d 11,195; 90d 10,230). They are re-read at the
+    right time.
+- **Research code:** unchanged results. Every research launch is before the
+  switch, where the time-based windows equal the old block counts (tested).
+
+**The corrected forward record** (valid predictions only; 14,503 excluded):
+
+| Measure | Value |
+|---|---|
+| Resolved / losses | 9,628 / 350 (3.6%) |
+| PR-AUC | 0.283, interval of the difference +0.203 to +0.295 |
+| Brier | 0.039 against 0.035 for the base rate (still miscalibrated) |
+| Pulled within 7 days | self-deployed 85.4% (3,249), launchpad 0.83% (3,236) |
+
+The 3 November result stands. Both criteria still pass.
+
+**Post hoc: a scam wave from 3 November.** Daily loss rates were 1–4%
+through 2 November, then 9.9%, 11.8% and 13.4% on 3–5 November, almost
+all on one launchpad template:
+- Uniswap V4, WETH-quoted, seeded with exactly 1.5 B tokens.
+- About two hours of steady small trades.
+- Then one sale of 500 M tokens for ~62 WETH, draining the pool.
+
+The losses are real; the token reserves confirm the sale. The model scored
+these launches high (0.59–0.85). But part of the signal is the minute-5
+"price run-up" (`t_log_price_drift`), which for this template measures the
+seeding swap (2 B tokens for 0.5 WETH, an identical ×34,600 every time),
+not trading. The rise of PR-AUC from 0.108 to 0.283 is therefore partly
+the model recognising a template. It is reported as such, not as better
+skill.

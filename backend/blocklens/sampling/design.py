@@ -37,6 +37,7 @@ from ..ingest.evm import (
     UNISWAP_V3_FACTORY, UNISWAP_V4_POOL_MANAGER, V3_POOL_CREATED, V3_SWAP,
     V4_INITIALIZE, V4_SWAP, words,
 )
+from .. import chain_time
 from ..ingest.sources import RpcSource
 
 SEED = 20261018
@@ -45,8 +46,17 @@ PERIOD_END = datetime(2026, 7, 19, tzinfo=timezone.utc)
 SPLIT_DATE = datetime(2026, 4, 20, tzinfo=timezone.utc)
 
 CUTOFF_MINUTES = 5
+CUTOFF_SECONDS = CUTOFF_MINUTES * 60
+# The research window (Jan-Jul 2026) is all 2 s blocks, where these hold.
+# Live code converts times through `chain_time` instead: since block
+# 53,556,128 a block is 0.2 s and 150 blocks are 30 seconds.
 BLOCK_SECONDS = 2
-CUTOFF_BLOCKS = CUTOFF_MINUTES * 60 // BLOCK_SECONDS          # 150
+CUTOFF_BLOCKS = CUTOFF_MINUTES * 60 // BLOCK_SECONDS          # 150, before the switch only
+
+
+def cutoff_block(created: int) -> int:
+    """Launch + 5 minutes, in either block-time regime."""
+    return chain_time.block_after(created, CUTOFF_SECONDS)
 WINDOW_BLOCKS = 1000                                           # ~33 minutes
 SCREEN_AFTER_BLOCKS = 1000          # "still trading" is looked for here
 ALIVE_AFTER_MINUTES = 60            # final check, from stored swaps
@@ -113,20 +123,22 @@ def draw(stratum: str, round_: int) -> list[Window]:
 
 
 class Clock:
-    """Block <-> time on a chain with exactly two-second blocks, anchored once
-    on the head and checked against one real block per run."""
+    """Block <-> time on Base, through `chain_time` (which knows the 2 s and
+    0.2 s regimes), anchored on the head. `drift` is how far that clock is
+    from the head's real timestamp; the live scorer refuses to score when it
+    exceeds `chain_time.MAX_DRIFT_S` (DECISIONS.md, 2026-11-16)."""
 
     def __init__(self, rpc: RpcSource):
         head = rpc.block_number()
         self.head = head
         self.head_ts = int(rpc.get_block(head)["timestamp"], 16)
+        self.drift = chain_time.drift(head, self.head_ts)
 
     def block_at(self, ts: datetime) -> int:
-        return self.head - int((self.head_ts - ts.timestamp()) // BLOCK_SECONDS)
+        return chain_time.block_at(ts.timestamp())
 
     def ts_of(self, block: int) -> datetime:
-        return datetime.fromtimestamp(self.head_ts - (self.head - block) * BLOCK_SECONDS,
-                                      timezone.utc)
+        return chain_time.dt_of(block)
 
     def check(self, rpc: RpcSource, block: int) -> int:
         real = int(rpc.get_block(block)["timestamp"], 16)

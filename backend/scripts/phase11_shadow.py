@@ -22,7 +22,11 @@ ROOT = Path(__file__).resolve().parents[1]
 PARAMS = ROOT / "data" / "models" / "shadow_v1.json"
 REPORT = ROOT / "reports" / "shadow_scores.json"
 FIT_BEFORE = "2026-11-03T12:00:00+05:00"
-EVAL_FROM = "2026-11-04T00:00:00+05:00"
+# Pre-registered as 2026-11-04 00:00 PKT. Moved, as a recorded deviation, to
+# when the block-time fix was deployed: launches between the two were scored
+# at 30 s and resolved at 36 min (DECISIONS.md, 2026-11-16).
+EVAL_FROM_REGISTERED = "2026-11-04T00:00:00+05:00"
+EVAL_FROM = rv.FIX_DEPLOYED_AT.isoformat()
 
 
 def load(s, where: str, ts: str) -> list[shadow.Row]:
@@ -31,8 +35,8 @@ def load(s, where: str, ts: str) -> list[shadow.Row]:
         from live_prediction
         where chain = :c and status = 'scored' and buyer_loss is not null
           and scored_at <= launch_ts + interval '6 hours'
-          and launch_ts {where} cast(:ts as timestamptz)
-    """), {"c": rv.CHAIN, "ts": ts}).all()
+          and launch_ts {where} cast(:ts as timestamptz) and {rv.VALID_SQL}
+    """), {"c": rv.CHAIN, "ts": ts, **rv.VALID_PARAMS}).all()
     out = []
     for risk, kind, y, rc, r6 in q:
         ref = max(float(rc or 0), float(r6 or 0))
@@ -60,6 +64,7 @@ def report() -> None:
     with session_factory()() as s:
         rows = load(s, ">=", EVAL_FROM)
     doc = {"generated_at": datetime.now(timezone.utc).isoformat(), "params": p,
+           "eval_from": EVAL_FROM, "eval_from_registered": EVAL_FROM_REGISTERED,
            "evaluation": shadow.evaluate(p, rows)}
     REPORT.write_text(json.dumps(doc, indent=2), encoding="utf8")
     e = doc["evaluation"]
