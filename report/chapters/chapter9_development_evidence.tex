@@ -72,6 +72,7 @@ Risk & Likelihood & Mitigation\\
 A free endpoint changes its limits or goes keyed & high (two already did) & measured fallbacks (\code{rpc_fallback_url}); GoPlus replaced Blockscout; budgets keep usage polite\\
 Forward test interrupted (one machine) & high & auto-start task; late launches logged as missed, never scored; hosting in FYP-2\\
 Regime shift degrades calibration & medium & Model Health tracks the self-deployed share; retrain on the forward record (M10)\\
+The chain changes under the live system (Base's block time fell tenfold on 5 Nov 2026) & high & happened: durations now counted in time through one two-regime clock; the scorer halts on clock drift; affected predictions excluded by a rule set before the fix\\
 Buyer-loss forward floor not reached before evaluation & medium & the page reports counts and says ``too early''; the launch-type half is already decisive\\
 Scope creep back toward unmeasurable features & medium & \code{docs/FYP1_SCOPE.md}; every number labelled Sourced / Sample\\
 Dependency vulnerability & medium & audits on PRs, Trivy on images, Dependabot weekly\\
