@@ -13,6 +13,7 @@ import numpy as np
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from .. import chain_time
 from ..ingest import chain as chain_ingest
 from ..ingest.evm import UNISWAP_V4_POOL_MANAGER as PM
 from ..label import extraction as ex
@@ -21,7 +22,15 @@ from ..model import token_features as tf
 from ..sampling import design as d
 
 CHAIN = "base"
-WINDOW_BLOCKS = ex.WINDOW_BLOCKS                  # six hours
+WINDOW_SECONDS = ex.WINDOW_SECONDS                # six hours, in either block-time regime
+
+# The block-time switch (DECISIONS.md, 2026-11-16). A prediction whose 6-hour
+# window touches the 0.2 s regime and that was recorded before the fix was
+# scored at 30 s and resolved at 36 min; it is excluded from every metric.
+INVALID_FROM_BLOCK = chain_time.SWITCH_BLOCK - 10_800      # 6 h of 2 s blocks before the switch
+FIX_DEPLOYED_AT = datetime(2026, 11, 16, 6, 30, tzinfo=timezone.utc)
+VALID_SQL = "not (created_block > :inv_from and recorded_at < :fix_at)"
+VALID_PARAMS = {"inv_from": INVALID_FROM_BLOCK, "fix_at": FIX_DEPLOYED_AT}
 HORIZONS = {"reserve_1d": 1, "reserve_7d": 7, "reserve_30d": 30, "reserve_90d": 90}
 PULLED_AT = 0.10
 REPORT_FLOOR = {"resolved": 200, "losses": 20}
@@ -42,7 +51,8 @@ def record(s: Session, *, launch, model_version: str, features: dict | None,
                 :rc, cast(:x as jsonb), :now)
         on conflict (token_address, chain) do nothing
     """), {"t": launch.token, "c": CHAIN, "pk": launch.pool, "dex": launch.dex,
-           "cb": launch.created_block, "lt": datetime.fromisoformat(launch.launch_ts),
+           # the launch time is the block's time, whatever the caller computed
+           "cb": launch.created_block, "lt": chain_time.dt_of(launch.created_block),
            "mv": model_version, "st": launch.status,
            "sa": datetime.fromisoformat(launch.scored_at) if launch.scored_at else None,
            "risk": launch.risk, "lty": launch.launch_type,
@@ -67,12 +77,13 @@ def reserve_at(rpc, *, token: str, pool: str, dex: str, block: int) -> float | N
 def resolve(s: Session, rpc, ctx: tf.Context, head: int) -> int:
     """Resolve what is due, a bounded batch per tick. Returns rows touched."""
     done = 0
-    due = s.execute(text("""
+    head_time = chain_time.dt_of(head)
+    due = s.execute(text(f"""
         select token_address, pool_key, dex, created_block from live_prediction
         where chain = :c and status = 'scored' and resolved_6h_at is null
-          and created_block + :w <= :head
+          and launch_ts + interval '6 hours' <= :ht and {VALID_SQL}
         order by created_block limit :n
-    """), {"c": CHAIN, "w": WINDOW_BLOCKS, "head": head, "n": PER_TICK}).all()
+    """), {"c": CHAIN, "ht": head_time, "n": PER_TICK, **VALID_PARAMS}).all()
     for tok, pool, dex, created in due:
         q = s.execute(text("select quote_token from pair where token_address = :t "
                            "and lower(address) = :p"), {"t": tok, "p": pool}).scalar() or ""
@@ -86,14 +97,14 @@ def resolve(s: Session, rpc, ctx: tf.Context, head: int) -> int:
                 start_block=created, pair_address=None if dex == "uniswap-v4" else pool,
                 pool_id=pool if dex == "uniswap-v4" else None,
                 quote_decimals=6 if q.lower() in STABLES else 18,
-                end_block=created + WINDOW_BLOCKS)
+                end_block=ex.window_end(created))
             s.commit()
             x = ex.measure(s, chain=CHAIN, token=tok, pools=ctx.pools, infra=ctx.infra)
             ratio = x.price_end_vs_cutoff
         except Exception as e:  # noqa: BLE001
             s.rollback()
             ratio, note = None, f"6h resolution failed: {type(e).__name__}: {str(e)[:120]}"
-        r6 = reserve_at(rpc, token=tok, pool=pool, dex=dex, block=created + WINDOW_BLOCKS)
+        r6 = reserve_at(rpc, token=tok, pool=pool, dex=dex, block=ex.window_end(created))
         s.execute(text("""
             update live_prediction set resolved_6h_at = :now, price_6h_vs_cutoff = :r,
                 buyer_loss = :bl, reserve_6h = :r6, notes = coalesce(:note, notes)
@@ -108,13 +119,12 @@ def resolve(s: Session, rpc, ctx: tf.Context, head: int) -> int:
         rows = s.execute(text(f"""
             select token_address, pool_key, dex, created_block from live_prediction
             where chain = :c and status = 'scored' and {col} is null
-              and created_block + :b <= :head
+              and launch_ts + make_interval(days => :days) <= :ht
             order by created_block limit :n
-        """), {"c": CHAIN, "b": int(days * 86400 / d.BLOCK_SECONDS), "head": head,
-               "n": PER_TICK}).all()
+        """), {"c": CHAIN, "days": days, "ht": head_time, "n": PER_TICK}).all()
         for tok, pool, dex, created in rows:
             v = reserve_at(rpc, token=tok, pool=pool, dex=dex,
-                           block=created + int(days * 86400 / d.BLOCK_SECONDS))
+                           block=chain_time.block_after(created, days * 86400))
             if v is None:
                 continue
             s.execute(text(f"update live_prediction set {col} = :v "
@@ -132,22 +142,27 @@ def scoreboard(s: Session) -> dict:
     # outage, while catching up, uses the same frozen model and the same
     # pre-cutoff data, but its outcome already existed; it is counted
     # separately and never in the headline (DECISIONS.md, Phase 8 note).
-    late = s.execute(text("""
+    late = s.execute(text(f"""
         select count(*) from live_prediction where chain = :c and status = 'scored'
-          and scored_at > launch_ts + interval '6 hours'
-    """), {"c": CHAIN}).scalar() or 0
-    rows = s.execute(text("""
+          and scored_at > launch_ts + interval '6 hours' and {VALID_SQL}
+    """), {"c": CHAIN, **VALID_PARAMS}).scalar() or 0
+    invalid = s.execute(text(f"""
+        select count(*) from live_prediction where chain = :c and not ({VALID_SQL})
+    """), {"c": CHAIN, **VALID_PARAMS}).scalar() or 0
+    rows = s.execute(text(f"""
         select status, risk, launch_type, buyer_loss, reserve_cutoff, reserve_6h,
                reserve_1d, reserve_7d, reserve_30d, reserve_90d, launch_ts
-        from live_prediction where chain = :c
+        from live_prediction where chain = :c and {VALID_SQL}
           and (status <> 'scored' or scored_at <= launch_ts + interval '6 hours')
-    """), {"c": CHAIN}).all()
+    """), {"c": CHAIN, **VALID_PARAMS}).all()
     out: dict = {"protocol": "DECISIONS.md, Phase 8 (pre-registered 2026-10-19)",
                  "report_floor": REPORT_FLOOR,
                  "logged": len(rows),
                  "scored": sum(1 for r in rows if r[0] == "scored"),
                  "since": min((r[10] for r in rows), default=None),
-                 "late_scored_excluded": int(late)}
+                 "late_scored_excluded": int(late),
+                 # DECISIONS.md, 2026-11-16: the block-time switch
+                 "block_time_excluded": int(invalid)}
     res = [(float(r[1]), bool(r[3])) for r in rows if r[0] == "scored" and r[3] is not None]
     out["buyer_loss"] = {"resolved": len(res), "losses": sum(y for _, y in res)}
     if res:
@@ -219,12 +234,12 @@ def _trade_return(ratio: float | None, pulled: bool, cost: float) -> float | Non
 
 
 def paper_agent(s: Session) -> dict:
-    rows = s.execute(text("""
+    rows = s.execute(text(f"""
         select risk, launch_type, price_6h_vs_cutoff, reserve_cutoff, reserve_6h
         from live_prediction
         where chain = :c and status = 'scored' and resolved_6h_at is not null
-          and scored_at <= launch_ts + interval '6 hours'
-    """), {"c": CHAIN}).all()
+          and scored_at <= launch_ts + interval '6 hours' and {VALID_SQL}
+    """), {"c": CHAIN, **VALID_PARAMS}).all()
     out: dict = {"protocol": "DECISIONS.md, Phase 9 (pre-registered 2026-10-19)",
                  "floor": AGENT_FLOOR, "cap": RETURN_CAP, "policies": {}}
     trades = []
@@ -280,14 +295,14 @@ def paper_trades(s: Session, limit: int = 300) -> list[dict]:
     """The paper agent's book, trade by trade: every timely, resolved, scored
     launch with what each policy would have done and earned at the headline
     cost. Newest first. Read-only over the same rows `paper_agent` sums."""
-    rows = s.execute(text("""
+    rows = s.execute(text(f"""
         select token_address, pool_key, dex, launch_ts, scored_at, risk, launch_type,
                price_6h_vs_cutoff, reserve_cutoff, reserve_6h
         from live_prediction
         where chain = :c and status = 'scored' and resolved_6h_at is not null
-          and scored_at <= launch_ts + interval '6 hours'
+          and scored_at <= launch_ts + interval '6 hours' and {VALID_SQL}
         order by launch_ts desc limit :n
-    """), {"c": CHAIN, "n": limit}).all()
+    """), {"c": CHAIN, "n": limit, **VALID_PARAMS}).all()
     out = []
     cost = COSTS["headline"]
     for tok, pool, dex, lt, sa, risk, kind, ratio, rc, r6 in rows:

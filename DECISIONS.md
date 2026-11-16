@@ -1697,3 +1697,90 @@ logged launch.
   - Failing either criterion is reported as a failure.
 * **Not changed:** the v1 headline record, the paper agent and the live
   feed's displayed risk.
+
+# Base moved to 0.2-second blocks: the live record since then is invalid (2026-11-16)
+
+**Found 2026-11-16.** At block **53,556,128** (2026-11-05 18:00:01 UTC),
+Base went from 2-second to 0.2-second blocks. Every duration in the live
+system was counted in blocks at 2 seconds each, so from then on the live
+system was asking a different question than the one it was built for:
+
+| Intended | What actually happened after the switch |
+|---|---|
+| scored at launch + 5 minutes (150 blocks) | scored at **30 seconds**, out of the model's distribution |
+| outcome at hour 6 (10,800 blocks) | measured at **36 minutes** |
+| reserves at 1, 7, 30, 90 days | read 10× too early |
+| launch time from the block number | stamped up to 10× too far in the past, which broke the timely-only check |
+
+**Rule, written before the fix is deployed and before any post-fix data is
+looked at:**
+
+- **Excluded from every forward metric:** a prediction whose launch block
+  is after `53,556,128 − 10,800`, i.e. whose 6-hour window touches the new
+  regime, and which was recorded before the fix is deployed. That covers
+  the buyer-loss record, the launch-type record, the paper agent and
+  Phase 11. These rows stay in the log, append-only, and are counted
+  separately. Predictions recorded after the fix are judged by the
+  corrected, time-based clock.
+- **Kept:** predictions resolved entirely before the switch, including the
+  3 November Phase 8 result. That result is unaffected.
+- **Repairs, recorded as such:**
+  - `launch_ts` is recomputed from the block number with the two-regime
+    clock.
+  - Reserve readings taken at a block after the switch for a horizon
+    counted in old blocks (1d/7d/30d/90d) are cleared, and re-read at the
+    right time.
+- **Phase 11 (deviation from its pre-registration):** its evaluation set
+  began 2026-11-04 00:00 PKT. Only about 1.5 days of that ran before the
+  switch, too few to meet its floor, so the evaluation set now starts when
+  the fix is deployed. The fitted parameters (fitted on launches before 3
+  November) and the criteria are unchanged. The invalid result computed on
+  2026-11-16 (both scores "passed") is not reported as a finding.
+- **The fix:** durations become times, converted to blocks through one
+  clock that knows both regimes. That clock checks itself against the
+  chain head every tick, and stops scoring with an error on `/api/health`
+  if they drift apart. A future block-time change then halts the feed,
+  where this one silently changed its question.
+
+**Fix deployed** 2026-11-16 05:49:54 UTC, before the exclusion cut-off
+`FIX_DEPLOYED_AT` = 06:30 UTC (conservative: the first 40 minutes of fixed
+predictions near the switch are excluded too).
+
+- **Clock:** `blocklens/chain_time.py`, two regimes. It matches real block
+  timestamps to within 0.4 s, from block 40M to the head.
+- **Drift alarm:** `Clock.drift` is checked every tick, and over 30 s
+  scoring stops with an error.
+- **Repair** (`scripts/repair_block_time.py`):
+  - 14,655 of 44,044 `launch_ts` values were wrong, by up to 138.9 h; all
+    were recomputed.
+  - 28,350 horizon reserve readings taken at the wrong block were cleared
+    (1d 1,833; 7d 5,092; 30d 11,195; 90d 10,230). They are re-read at the
+    right time.
+- **Research code:** unchanged results. Every research launch is before the
+  switch, where the time-based windows equal the old block counts (tested).
+
+**The corrected forward record** (valid predictions only; 14,503 excluded):
+
+| Measure | Value |
+|---|---|
+| Resolved / losses | 9,628 / 350 (3.6%) |
+| PR-AUC | 0.283, interval of the difference +0.203 to +0.295 |
+| Brier | 0.039 against 0.035 for the base rate (still miscalibrated) |
+| Pulled within 7 days | self-deployed 85.4% (3,249), launchpad 0.83% (3,236) |
+
+The 3 November result stands. Both criteria still pass.
+
+**Post hoc: a scam wave from 3 November.** Daily loss rates were 1–4%
+through 2 November, then 9.9%, 11.8% and 13.4% on 3–5 November, almost
+all on one launchpad template:
+- Uniswap V4, WETH-quoted, seeded with exactly 1.5 B tokens.
+- About two hours of steady small trades.
+- Then one sale of 500 M tokens for ~62 WETH, draining the pool.
+
+The losses are real; the token reserves confirm the sale. The model scored
+these launches high (0.59–0.85). But part of the signal is the minute-5
+"price run-up" (`t_log_price_drift`), which for this template measures the
+seeding swap (2 B tokens for 0.5 WETH, an identical ×34,600 every time),
+not trading. The rise of PR-AUC from 0.108 to 0.283 is therefore partly
+the model recognising a template. It is reported as such, not as better
+skill.

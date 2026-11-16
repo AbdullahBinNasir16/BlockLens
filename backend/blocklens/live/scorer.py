@@ -37,6 +37,8 @@ from ..ingest.budget import Budget
 from ..ingest.evm import UNISWAP_V4_POOL_MANAGER, V3_SWAP, V4_SWAP
 from ..ingest.sources import PooledRpcSource
 from ..model import token_features as tf
+from .. import chain_time
+from ..label import extraction as ex
 from ..sampling import design as d
 from ..store.db import session_factory
 from . import resolver
@@ -46,7 +48,7 @@ from .explain import Explainer
 CHAIN = "base"
 MODEL_PATH = Path("data/models/buyer_loss_v1.joblib")
 STATE_PATH = Path("data/live_launches.json")
-LOOKBACK_BLOCKS = 1800          # first start: the last hour
+LOOKBACK_SECONDS = 3600         # first start: the last hour
 KEEP_HOURS = 6
 POLL_SECONDS = 60
 CONTEXT_REFRESH_SECONDS = 3600
@@ -98,7 +100,11 @@ class Scorer:
             doc = json.loads(STATE_PATH.read_text(encoding="utf8"))
             self.scanned_to = doc.get("scanned_to")
             for k, v in doc.get("launches", {}).items():
-                self.launches[k] = Launch(**v)
+                l = Launch(**v)
+                # launch times written before the block-time fix were computed
+                # at 2 s a block; the block's real time replaces them
+                l.launch_ts = chain_time.dt_of(l.created_block).isoformat()
+                self.launches[k] = l
         except (FileNotFoundError, ValueError, TypeError):
             pass
 
@@ -125,10 +131,17 @@ class Scorer:
     def tick(self) -> None:
         rpc = PooledRpcSource(Budget(max_calls=20_000))
         clock = d.Clock(rpc)
+        # The block-time clock must agree with the chain. Base changed its block
+        # time once without warning and the feed silently asked a different
+        # question for 11 days (DECISIONS.md, 2026-11-16); if it happens again,
+        # nothing is scored and /api/health shows why.
+        if abs(clock.drift) > chain_time.MAX_DRIFT_S:
+            raise RuntimeError(f"block-time clock is {clock.drift:+.0f} s off the chain at block "
+                               f"{clock.head}: Base's block time has changed; scoring stopped")
         # A few blocks behind the head: endpoints disagree about the tip, and the
         # log endpoint refuses ranges past its own.
         head = clock.head - 5
-        start = self.scanned_to + 1 if self.scanned_to else head - LOOKBACK_BLOCKS
+        start = self.scanned_to + 1 if self.scanned_to else chain_time.block_after(head, -LOOKBACK_SECONDS)
         # discover in 1,000-block steps
         b = start
         while b <= head:
@@ -157,7 +170,7 @@ class Scorer:
         # A launch already past its six-hour mark (an outage) is not scored: its
         # outcome exists, so a score could not count, and screening a backlog
         # would delay the launches that still can (DECISIONS.md, Phase 8 note).
-        horizon = head - resolver.WINDOW_BLOCKS
+        horizon = chain_time.block_after(head, -resolver.WINDOW_SECONDS)
         missed = [l for l in pending
                   if l.status == "waiting for minute 5" and l.created_block < horizon]
         for l in missed:
@@ -169,7 +182,7 @@ class Scorer:
                                     features=None, reserve_cutoff=None)
                 s.commit()
         due = [l for l in pending
-               if l.status == "waiting for minute 5" and head >= l.created_block + d.CUTOFF_BLOCKS + 5]
+               if l.status == "waiting for minute 5" and head >= d.cutoff_block(l.created_block) + 5]
         if due:
             self._screen(rpc, due)
             with session_factory()() as s:
@@ -186,7 +199,7 @@ class Scorer:
                     rc = None
                     if l.status == "scored":
                         rc = resolver.reserve_at(rpc, token=l.token, pool=l.pool, dex=l.dex,
-                                                 block=l.created_block + d.CUTOFF_BLOCKS)
+                                                 block=d.cutoff_block(l.created_block))
                     resolver.record(s, launch=l, model_version=self.meta["version"],
                                     features=self._features.pop(l.token, None), reserve_cutoff=rc,
                                     explanation=l.why)
@@ -209,7 +222,7 @@ class Scorer:
     def _screen(self, rpc, due: list[Launch]) -> None:
         """Swaps by minute 5, for every due pool, in a few filtered queries."""
         lo = min(l.created_block for l in due)
-        hi = max(l.created_block for l in due) + d.CUTOFF_BLOCKS
+        hi = max(d.cutoff_block(l.created_block) for l in due)
         counts: dict[str, int] = {l.pool: 0 for l in due}
         v4 = [l.pool for l in due if l.dex == "uniswap-v4"]
         v3 = [l.pool for l in due if l.dex == "uniswap-v3"]
@@ -253,7 +266,7 @@ class Scorer:
                 s, rpc, rpc.budget, chain=CHAIN, token_address=l.token, quote_address=l.quote,
                 start_block=l.created_block, pair_address=cand["pair_address"],
                 pool_id=cand["pool_id"], quote_decimals=6 if l.quote in STABLES else 18,
-                end_block=l.created_block + d.CUTOFF_BLOCKS)
+                end_block=d.cutoff_block(l.created_block))
             s.commit()
         except Exception as e:  # noqa: BLE001
             s.rollback()
@@ -287,7 +300,7 @@ class Scorer:
         l.scored_at = datetime.now(timezone.utc).isoformat()
 
     def _prune(self, clock: d.Clock) -> None:
-        horizon = clock.head - KEEP_HOURS * 1800
+        horizon = chain_time.block_after(clock.head, -KEEP_HOURS * 3600)
         with self._lock:
             for k in [k for k, v in self.launches.items() if v.created_block < horizon]:
                 del self.launches[k]

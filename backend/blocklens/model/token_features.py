@@ -35,7 +35,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from ..ingest.evm import UNISWAP_V4_POOL_MANAGER as PM
-from ..sampling.design import BLOCK_SECONDS, CUTOFF_BLOCKS
+from .. import chain_time
+from ..sampling.design import CUTOFF_SECONDS, cutoff_block
 
 ZERO = "0x0000000000000000000000000000000000000000"
 FEATURE_SET_VERSION = "t5-2026-10"
@@ -91,7 +92,7 @@ def token_row(session: Session, ctx: Context, *, token: str) -> dict | None:
         return None
     pool, dex, created = r
     holder = PM if dex == "uniswap-v4" else pool
-    cut = created + CUTOFF_BLOCKS
+    cut = cutoff_block(created)          # launch + 5 minutes, in either block-time regime
 
     swaps = session.execute(text("""
         select block_number, tx_hash, side, token_amount, quote_amount
@@ -137,13 +138,15 @@ def token_row(session: Session, ctx: Context, *, token: str) -> dict | None:
 
     buyers = sorted({w for _, w, _ in buys})
     n_buy, n_sell = len(buys), len(sells)
-    delays = [(b - created) * BLOCK_SECONDS for b, _, _ in buys]
+    delays = [chain_time.seconds_between(created, b) for b, _, _ in buys]
     bought = defaultdict(float)
     for _, w, a in buys:
         bought[w] += a
     total_bought = sum(bought.values())
     top_share = (max(bought.values()) / total_bought) if total_bought else 0.0
-    first_block_buyers = {w for b, w, _ in buys if b - created <= 1}
+    # "the creation block or the next" was defined on 2 s blocks: within 2 s.
+    # In time it means the same thing in either regime.
+    first_block_buyers = {w for b, w, _ in buys if chain_time.seconds_between(created, b) <= 2.0}
     deployer_keys = {k for k in (minted_to, lp_from) if k}
 
     prices = [float(q) / float(t) for _, _, _, t, q in swaps if t and q and float(t) > 0]
@@ -156,8 +159,8 @@ def token_row(session: Session, ctx: Context, *, token: str) -> dict | None:
         "t_unique_buyers": len(buyers),
         "t_unique_sellers": len({w for _, w, _ in sells}),
         "t_sell_buy_ratio": n_sell / n_buy if n_buy else 0.0,
-        "t_first_buy_delay_s": min(delays) if delays else CUTOFF_BLOCKS * BLOCK_SECONDS,
-        "t_median_buy_delay_s": statistics.median(delays) if delays else CUTOFF_BLOCKS * BLOCK_SECONDS,
+        "t_first_buy_delay_s": min(delays) if delays else float(CUTOFF_SECONDS),
+        "t_median_buy_delay_s": statistics.median(delays) if delays else float(CUTOFF_SECONDS),
         "t_share_buys_first_minute": (sum(1 for x in delays if x <= 60) / n_buy) if n_buy else 0.0,
         "t_same_block_buyers": len(first_block_buyers),
         "t_top_buyer_share": top_share,
@@ -238,12 +241,11 @@ def _graph(session: Session, ctx: Context, *, buyers: list[str], deployer_keys: 
         by_tok[t].append((blk, w))
         per_wallet_tokens[w].add(t)
     tied: set[str] = set()
-    win = CO_PURCHASE_SECONDS // BLOCK_SECONDS
     for evs in by_tok.values():
         evs.sort()
         for i in range(len(evs)):
             j = i + 1
-            while j < len(evs) and evs[j][0] - evs[i][0] <= win:
+            while j < len(evs) and chain_time.seconds_between(evs[i][0], evs[j][0]) <= CO_PURCHASE_SECONDS:
                 if evs[j][1] != evs[i][1]:
                     tied.update((evs[i][1], evs[j][1]))
                 j += 1

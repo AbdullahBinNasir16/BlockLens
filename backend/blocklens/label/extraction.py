@@ -48,12 +48,19 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from ..ingest.evm import UNISWAP_V4_POOL_MANAGER as PM
-from ..sampling.design import BLOCK_SECONDS, CUTOFF_BLOCKS
+from .. import chain_time
+from ..sampling.design import BLOCK_SECONDS, cutoff_block
 
 EXTRACTION_VERSION = "x1-2026-10"
 ZERO = "0x0000000000000000000000000000000000000000"
 WINDOW_HOURS = 6
-WINDOW_BLOCKS = WINDOW_HOURS * 3600 // BLOCK_SECONDS
+WINDOW_BLOCKS = WINDOW_HOURS * 3600 // BLOCK_SECONDS   # 2 s blocks (the research window) only
+WINDOW_SECONDS = WINDOW_HOURS * 3600
+
+
+def window_end(created: int) -> int:
+    """Launch + 6 hours, in either block-time regime."""
+    return chain_time.block_after(created, WINDOW_SECONDS)
 # The criterion, swept in the sensitivity report.
 EXTRACT_SHARE = 0.25        # early cohort's profit >= 25% of late buyers' spend
 LATE_SPEND_SHARE = 0.10     # late buyers supplied >= 10% of all buy-side money
@@ -91,8 +98,8 @@ def measure(session: Session, *, chain: str, token: str, pools: set[str],
         return x
     pool, dex, created = r
     holder = PM if dex == "uniswap-v4" else pool
-    hi = created + WINDOW_BLOCKS
-    cut = created + CUTOFF_BLOCKS
+    hi = window_end(created)
+    cut = cutoff_block(created)
 
     swaps = session.execute(text("""
         select tx_hash, block_number, side, token_amount, quote_amount from swap
@@ -106,7 +113,7 @@ def measure(session: Session, *, chain: str, token: str, pools: set[str],
         return x
     priced = [s for s in swaps if s[4] and s[3]]
     x.priced_share = len(priced) / len(swaps)
-    x.last_swap_minute = (swaps[-1][1] - created) * BLOCK_SECONDS / 60
+    x.last_swap_minute = chain_time.seconds_between(created, swaps[-1][1]) / 60
 
     # quote per side per tx, from the pool's own events
     tx_quote: dict[tuple[str, str], float] = defaultdict(float)
