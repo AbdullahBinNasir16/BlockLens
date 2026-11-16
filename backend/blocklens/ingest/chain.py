@@ -313,7 +313,7 @@ def probe_activity(rpc: RpcSource, *, token_address: str, start_block: int,
     token_address = token_address.lower()
     holder = (UNISWAP_V4_POOL_MANAGER if pool_id
               else (pair_address or "")).lower()
-    span = int(config.feature_window_hours * 3600 / config.block_seconds)
+    span = config.window_end(start_block) - start_block      # either block-time regime
     buys, windows_read = 0, 0
 
     for frac in PROBE_FRACTIONS:
@@ -362,7 +362,7 @@ def backfill_token(session: Session, rpc: RpcSource, budget: Budget, *, chain: s
     pair_key = (pair_address or pool_id or "").lower()
     counterparty = (pair_address or (UNISWAP_V4_POOL_MANAGER if pool_id else "")).lower()
 
-    stop_block = end_block if end_block is not None else start_block + config.blocks_per_window
+    stop_block = end_block if end_block is not None else config.window_end(start_block)
     cp = write.get_checkpoint(session, chain=chain, token_address=token_address)
     if cp is not None and cp.done:
         return {"token": token_address, "skipped": "already complete", "calls": 0,
