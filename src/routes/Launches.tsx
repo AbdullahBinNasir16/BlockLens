@@ -502,6 +502,14 @@ function ForwardPanel({ f }: { f: ForwardRecord }) {
             : 'The model is not yet beating the base rate on unseen launches; that is reported as a failure, not hidden.'}
         </p>
       )}
+      {(f.block_time_excluded ?? 0) > 0 && (
+        <p className="meta" style={{ marginTop: 8 }}>
+          {int(f.block_time_excluded!)} predictions are left out of every figure here. Base switched from 2-second
+          to 0.2-second blocks on 5 Nov 2026, and until the fix on 16 Nov the feed counted time in blocks: those
+          launches were scored at 30 seconds, not 5 minutes, and judged at 36 minutes, not 6 hours. They stay in
+          the log; they do not count.
+        </p>
+      )}
       {ready && b.brier != null && b.brier_base_rate != null && (
         <ul className="bl-launch__val meta" style={{ marginTop: 8 }}>
           {b.brier > b.brier_base_rate && (

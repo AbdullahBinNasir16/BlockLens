@@ -245,6 +245,17 @@ class Scorer:
                 l.status = "not scored: no trades in the first 5 minutes"
 
     def _score(self, s, rpc, ctx: tf.Context, l: Launch, clock: d.Clock) -> None:
+        # The feed watches pools, not tokens. A new pool for a token that
+        # already existed is not a launch: the model never saw one in training,
+        # and its score would answer a question it was not built for
+        # (DECISIONS.md, 2026-11-16, guard). One eth_getCode a day earlier.
+        try:
+            code = rpc.call("eth_getCode", [l.token, hex(chain_time.block_after(l.created_block, -86_400))])
+            if isinstance(code, str) and len(code) > 2:
+                l.status = "not scored: a new pool for a token that existed a day earlier, not a launch"
+                return
+        except Exception as e:  # noqa: BLE001 - an unanswered check does not block a real launch
+            l.notes.append(f"old-token check failed: {type(e).__name__}")
         cand = {"token_address": l.token, "quote_address": l.quote, "dex": l.dex,
                 "pair_address": None if l.dex == "uniswap-v4" else l.pool,
                 "pool_id": l.pool if l.dex == "uniswap-v4" else None,

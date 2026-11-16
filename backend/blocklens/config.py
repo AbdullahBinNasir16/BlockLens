@@ -122,7 +122,15 @@ class Config:
 
     @property
     def blocks_per_window(self) -> int:
+        """The feature window in blocks at the 2 s rate. Correct only for
+        launches before Base's switch to 0.2 s blocks (block 53,556,128);
+        use `window_end` for any launch."""
         return int(self.feature_window_hours * 3600 / self.block_seconds)
+
+    def window_end(self, start_block: int) -> int:
+        """The feature window's last block, in either block-time regime."""
+        from . import chain_time
+        return chain_time.block_after(start_block, self.feature_window_hours * 3600)
 
 
 def git_sha() -> str:

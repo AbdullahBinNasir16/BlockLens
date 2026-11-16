@@ -22,6 +22,7 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from .. import chain_time
 from ..config import CONFIG, Config
 from ..ingest.budget import Budget, BudgetExhausted
 from ..ingest.sources import RpcSource
@@ -71,8 +72,7 @@ def candidates(session: Session, *, chain: str, head_block: int,
     A block number on a two-second chain *is* a time, and it is the one the
     block arithmetic uses, so it is the honest thing to filter on.
     """
-    span = int(observation_days * 86400 / config.block_seconds)
-    block_cutoff = head_block - span
+    block_cutoff = chain_time.block_after(head_block, -observation_days * 86400)
     already = select(TokenLabel.token_address).where(
         TokenLabel.chain == chain, TokenLabel.rule_version == rule_version)
 
@@ -170,9 +170,10 @@ def sample_token(sampler: Sampler, rpc: RpcSource, *, token: dict,
     so that what they check is the full path.
     """
     launch_block = token["created_block"]
-    per_block = config.block_seconds
-    span = int(observation_days * 86400 / per_block)
-    end_block = launch_block + span
+    # Offsets are times; blocks come from the clock, which knows Base's
+    # 2 s and 0.2 s regimes (DECISIONS.md, 2026-11-16).
+    end_block = chain_time.block_after(launch_block, observation_days * 86400)
+    span = end_block - launch_block
 
     # The launch time is read from the chain, not taken from `created_ts`,
     # which comes from a different source and does not have to agree. One
@@ -202,7 +203,7 @@ def sample_token(sampler: Sampler, rpc: RpcSource, *, token: dict,
         if batch:
             # Same calls, sent as JSON-RPC batches (Phase 5). A batch-level
             # failure is recorded per point, as the serial path does.
-            specs = [(launch_block + int(off / per_block), launch_ts + off) for off in offs]
+            specs = [(chain_time.block_after(launch_block, off), launch_ts + off) for off in offs]
             try:
                 series.points.extend(sampler.points(
                     specs, token=token["token_address"], quote=quote, dex=token["dex"],
@@ -214,7 +215,7 @@ def sample_token(sampler: Sampler, rpc: RpcSource, *, token: dict,
                 series.errors.append(f"batch: {type(e).__name__}: {str(e)[:90]}")
             return
         for off in offs:
-            block = launch_block + int(off / per_block)
+            block = chain_time.block_after(launch_block, off)
             try:
                 series.points.append(sampler.point(
                     block=block, ts=launch_ts + off,
@@ -255,8 +256,7 @@ def excluded_counts(session: Session, *, chain: str, head_block: int,
     Counted rather than estimated, because "excluded and why" is the line in
     a data card that an examiner actually reads.
     """
-    span = int(observation_days * 86400 / config.block_seconds)
-    cutoff = head_block - span
+    cutoff = chain_time.block_after(head_block, -observation_days * 86400)
     old_enough = (
         select(func.count()).select_from(Token)
         .join(BackfillCheckpoint,

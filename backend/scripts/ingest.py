@@ -238,7 +238,7 @@ def cmd_backfill(args: argparse.Namespace) -> int:
 
         done, failed, probed_inactive = 0, [], 0
         for i, t in enumerate(todo, 1):
-            stop = t["start_block"] + CONFIG.blocks_per_window
+            stop = CONFIG.window_end(t["start_block"])
             if stop > head:
                 # The window has not closed yet. Backfilling it now would
                 # write a partial window that a later run would read as

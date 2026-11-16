@@ -59,6 +59,10 @@ export interface ForwardRecord {
   report_floor: { resolved: number; losses: number };
   logged: number;
   scored: number;
+  /** predictions excluded because Base's block time changed under them
+   *  (DECISIONS.md, 2026-11-16) */
+  block_time_excluded?: number;
+  late_scored_excluded?: number;
   since: string | null;
   buyer_loss: {
     resolved: number;
