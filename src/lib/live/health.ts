@@ -57,6 +57,8 @@ export const REASON_ORDER = [
   'untradeable price',
   'missed during an outage',
   'could not read the chain',
+  'trades not decodable',
+  'pool for an old token',
   'other',
 ];
 
@@ -67,6 +69,8 @@ export const REASON_TONE: Record<string, string> = {
   'untradeable price': 'var(--warn)',
   'missed during an outage': 'var(--rule-strong)',
   'could not read the chain': 'var(--warn)',
+  'trades not decodable': 'var(--ink-5)',
+  'pool for an old token': 'var(--ink-5)',
   other: 'var(--rule-strong)',
 };
 

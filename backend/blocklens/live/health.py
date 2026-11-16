@@ -27,6 +27,7 @@ REASONS = [
     ("outage", "missed during an outage"),
     ("could not read", "could not read the chain"),
     ("without token transfers", "trades not decodable"),
+    ("existed a day earlier", "pool for an old token"),
 ]
 
 

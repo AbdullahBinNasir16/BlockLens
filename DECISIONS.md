@@ -1784,3 +1784,16 @@ seeding swap (2 B tokens for 0.5 WETH, an identical ×34,600 every time),
 not trading. The rise of PR-AUC from 0.108 to 0.283 is therefore partly
 the model recognising a template. It is reported as such, not as better
 skill.
+
+**Guard: a new pool for an old token is not scored** (2026-11-16).
+- **Why:** the feed watches pools, not tokens. A pool opened for a token
+  that already existed (Nockchain, 2026-10-28) is not a launch, and the
+  model never saw one in training.
+- **Rule:** if the token's contract had code a day before the pool opened
+  (one `eth_getCode` call), the launch is logged as "not scored: a new pool
+  for a token that existed a day earlier".
+- **Effect on the record:** 23 such pools had been seen and none scored.
+  The record is unchanged.
+- **Research pipeline:** it now converts times to blocks through the same
+  clock (`config.window_end`, `label/build.py`). Its results are unchanged
+  for the research window, which is all 2 s blocks.
