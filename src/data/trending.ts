@@ -56,7 +56,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 17949406.0,
    "fdv": 179494057.0,
    "createdAt": 1790599925000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 2.0,
@@ -103,7 +104,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 476013567.0,
    "fdv": 1225447366.0,
    "createdAt": 1694127055000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 3.0,
@@ -150,7 +152,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 9724570.0,
    "fdv": 9724570.0,
    "createdAt": 1741341537000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 4.0,
@@ -197,7 +200,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 1892376.0,
    "fdv": 6934781.0,
    "createdAt": 1793148100000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 5.0,
@@ -244,7 +248,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 22702162.0,
    "fdv": 137588858.0,
    "createdAt": 1792390745000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 6.0,
@@ -291,7 +296,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 35903794.0,
    "fdv": 57084267.0,
    "createdAt": 1741199569000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 7.0,
@@ -338,7 +344,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 1071938032.0,
    "fdv": 1774712776.0,
    "createdAt": 1737996299000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 8.0,
@@ -385,7 +392,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 87705795.0,
    "fdv": 87705795.0,
    "createdAt": 1736641803000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 9.0,
@@ -432,7 +440,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 1550081.0,
    "fdv": 1550081.0,
    "createdAt": 1792637453000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 10.0,
@@ -479,7 +488,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 12535036.0,
    "fdv": 1096117.0,
    "createdAt": 1783628159000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 11.0,
@@ -526,7 +536,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 3214337.0,
    "fdv": 3214337.0,
    "createdAt": 1746673785000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 12.0,
@@ -573,7 +584,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 2829852.0,
    "fdv": 7583265.0,
    "createdAt": 1759747591000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 13.0,
@@ -620,7 +632,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 2185849.0,
    "fdv": 2185849.0,
    "createdAt": 1792637453000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 14.0,
@@ -667,7 +680,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 57993564.0,
    "fdv": 155603403.0,
    "createdAt": 1751473135000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 15.0,
@@ -714,7 +728,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 25538243.0,
    "fdv": 25538243.0,
    "createdAt": 1733201093000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 16.0,
@@ -761,7 +776,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 439855382.0,
    "fdv": 233055916.0,
    "createdAt": 1792637517000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 17.0,
@@ -808,7 +824,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 1976634.0,
    "fdv": 1976634.0,
    "createdAt": 1792637429000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 18.0,
@@ -855,7 +872,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 484507.0,
    "fdv": 484507.0,
    "createdAt": 1786821111000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 19.0,
@@ -902,7 +920,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 44435829.0,
    "fdv": 264934305.0,
    "createdAt": 1772474055000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 20.0,
@@ -949,7 +968,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 398501.0,
    "fdv": 398501.0,
    "createdAt": 1792637661000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 21.0,
@@ -996,7 +1016,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 3120997.52752174,
    "fdv": 7133659.16275615,
    "createdAt": 1779981399000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 22.0,
@@ -1043,7 +1064,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 14741362.0,
    "fdv": 64378383.0,
    "createdAt": 1768899599000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 23.0,
@@ -1090,7 +1112,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 8337782.0,
    "fdv": 8337782.0,
    "createdAt": 1786817029000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 24.0,
@@ -1137,7 +1160,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 27572650.0,
    "fdv": 27572650.0,
    "createdAt": 1792637455000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 25.0,
@@ -1184,7 +1208,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 27597795.0,
    "fdv": 59437536.0,
    "createdAt": 1792640447000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 26.0,
@@ -1231,7 +1256,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 1293248453.0,
    "fdv": 1293248453.0,
    "createdAt": 1792637455000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 27.0,
@@ -1278,7 +1304,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 737803.0,
    "fdv": 737803.0,
    "createdAt": 1773194407000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 28.0,
@@ -1325,7 +1352,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 8349952.0,
    "fdv": 8349952.0,
    "createdAt": 1792637511000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 29.0,
@@ -1372,7 +1400,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 4809106.0,
    "fdv": 51503146.0,
    "createdAt": 1777888511000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 30.0,
@@ -1419,7 +1448,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 29944315.0,
    "fdv": 20152679.0,
    "createdAt": 1766440365000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 31.0,
@@ -1466,7 +1496,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 2325666.0,
    "fdv": 2325666.0,
    "createdAt": 1792637659000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 32.0,
@@ -1513,7 +1544,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 2302504.0,
    "fdv": 2302504.0,
    "createdAt": 1792637435000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 33.0,
@@ -1560,7 +1592,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 1174555.0,
    "fdv": 1174555.0,
    "createdAt": 1721147933000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   },
   {
    "rank": 34.0,
@@ -1607,7 +1640,8 @@ export const SAMPLE_TRENDING: TrendingResponse = {
    "marketCap": 17488768.0,
    "fdv": 17488768.0,
    "createdAt": 1770307249000.0,
-   "holders": null
+   "holders": null,
+   "doubts": []
   }
  ]
 };

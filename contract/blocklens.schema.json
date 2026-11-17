@@ -198,6 +198,13 @@
               "type": "null"
             }
           ]
+        },
+        "doubts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "plausibility checks the third-party figures failed"
         }
       },
       "required": [
@@ -219,7 +226,8 @@
         "marketCap",
         "fdv",
         "createdAt",
-        "holders"
+        "holders",
+        "doubts"
       ],
       "additionalProperties": false,
       "description": "One row per token: the highest-ranked pool stands for it."
@@ -342,6 +350,13 @@
         "createdAt": {
           "type": "number",
           "description": "ms epoch"
+        },
+        "doubts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "plausibility checks the third-party figures failed: a reason to doubt them, not a finding (backend/blocklens/api/plausibility.py)"
         }
       },
       "required": [
@@ -357,7 +372,8 @@
         "liquidity",
         "marketCap",
         "fdv",
-        "createdAt"
+        "createdAt",
+        "doubts"
       ],
       "additionalProperties": false
     },

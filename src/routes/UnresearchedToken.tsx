@@ -10,6 +10,7 @@ import { apiGet } from '../lib/api';
 import type { ProjectLiveResponse } from '../data/api';
 import { ProvChip } from '../components/primitives/Bits';
 import { RiskPanel } from '../components/live/RiskPanel';
+import { Doubts } from '../components/live/Doubts';
 import { addWatch, fetchWatchlist, recordInvestigation, removeWatch } from '../lib/live/product';
 
 /* ============================================================
@@ -190,6 +191,7 @@ export function UnresearchedToken() {
                 <Stat label="Pool age" value={age(top.createdAt)} sub={top.dex} />
               </div>
             )}
+            {top && <Doubts doubts={top.doubts} />}
           </section>
 
           <section className="bl-unres__sec">

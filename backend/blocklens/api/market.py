@@ -12,6 +12,7 @@ import threading
 from datetime import datetime, timezone
 from typing import Any
 
+from .plausibility import doubts
 from .upstream import UPSTREAM, RateLimited, Upstream, UpstreamError
 
 WINDOWS = ("m5", "h1", "h6", "h24")
@@ -101,6 +102,10 @@ def token_market(address: str, up: Upstream = UPSTREAM) -> dict | None:
         "fdv": num(p.get("fdv")),
         "createdAt": num(p.get("pairCreatedAt")),
     } for p in lst), key=lambda x: -x["liquidity"])
+    for x in pairs:
+        x["doubts"] = doubts(liquidity=x["liquidity"], market_cap=x["marketCap"], fdv=x["fdv"],
+                             volume24h=x["volume24h"], txns24h=x["buys24h"] + x["sells24h"],
+                             created_at_ms=x["createdAt"])
     head = lst[0]
     base = head.get("baseToken") if mine else head.get("quoteToken")
     base = base or {}
@@ -282,6 +287,10 @@ def trending(window: str, pages: int, up: Upstream = UPSTREAM) -> dict:
     as_of, pools = _ranking[key]
     pools = [dict(p) for p in pools]
     _patch(pools, up)
+    for p in pools:
+        p["doubts"] = doubts(liquidity=p["liquidity"], market_cap=p["marketCap"], fdv=p["fdv"],
+                             volume24h=p["volume"]["h24"], txns24h=p["buys"]["h24"] + p["sells"]["h24"],
+                             created_at_ms=p["createdAt"])
     missing = []
     for p in pools:
         p["holders"] = cached_security(p["token"], up)

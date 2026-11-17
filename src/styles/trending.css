@@ -291,3 +291,21 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* plausibility checks on third-party figures */
+.bl-doubts {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--warn);
+  background: var(--warn-soft);
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.bl-doubts strong {
+  color: var(--warn);
+}
+.bl-doubtmark {
+  color: var(--warn);
+  cursor: help;
+}

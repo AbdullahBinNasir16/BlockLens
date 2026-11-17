@@ -356,7 +356,17 @@ const Row = memo(function Row({
       <Change v={p.change.h6} />
       <Change v={p.change.h24} />
       <td className="bl-td--r num">${compact(Math.round(p.liquidity))}</td>
-      <td className="bl-td--r num">{p.marketCap ? `$${compact(Math.round(p.marketCap))}` : '—'}</td>
+      <td className="bl-td--r num">
+        {p.marketCap ? `$${compact(Math.round(p.marketCap))}` : '—'}
+        {p.doubts?.length > 0 && (
+          <span
+            className="bl-doubtmark"
+            title={`Plausibility check failed: ${p.doubts.join('; ')}. The source's own figures, not corrected.`}
+          >
+            {' \u26A0'}
+          </span>
+        )}
+      </td>
       <td className="bl-td--r num">
         {h ? (h.count == null ? '—' : int(h.count)) : <span className="bl-live__pending">···</span>}
       </td>
