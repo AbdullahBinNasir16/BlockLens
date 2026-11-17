@@ -13,16 +13,20 @@ import { ChainMark } from '../components/primitives/TokenMark';
 /* The one case study offered from the landing page. */
 const DEMO_CONTRACT = datasets.nockchain.project.contract;
 
-const DIMENSIONS = [
-  { k: 'On-chain', d: 'Holders, flow, launch mechanics' },
-  { k: 'Developers', d: 'Prior deployments and outcomes' },
-  { k: 'Launch type', d: 'Who holds the liquidity, read at minute 0' },
-  { k: 'Buyer-loss risk', d: 'A validated model, scored once at minute 5' },
-  { k: 'GitHub', d: 'Commit history and consistency' },
-  { k: 'Forward record', d: 'Every prediction logged before its outcome' },
-  { k: 'Fundamentals', d: 'Idea, uniqueness, innovation' },
-  { k: 'History', d: 'What this team shipped before' },
-  { k: 'Risk', d: 'Signals, evidence, contradiction' },
+/* What an investigation covers, and for which tokens. "live" is measured
+   for any Base token, now; "case" exists only for the three case studies,
+   and there it is sample. The list used to read as if every dimension were
+   researched for any contract (docs/EXAMINER_WALK.md). */
+const DIMENSIONS: { k: string; d: string; scope: 'live' | 'case' }[] = [
+  { k: 'Launch type', d: 'Who holds the liquidity, read at minute 0', scope: 'live' },
+  { k: 'Buyer-loss risk', d: 'A validated model, scored once at minute 5, for launches the feed saw', scope: 'live' },
+  { k: 'Forward record', d: 'Every prediction logged before its outcome', scope: 'live' },
+  { k: 'Market and contract', d: 'Price, liquidity, holders, honeypot flag, with plausibility checks', scope: 'live' },
+  { k: 'Developers', d: 'Prior deployments and outcomes', scope: 'case' },
+  { k: 'GitHub', d: 'Commit history and consistency', scope: 'case' },
+  { k: 'Fundamentals', d: 'Idea, uniqueness, innovation', scope: 'case' },
+  { k: 'History', d: 'What this team shipped before', scope: 'case' },
+  { k: 'Risk', d: 'Signals, evidence, contradiction', scope: 'case' },
 ];
 
 export function Landing() {
@@ -167,10 +171,11 @@ export function Landing() {
           <h2 className="display d2 bl-intro__h">
             One contract address.
             <br />
-            <span className="italic">A complete project investigation.</span>
+            <span className="italic">What can be measured, and what cannot.</span>
           </h2>
           <p className="bl-intro__note">
-            The score is the summary. The investigation is the product.
+            Every figure says where it came from. The first four are live for any Base token; the rest exist
+            only for the three case studies, and there they are sample.
           </p>
         </div>
 
@@ -189,7 +194,12 @@ export function Landing() {
             >
               <span className="bl-index__n meta">{String(i + 1).padStart(2, '0')}</span>
               <span className="bl-index__k">{d.k}</span>
-              <span className="bl-index__d">{d.d}</span>
+              <span className="bl-index__d">
+                {d.d}
+                <span className="bl-index__scope" data-scope={d.scope}>
+                  {d.scope === 'live' ? 'live, any Base token' : 'case studies only · sample'}
+                </span>
+              </span>
             </li>
           ))}
         </ol>

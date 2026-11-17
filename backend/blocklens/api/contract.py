@@ -115,6 +115,10 @@ class MarketPair(BaseModel):
     marketCap: float
     fdv: float
     createdAt: float = Field(..., description='ms epoch')
+    doubts: list[str] = Field(
+        ...,
+        description='plausibility checks the third-party figures failed: a reason to doubt them, not a finding (backend/blocklens/api/plausibility.py)',
+    )
 
 
 class TokenMarket(BaseModel):
@@ -352,6 +356,9 @@ class TrendingPool(BaseModel):
     fdv: float
     createdAt: float = Field(..., description='ms epoch')
     holders: TokenSecurity | None
+    doubts: list[str] = Field(
+        ..., description='plausibility checks the third-party figures failed'
+    )
 
 
 class TrendingResponse(BaseModel):

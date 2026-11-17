@@ -2,6 +2,7 @@ import { useProject, useProjectLive } from '../../lib/project-context';
 import { compact, int } from '../../lib/format';
 import { EmptyNote, ProvChip, SectionHead, Stat } from '../primitives/Bits';
 import { RiskPanel } from '../live/RiskPanel';
+import { Doubts } from '../live/Doubts';
 
 /* ============================================================
    The live section of a case study (Phase 7).
@@ -65,6 +66,7 @@ export function LiveSection() {
                 sub={top ? `${top.dex} · ${top.quote}` : d.market.error ?? 'no Base pair listed'}
               />
             </div>
+            {top && <Doubts doubts={top.doubts} />}
             <RiskPanel risk={d.risk} />
           </>
         )}

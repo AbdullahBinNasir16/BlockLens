@@ -639,3 +639,17 @@
   font-size: 0.85em;
   opacity: 0.8;
 }
+
+/* which tokens a dimension exists for */
+.bl-index__scope {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pos);
+}
+.bl-index__scope[data-scope='case'] {
+  color: var(--warn);
+}

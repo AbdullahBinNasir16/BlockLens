@@ -44,6 +44,8 @@ export interface TrendingPool {
   /** ms epoch */
   createdAt: number;
   holders: TokenSecurity | null;
+  /** plausibility checks the third-party figures failed */
+  doubts: string[];
 }
 
 export interface TrendingResponse {
@@ -80,6 +82,9 @@ export interface MarketPair {
   fdv: number;
   /** ms epoch */
   createdAt: number;
+  /** plausibility checks the third-party figures failed: a reason to doubt
+   *  them, not a finding (backend/blocklens/api/plausibility.py) */
+  doubts: string[];
 }
 
 export interface TokenMarket {

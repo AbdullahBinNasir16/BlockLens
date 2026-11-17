@@ -74,3 +74,24 @@ Automated and kept as tests in `e2e/fallback.spec.ts` and
 11. **The X cost is an estimate, not a measurement:** a measured launch
     rate × an assumed 20 posts per launch × the published price.
     `SCOPE.md` says which part is which.
+
+## Closed since (2026-11-16 to 2026-11-17)
+
+- **Open 1, third-party figures shown verbatim:** plausibility checks
+  (`backend/blocklens/api/plausibility.py`) now flag:
+  - liquidity above the market cap;
+  - a valuation over $10M on a pool under a day old with fewer than 500
+    trades;
+  - over $1M of liquidity with almost no trading.
+
+  The token page, the case-study Live section and the Trending table show
+  this as "treat with doubt". The figures are not corrected. UTDF trips two
+  checks.
+- **Open 2, an old token's new pool can be scored:** guarded. It is not
+  scored if the contract existed a day before the pool (PR #14).
+- **Open 3, the landing list promises more than exists:** each dimension
+  is now marked "live, any Base token" or "case studies only · sample", and
+  the headline no longer promises a complete investigation.
+- **Open 4, the screener shows address stubs:** names are read from each
+  token's contract (`symbol()`, `name()`); 771 of 771 named.
+  DexScreener had only 5, most of these launches being delisted.
