@@ -61,6 +61,39 @@ def _px(prices: dict[str, float], dt: datetime) -> float:
     return prices[max(earlier)]
 
 
+SYMBOL, NAME = "0x95d89b41", "0x06fdde03"
+
+
+def _decode_str(hexdata) -> str:
+    """An ERC-20 string return: ABI-encoded string, or bytes32 on old tokens."""
+    if not isinstance(hexdata, str) or len(hexdata) < 66:
+        return ""
+    b = bytes.fromhex(hexdata[2:])
+    try:
+        if len(b) >= 96:
+            n = int.from_bytes(b[32:64], "big")
+            if 0 < n <= 64:
+                return b[64:64 + n].decode("utf8", "ignore").strip()
+        return b[:32].rstrip(b"\0").decode("utf8", "ignore").strip()
+    except ValueError:
+        return ""
+
+
+def read_names(tokens: list[str]) -> dict[str, tuple[str, str]]:
+    """symbol() and name() from each token contract, in RPC batches."""
+    from ..ingest.budget import Budget
+    from ..ingest.sources import PooledRpcSource, SourceError
+    rpc = PooledRpcSource(Budget(max_calls=len(tokens) * 2 + 100))
+    calls = [("eth_call", [{"to": t, "data": sel}, "latest"]) for t in tokens for sel in (SYMBOL, NAME)]
+    res = rpc.batch(calls)
+    out = {}
+    for i, t in enumerate(tokens):
+        sym, nm = res[2 * i], res[2 * i + 1]
+        out[t] = ("" if isinstance(sym, SourceError) else _decode_str(sym)[:24],
+                  "" if isinstance(nm, SourceError) else _decode_str(nm)[:64])
+    return out
+
+
 def build(s: Session, prices: dict[str, float] | None = None) -> dict:
     t0 = time.perf_counter()
     if prices is None:
@@ -172,6 +205,18 @@ def build(s: Session, prices: dict[str, float] | None = None) -> dict:
             "insiderLinked": bool(insider),
             "positions": ps,
         })
+    # Names: the store has symbols for few of these launches, and most are
+    # delisted from DexScreener (many were rugged months ago). The token
+    # contracts still answer symbol() and name(): read them in RPC batches.
+    nameless = [m for m in meta if not m["symbol"]]
+    if nameless:
+        try:
+            got = read_names([m["address"] for m in nameless])
+            for m in nameless:
+                sym, nm = got.get(m["address"], ("", ""))
+                m["symbol"], m["name"] = sym, m["name"] or nm
+        except Exception:  # noqa: BLE001 - names are a nicety; stubs remain
+            log.exception("screener name lookup failed")
     log.info(json.dumps({"event": "screener_built", "tokens": len(meta), "wallets": len(wallets),
                          "seconds": round(time.perf_counter() - t0, 1)}))
     return {"provenance": "live", "asOf": datetime.now(timezone.utc).isoformat(), "unit": "USD",
