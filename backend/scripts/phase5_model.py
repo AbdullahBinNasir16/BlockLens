@@ -40,11 +40,12 @@ from blocklens.model import rulecheck
 from blocklens.model import token_features as tf
 from blocklens.sampling import design as d
 from blocklens.store.db import session_factory
+from blocklens.config import SEEDS
 
 CHAIN = "base"
 CACHE = Path("data/phase5_features.json")
 OUT = Path("reports/phase5_results.json")
-SEED = 20261018
+SEED = SEEDS.sampling
 BOOT = 2000
 KS = (10, 25, 50)
 

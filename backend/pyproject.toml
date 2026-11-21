@@ -36,6 +36,7 @@ dev = [
     "pytest-cov==7.0.0",
     "datamodel-code-generator==0.86.0",
     "black==26.10.1",
+    "matplotlib==3.11.2",
 ]
 
 [tool.pytest.ini_options]

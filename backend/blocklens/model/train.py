@@ -50,8 +50,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 from .dataset import Dataset, hop_subset
+from ..config import SEEDS
 
-SEED = 20261013
+SEED = SEEDS.graph
 N_SPLITS = 5
 
 

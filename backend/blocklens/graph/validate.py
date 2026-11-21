@@ -32,13 +32,14 @@ from math import exp, lgamma, log
 from dataclasses import dataclass, field
 
 import networkx as nx
+from ..config import SEEDS
 
 # The window two buys must fall inside to count as co-movement. Matches
 # build.CO_PURCHASE_WINDOW on purpose: measuring lift at a different window
 # from the one the edges were drawn with would be measuring two things.
 CO_MOVE_WINDOW = 300
 RANDOM_PAIRS = 20_000
-SEED = 20261013
+SEED = SEEDS.graph
 
 
 @dataclass

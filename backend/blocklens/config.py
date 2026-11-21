@@ -19,6 +19,23 @@ def _str(name: str, default: str) -> str:
     return os.environ.get(name, default).strip()
 
 
+
+@dataclass(frozen=True)
+class Seeds:
+    """Every random seed in the project, named, in one place (Phase 8,
+    REPRODUCE.md). Values are the ones each result was produced with; changing
+    one changes that result, so they are constants, not environment settings."""
+    graph: int = 20261013              # Louvain communities, cluster validation, Phase 4 model
+    sampling: int = 20261018           # Phase 5 window draws, models, bootstraps, permutation importance
+    forward_bootstrap: int = 20261019  # Phase 8 forward record interval
+    paper_agent: int = 20261021        # Phase 9 agent-minus-launchpad interval (post hoc)
+    forward_report: int = 20261103     # Phase 8 post-hoc report
+    shadow: int = 20261104             # Phase 11 shadow-score evaluation
+    paper_report: int = 20261021       # Phase 9 report
+
+
+SEEDS = Seeds()
+
 @dataclass(frozen=True)
 class RateLimit:
     """A token bucket's shape: `rate` refills per second, up to `burst`."""
