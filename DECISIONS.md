@@ -1826,3 +1826,75 @@ clear in about four days.
 **Effect on Phase 11:** its floor (2,000 resolved, 50 losses) waits on that
 backlog. Its result is reported once the floor is met on predictions
 recorded after the fix, as pre-registered.
+
+# Bundle detection, pre-registered (2026-11-21, before any measurement)
+
+**Why:** the graph lane's premise, that grouping wallets improves
+prediction, was contradicted (Figure 8). The defensible deliverable is
+**detection**: a measured finding about launches, validated against human
+labels. The strongest coordinated pattern in the store is bundling
+(Figure 10): one transaction that buys a token and spreads it to many
+wallets.
+
+**Definition, fixed now** (`blocklens/graph/bundles.py`):
+- **Bundle transaction:** a transaction, inside a launch's first 5
+  minutes, that contains a swap of that launch's pool and delivers the
+  token to **at least 3 distinct wallets**. Wallet = not a pool, not known
+  infrastructure, not the zero address.
+- **A launch is bundled** if it has at least one bundle transaction.
+- **Measured per launch:**
+  - the number of bundle transactions;
+  - the largest number of wallets one transaction reached;
+  - the share of minute-5 buyers that were reached by bundle transactions.
+
+**Population:** the labelled research launches alive at minute 5 (983;
+store window: each launch's first 24 hours).
+
+**Validation, fixed now:**
+- **Sample:** a stratified sample of 200 launches (100 the detector calls
+  bundled, 100 it does not; or all of a group if it has fewer), seed
+  `SEEDS.bundles`.
+- **Labels:** the team labels each by hand from a block explorer, without
+  seeing the detector's call: bundled / not bundled / cannot tell.
+- **Reported:** precision, recall (estimated from the stratified sample
+  with inverse-probability weights), and the share labelled "cannot tell".
+- **Floor:** no precision or recall is reported before 150 labelled
+  launches.
+
+**Reported descriptively, never as a model input in FYP 1:**
+- prevalence of bundled launches;
+- the outcome rates (RUG, buyer loss) for bundled vs not bundled.
+
+This is not a causal claim.
+
+**Deviation before any label (2026-11-21, same day).** The first run
+called 111 of 983 launches (11.3%) bundled. A mechanical check then showed:
+- 99 of the 111 reached exactly 3 recipients;
+- two addresses appeared in 65 and 54 of them (launchpad fee and reward
+  collectors missing from the infrastructure list).
+
+Most detections were a buyer plus fee wallets, not bundles.
+
+**Rule added:** an address reached by multi-recipient swap transactions of
+10 or more different launches is a collector, not a wallet. It is applied
+store-wide; 21 addresses are excluded.
+
+**Result:** 34 of 983 launches (3.5%) are bundled. 26 of those still reach
+exactly 3 wallets, which is for the blind labels to judge; the rule is not
+tuned further by eye.
+
+**Descriptive, both definitions** (no causal claim):
+
+| Definition | RUG rate, bundled vs not | Buyer-loss rate, bundled vs not |
+|---|---|---|
+| Original (111 bundled) | 6.3% vs 31.1% | 39.8% vs 27.8% |
+| With collectors excluded (34 bundled) | 8.8% vs 29.0% | 18.5% vs 30.2% |
+
+92% of the original 111 were launchpad launches, against 57.5% of the
+rest; the RUG gap is largely launch type.
+
+**Sample and floor:** the labelling sample is now 134 launches (all 34
+bundled and 100 not), so the pre-registered floor of 150 labels cannot be
+met. It becomes **120 of the 134**, set before any label exists.
+`reports/bundle_labelling.csv` is the sheet. The detector's calls are in
+`bundle_labelling_key.json`, which labellers must not open.

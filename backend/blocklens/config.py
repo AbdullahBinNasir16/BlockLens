@@ -32,6 +32,7 @@ class Seeds:
     forward_report: int = 20261103     # Phase 8 post-hoc report
     shadow: int = 20261104             # Phase 11 shadow-score evaluation
     paper_report: int = 20261021       # Phase 9 report
+    bundles: int = 20261121            # bundle-detection labelling sample (pre-registered)
 
 
 SEEDS = Seeds()
