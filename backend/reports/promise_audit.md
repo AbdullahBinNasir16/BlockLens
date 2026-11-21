@@ -88,7 +88,7 @@ otherwise.
 | Report decay: how fast the model ages | partially delivered | By test month and by forward week (Figure 6). Thin: April has 1 loss in 14 tokens; June and July have none. | Figure 6 |
 | Beat a simple rule checker, then a basic model | delivered | Boosting > logistic > both checkers. | Figure 4 |
 | Agent: paper trading only, against buying every launch | delivered | | `paper_agent.md` |
-| Agent: return, win rate and drawdown reported | partially delivered | Mean and median return, hit rate and total are reported. **Drawdown is not.** | `resolver.paper_agent` |
+| Agent: return, win rate and drawdown reported | delivered | Mean and median return, hit rate and total (pre-registered). Drawdown added post hoc on 21 Nov, on a one-stake-per-trade book: AGENT 14.6 stakes on 241 of capital at the pre-registered cap; 142.8 with capped trades dropped. | `resolver.paper_agent`; `reports/paper_drawdown.md` |
 | Agent: every trade logged with its trigger signal | delivered | The paper book lists every trade with its risk and launch type. | `/api/paper-agent/trades` |
 | Risk mitigation: X cost → smaller sample, cache | descoped instead | | `SCOPE.md` |
 | Risk mitigation: chain limits → one chain first, free indexer tiers | delivered (one chain); indexer not used | Blockscout returns 403; keyless RPC only, with a 1,000-block log cap. | `docs/FYP1_SCOPE.md` §4 |
@@ -147,8 +147,8 @@ otherwise.
 
 | Status | Rows |
 |---|---|
-| delivered | 41 |
-| partially delivered | 24 |
+| delivered | 42 |
+| partially delivered | 23 |
 | descoped | 9 |
 | contradicted by findings | 4 |
 | not started | 3 |

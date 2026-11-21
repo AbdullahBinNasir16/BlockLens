@@ -47,7 +47,7 @@ it.
 | Section | Writer | Numbers, tables and figures | Citations | Must establish |
 |---|---|---|---|---|
 | Problem | US | 1.7% of 2.06M tokens survived 30 days; 26.7% of pump.fun wallets lost money | Chainalysis 2025; CoinGecko 2026 | Why a launch-time signal with a published record matters |
-| Objectives and their status | US (TOOL table) | The promise-audit tally: 41 delivered, 24 partially delivered, 9 descoped, 4 contradicted by findings, 3 not started (of 85 rows) | | What was promised and what stands |
+| Objectives and their status | US (TOOL table) | The promise-audit tally: 42 delivered, 23 partially delivered, 9 descoped, 4 contradicted by findings, 3 not started (of 85 rows) | | What was promised and what stands |
 | Scope, and what is out of it (KOL descope paragraph, done Phase 7) | TOOL (done) | X at ~$0.005 a post (published, not measured); ~$70/day estimate; Base only | | That the descopes have stated reasons |
 
 ## Chapter 2: Research and existing solutions
@@ -98,13 +98,13 @@ it.
 | Clusters are real | TOOL figure, US interpretation | **Figure 9**: lift 3.6× (buys, 3/40 pairs, p = 0.049) and 4.7× (buys or sells, 12/155, p = 1.3e-5); shuffled control 0.26×. **Figure 10**: the bundle case (81 wallets, 2 transactions each). Bundle detector: 34 of 983 launches (3.5%) bundled; descriptive only, RUG 8.8% bundled vs 29.0% not; precision and recall pending labels (`reports/bundles.json`) | Grouping finds structure, even though it does not predict |
 | Calibration | TOOL | **Figure 5**: research cohort Brier 0.127 raw, 0.129 Platt, base 0.230. Forward: Brier 0.043 vs 0.044; mean prediction 0.096 vs observed 0.047 | The probabilities are not calibrated forward |
 | Forward validation | TOOL | Pre-registered at the 3 Nov floor: 8,259 resolved, 191 losses, PR-AUC 0.108 vs 0.023 (interval +0.055 to +0.124); 7-day pulls 89.2% vs 0.63%. **Now** (valid, 21 Nov): 10,233 resolved, 476 losses, PR-AUC 0.319; 14,503 excluded by the block-time rule. **Figure 6b** | That predictions made before their outcomes held up |
-| Paper agent | TOOL | 3,763 trades; beats buy-everything (+57% to +73%); not distinguishable from launchpad-only; median trade −3% | "Trades our own signal", and what it shows |
+| Paper agent | TOOL | 3,763 trades; beats buy-everything (+57% to +73%); not distinguishable from launchpad-only; median trade −3%. Drawdown, post hoc (`paper_drawdown.md`, 21 Nov): AGENT 14.6 stakes on 241 of capital, LAUNCHPAD 89.2 on 286; with capped trades dropped AGENT loses (−129) | "Trades our own signal", and what it shows |
 
 ## Chapter 8: Testing and early validation
 
 | Section | Writer | Numbers | Gaps |
 |---|---|---|---|
-| Automated tests | TOOL | Backend 189, frontend 40, Playwright 13; CI with a clean-machine compose job | |
+| Automated tests | TOOL | Backend 192, frontend 40, Playwright 13; CI with a clean-machine compose job | |
 | The results that were not what we hoped | TOOL facts (done: `reports/honest_results.md`), US framing | Items 1–10 | |
 | Reproducibility | TOOL | `REPRODUCE.md`; manifest; seeds in `config.Seeds` | ⚠ Reproduction from the raw chain was not re-run end to end (days of RPC); only from the store snapshot |
 
@@ -145,6 +145,6 @@ it.
 4. **Defence feedback**, and **meeting minutes**, are not recorded.
 5. **Reproduction from raw chain data** was not re-run end to end.
 6. **No accessibility audit** (slide 10 promise).
-7. **Drawdown** for the paper agent (slide 8 promise) is not computed.
+7. **Drawdown** for the paper agent: computed post hoc (`reports/paper_drawdown.md`), not pre-registered.
 8. **Bundle detection** has a prevalence (34 of 983, 3.5%) but no precision or recall until the team labels `reports/bundle_labelling.csv` (120 rows minimum). Insider detection has no result (slide 6 engine).
 9. **The UI screenshots** are out of date.

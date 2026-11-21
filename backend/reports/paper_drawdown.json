@@ -1,0 +1,145 @@
+{
+ "generated_at": "2026-11-21T11:59:40.212507+00:00",
+ "post_hoc": true,
+ "book": "one stake per trade, minute 5 to hour 6, 3% round-trip cost",
+ "launches": [
+  "2026-10-19T07:32:19+05:00",
+  "2026-11-17T20:07:25.200000+05:00"
+ ],
+ "rows": 10678,
+ "gap": "launches from 5 Nov 18:00 UTC to the 16 Nov fix are excluded (block-time rule); the curve joins across them",
+ "results": {
+  "cap_10_preregistered": {
+   "AGENT": {
+    "trades": 4742,
+    "total_pnl_stakes": 2230.78,
+    "max_drawdown_stakes": 14.64,
+    "peak_at": "2026-11-17T18:16:13.200000+05:00",
+    "trough_at": "2026-11-18T01:06:59+05:00",
+    "longest_under_water_trades": 152,
+    "capital_needed_stakes": 241,
+    "max_drawdown_share_of_capital": 0.061,
+    "order_luck_drawdown_p50_p95": [
+     8.72,
+     12.32
+    ]
+   },
+   "LAUNCHPAD": {
+    "trades": 5389,
+    "total_pnl_stakes": 2099.91,
+    "max_drawdown_stakes": 89.19,
+    "peak_at": "2026-11-17T13:06:16.200000+05:00",
+    "trough_at": "2026-11-18T01:06:59+05:00",
+    "longest_under_water_trades": 297,
+    "capital_needed_stakes": 286,
+    "max_drawdown_share_of_capital": 0.312,
+    "order_luck_drawdown_p50_p95": [
+     15.45,
+     21.96
+    ]
+   },
+   "CONTROL": {
+    "trades": 10419,
+    "total_pnl_stakes": -2018.43,
+    "max_drawdown_stakes": 2019.33,
+    "peak_at": "2026-10-19T14:16:07+05:00",
+    "trough_at": "2026-11-18T02:07:25.200000+05:00",
+    "longest_under_water_trades": 10375,
+    "capital_needed_stakes": 409,
+    "max_drawdown_share_of_capital": 4.937,
+    "order_luck_drawdown_p50_p95": [
+     2030.06,
+     2062.64
+    ]
+   }
+  },
+  "cap_2": {
+   "AGENT": {
+    "trades": 4742,
+    "total_pnl_stakes": 220.85,
+    "max_drawdown_stakes": 30.77,
+    "peak_at": "2026-11-05T04:03:13+05:00",
+    "trough_at": "2026-11-18T01:06:59+05:00",
+    "longest_under_water_trades": 454,
+    "capital_needed_stakes": 241,
+    "max_drawdown_share_of_capital": 0.128,
+    "order_luck_drawdown_p50_p95": [
+     10.91,
+     16.24
+    ]
+   },
+   "LAUNCHPAD": {
+    "trades": 5389,
+    "total_pnl_stakes": -53.3,
+    "max_drawdown_stakes": 203.54,
+    "peak_at": "2026-11-03T00:54:39+05:00",
+    "trough_at": "2026-11-18T01:06:59+05:00",
+    "longest_under_water_trades": 2263,
+    "capital_needed_stakes": 286,
+    "max_drawdown_share_of_capital": 0.712,
+    "order_luck_drawdown_p50_p95": [
+     74.14,
+     97.45
+    ]
+   },
+   "CONTROL": {
+    "trades": 10419,
+    "total_pnl_stakes": -4307.1,
+    "max_drawdown_stakes": 4307.1,
+    "peak_at": "start",
+    "trough_at": "2026-11-18T02:07:25.200000+05:00",
+    "longest_under_water_trades": 10419,
+    "capital_needed_stakes": 409,
+    "max_drawdown_share_of_capital": 10.531,
+    "order_luck_drawdown_p50_p95": [
+     4307.1,
+     4309.29
+    ]
+   }
+  },
+  "capped_dropped": {
+   "AGENT": {
+    "trades": 4506,
+    "total_pnl_stakes": -129.22,
+    "max_drawdown_stakes": 142.78,
+    "peak_at": "2026-10-22T01:54:17+05:00",
+    "trough_at": "2026-11-18T02:07:25.200000+05:00",
+    "longest_under_water_trades": 4104,
+    "capital_needed_stakes": 233,
+    "max_drawdown_share_of_capital": 0.613,
+    "order_luck_drawdown_p50_p95": [
+     136.74,
+     154.12
+    ]
+   },
+   "LAUNCHPAD": {
+    "trades": 5136,
+    "total_pnl_stakes": -430.09,
+    "max_drawdown_stakes": 439.13,
+    "peak_at": "2026-10-22T03:26:25+05:00",
+    "trough_at": "2026-11-18T02:07:25.200000+05:00",
+    "longest_under_water_trades": 4659,
+    "capital_needed_stakes": 278,
+    "max_drawdown_share_of_capital": 1.58,
+    "order_luck_drawdown_p50_p95": [
+     431.48,
+     441.19
+    ]
+   },
+   "CONTROL": {
+    "trades": 10159,
+    "total_pnl_stakes": -4618.43,
+    "max_drawdown_stakes": 4618.43,
+    "peak_at": "start",
+    "trough_at": "2026-11-18T02:07:25.200000+05:00",
+    "longest_under_water_trades": 10159,
+    "capital_needed_stakes": 404,
+    "max_drawdown_share_of_capital": 11.432,
+    "order_luck_drawdown_p50_p95": [
+     4618.43,
+     4623.0
+    ]
+   }
+  }
+ }
+}

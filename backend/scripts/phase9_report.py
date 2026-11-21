@@ -31,12 +31,12 @@ COST = rv.COSTS["headline"]
 
 
 def rows(s) -> list[dict]:
-    q = s.execute(text("""
+    q = s.execute(text(f"""
         select risk, launch_type, price_6h_vs_cutoff, reserve_cutoff, reserve_6h, launch_ts
         from live_prediction
         where chain = :c and status = 'scored' and resolved_6h_at is not null
-          and scored_at <= launch_ts + interval '6 hours'
-    """), {"c": rv.CHAIN}).all()
+          and scored_at <= launch_ts + interval '6 hours' and {rv.VALID_SQL}
+    """), {"c": rv.CHAIN, **rv.VALID_PARAMS}).all()
     out = []
     for risk, kind, ratio, rc, r6, ts in q:
         ref = max(float(rc or 0), float(r6 or 0))
