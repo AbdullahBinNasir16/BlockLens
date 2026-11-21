@@ -95,7 +95,7 @@ it.
 | Out of time | TOOL | **Figure 6a**: trained before 1 Mar; on 1 Mar–17 Apr (57 tokens, 20 losses) PR-AUC **0.796** vs checker 0.331. The model card's 0.758 is not reproducible from committed code | Generalisation over time |
 | Feature importance | TOOL | **Figure 7**: the top features are price run-up by minute 5 (0.335), liquidity vs peak (0.117), swaps (0.102), time to first buy (0.073) | What the model uses |
 | Graph features | TOOL figure, US interpretation | **Figure 8**: boosting timing 0.828 [0.731–0.904], graph 0.543 [0.411–0.682], both 0.833 [0.725–0.913] | The null result |
-| Clusters are real | TOOL figure, US interpretation | **Figure 9**: lift 3.6× (buys, 3/40 pairs, p = 0.049) and 4.7× (buys or sells, 12/155, p = 1.3e-5); shuffled control 0.26×. **Figure 10**: the bundle case (81 wallets, 2 transactions each) | Grouping finds structure, even though it does not predict |
+| Clusters are real | TOOL figure, US interpretation | **Figure 9**: lift 3.6× (buys, 3/40 pairs, p = 0.049) and 4.7× (buys or sells, 12/155, p = 1.3e-5); shuffled control 0.26×. **Figure 10**: the bundle case (81 wallets, 2 transactions each). Bundle detector: 34 of 983 launches (3.5%) bundled; descriptive only, RUG 8.8% bundled vs 29.0% not; precision and recall pending labels (`reports/bundles.json`) | Grouping finds structure, even though it does not predict |
 | Calibration | TOOL | **Figure 5**: research cohort Brier 0.127 raw, 0.129 Platt, base 0.230. Forward: Brier 0.043 vs 0.044; mean prediction 0.096 vs observed 0.047 | The probabilities are not calibrated forward |
 | Forward validation | TOOL | Pre-registered at the 3 Nov floor: 8,259 resolved, 191 losses, PR-AUC 0.108 vs 0.023 (interval +0.055 to +0.124); 7-day pulls 89.2% vs 0.63%. **Now** (valid, 21 Nov): 10,233 resolved, 476 losses, PR-AUC 0.319; 14,503 excluded by the block-time rule. **Figure 6b** | That predictions made before their outcomes held up |
 | Paper agent | TOOL | 3,763 trades; beats buy-everything (+57% to +73%); not distinguishable from launchpad-only; median trade −3% | "Trades our own signal", and what it shows |
@@ -104,7 +104,7 @@ it.
 
 | Section | Writer | Numbers | Gaps |
 |---|---|---|---|
-| Automated tests | TOOL | Backend 185, frontend 40, Playwright 13; CI with a clean-machine compose job | |
+| Automated tests | TOOL | Backend 189, frontend 40, Playwright 13; CI with a clean-machine compose job | |
 | The results that were not what we hoped | TOOL facts (done: `reports/honest_results.md`), US framing | Items 1–10 | |
 | Reproducibility | TOOL | `REPRODUCE.md`; manifest; seeds in `config.Seeds` | ⚠ Reproduction from the raw chain was not re-run end to end (days of RPC); only from the store snapshot |
 
@@ -146,5 +146,5 @@ it.
 5. **Reproduction from raw chain data** was not re-run end to end.
 6. **No accessibility audit** (slide 10 promise).
 7. **Drawdown** for the paper agent (slide 8 promise) is not computed.
-8. **Insider detection** has no measured result (slide 6 engine).
+8. **Bundle detection** has a prevalence (34 of 983, 3.5%) but no precision or recall until the team labels `reports/bundle_labelling.csv` (120 rows minimum). Insider detection has no result (slide 6 engine).
 9. **The UI screenshots** are out of date.

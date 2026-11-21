@@ -232,8 +232,15 @@ ETH-funding trace).
 - A search for funded wallets buying the same token independently within
   90 seconds **found none**.
 
-**What we did.** It is stated in the module docstring, in Figure 9's and
-Figure 10's captions, and in the promise audit.
+**What we did.**
+- It is stated in the module docstring, in Figure 9's and Figure 10's
+  captions, and in the promise audit.
+- Bundling became its own pre-registered detector (21 Nov,
+  `graph/bundles.py`). Its first run flagged 111 of 983 launches, but two
+  launchpad fee collectors appeared in 65 and 54 of them. A deviation,
+  recorded before any label, excludes addresses seen in 10 or more
+  launches: **34 of 983 (3.5%)** remain. Precision and recall wait on the
+  team's blind labels (`reports/bundle_labelling.csv`).
 
 ---
 

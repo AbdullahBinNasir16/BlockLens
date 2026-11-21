@@ -108,7 +108,7 @@ python -m pytest -q          # needs a PostgreSQL test database, default <db>_te
 cd .. && npm ci && npm test && npx tsc --noEmit -p .
 ```
 
-**Expected:** backend 185 passed; frontend 40 passed.
+**Expected:** backend 189 passed; frontend 40 passed.
 
 ---
 

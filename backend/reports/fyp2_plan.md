@@ -12,7 +12,7 @@ are marked.
 
 | Item | Proposal promise | Present state |
 |---|---|---|
-| Insider / bundler detection | slide 6, wallet screening engine | Bundling is visible (Figure 10); there is no detector and no measured rate |
+| Insider / bundler detection | slide 6, wallet screening engine Detector v0 exists (21 Nov, pre-registered): 34 of 983 launches bundled (3.5%). Precision and recall wait on the blind hand labels |
 | Calibration | slide 8, "does 70% mean 70%" | Fails forward. Shadow score A (Phase 11) is under evaluation |
 | Fusion: one risk view with its confidence | slide 6 | Launch type and buyer loss are shown separately |
 | Drawdown for the agent | slide 8 | Not computed |
@@ -55,7 +55,7 @@ are marked.
 
 | Month | A: Muhammad Abbas Raza (data and risk model) | B: Abdullah Bin Nasir (wallet graph, **pivot to detection**) | S: Shahmeer (**platform and agent**; was social and agent) |
 |---|---|---|---|
-| Jan | Phase 11 write-up; label v3 with pulls counted; dataset card from the forward record | Bundle detector spec; label 200 launches by hand for bundling (ground truth) | Host the stack on a VM (M11); uptime on Model Health |
+| Jan | Phase 11 write-up; label v3 with pulls counted; dataset card from the forward record | Score detector v0 against the blind labels (`scripts/bundles.py score`); if precision is poor, a pre-registered v1 | Host the stack on a VM (M11); uptime on Model Health |
 | Feb | Train model v2 on the forward record (pre-registered); recalibrate | Detector v1; precision and recall against the hand labels | Agent v2: sizing, slippage by size, drawdown, risk limits |
 | Mar | v2 forward record runs; decay by month | Detector on the full store and live; populate screener identity fields | Agent v2 forward, pre-registered against launchpad-only |
 | Apr | Fusion: one view (launch type, then model) with a stated confidence; ablations | Sybil validation: dispersers vs organic, held out | Accessibility audit and fixes; the AI text layer **or** its descope paper trail |
