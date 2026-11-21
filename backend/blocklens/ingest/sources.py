@@ -9,6 +9,7 @@ inert unless ALCHEMY_API_KEY is set — see DECISIONS.md, 2026-10-11.
 """
 from __future__ import annotations
 
+import threading
 import time
 from dataclasses import dataclass
 from typing import Any, Iterable, Sequence
@@ -189,6 +190,9 @@ class Endpoint:
 # all four; batches of 8 accepted by the first two; 1,000-block getLogs only
 # by Tenderly. Tenderly rate-limits per call inside a batch, so it gets
 # single calls only.
+_SHARED: dict[str, "Endpoint"] = {}
+_SHARED_LOCK = threading.Lock()
+
 DEFAULT_POOL = (
     Endpoint("https://mainnet.base.org", batch=8, logs=False),
     Endpoint("https://base-mainnet.public.blastapi.io", batch=8, logs=False),
@@ -213,29 +217,38 @@ class PooledRpcSource(RpcSource):
     def __init__(self, budget: Budget, pool: Sequence[Endpoint] = DEFAULT_POOL,
                  config: Config = CONFIG):
         super().__init__(budget, config=config)
-        self.pool = [Endpoint(**{k: getattr(e, k) for k in
-                                 ("url", "batch", "logs", "interval")}) for e in pool]
+        fresh = lambda e: Endpoint(**{k: getattr(e, k) for k in ("url", "batch", "logs", "interval")})
+        if pool is DEFAULT_POOL:
+            # One pacing state per provider for the whole process: the live
+            # scorer and the resolver run on separate threads, and two
+            # clients each pacing Tenderly at 0.3 s would hit it at twice
+            # the rate it tolerates.
+            with _SHARED_LOCK:
+                self.pool = [_SHARED.setdefault(e.url, fresh(e)) for e in pool]
+        else:
+            self.pool = [fresh(e) for e in pool]
         self._rr = 0
 
     # ---- endpoint choice -------------------------------------------------
 
     def _pick(self, *, need_logs: bool = False, min_batch: int = 1) -> Endpoint:
         while True:
-            now = time.monotonic()
-            ok = [e for e in self.pool if e.cool_until <= now
-                  and (e.logs or not need_logs) and e.batch >= min_batch]
-            if not ok:
-                ok = [e for e in self.pool if (e.logs or not need_logs)]
-                wake = min(max(e.cool_until, e.next_at) for e in ok)
-                time.sleep(max(0.05, wake - now))
-                continue
-            ready = [e for e in ok if e.next_at <= now]
-            if ready:
-                self._rr += 1
-                e = ready[self._rr % len(ready)]
-                e.next_at = now + e.interval
-                return e
-            time.sleep(max(0.02, min(e.next_at for e in ok) - now))
+            with _SHARED_LOCK:            # endpoints may be shared across threads
+                now = time.monotonic()
+                ok = [e for e in self.pool if e.cool_until <= now
+                      and (e.logs or not need_logs) and e.batch >= min_batch]
+                if not ok:
+                    ok = [e for e in self.pool if (e.logs or not need_logs)]
+                    pause = max(0.05, min(max(e.cool_until, e.next_at) for e in ok) - now)
+                else:
+                    ready = [e for e in ok if e.next_at <= now]
+                    if ready:
+                        self._rr += 1
+                        e = ready[self._rr % len(ready)]
+                        e.next_at = now + e.interval
+                        return e
+                    pause = max(0.02, min(e.next_at for e in ok) - now)
+            time.sleep(pause)
 
     def _post(self, e: Endpoint, body: Any) -> Any:
         try:

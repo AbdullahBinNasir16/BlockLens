@@ -51,6 +51,7 @@ async def lifespan(_app: FastAPI):
     STATE.scorer = Scorer()
     if os.environ.get("BLOCKLENS_LIVE", "1") == "1":
         threading.Thread(target=STATE.scorer.run_forever, name="live-scorer", daemon=True).start()
+        threading.Thread(target=STATE.scorer.run_resolver_forever, name="live-resolver", daemon=True).start()
         # the screener's corpus takes tens of seconds to build: start it now
         screener_corpus.corpus(session_factory)
     yield
