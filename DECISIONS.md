@@ -1866,3 +1866,35 @@ store window: each launch's first 24 hours).
 - the outcome rates (RUG, buyer loss) for bundled vs not bundled.
 
 This is not a causal claim.
+
+**Deviation before any label (2026-11-21, same day).** The first run
+called 111 of 983 launches (11.3%) bundled. A mechanical check then showed:
+- 99 of the 111 reached exactly 3 recipients;
+- two addresses appeared in 65 and 54 of them (launchpad fee and reward
+  collectors missing from the infrastructure list).
+
+Most detections were a buyer plus fee wallets, not bundles.
+
+**Rule added:** an address reached by multi-recipient swap transactions of
+10 or more different launches is a collector, not a wallet. It is applied
+store-wide; 21 addresses are excluded.
+
+**Result:** 34 of 983 launches (3.5%) are bundled. 26 of those still reach
+exactly 3 wallets, which is for the blind labels to judge; the rule is not
+tuned further by eye.
+
+**Descriptive, both definitions** (no causal claim):
+
+| Definition | RUG rate, bundled vs not | Buyer-loss rate, bundled vs not |
+|---|---|---|
+| Original (111 bundled) | 6.3% vs 31.1% | 39.8% vs 27.8% |
+| With collectors excluded (34 bundled) | 8.8% vs 29.0% | 18.5% vs 30.2% |
+
+92% of the original 111 were launchpad launches, against 57.5% of the
+rest; the RUG gap is largely launch type.
+
+**Sample and floor:** the labelling sample is now 134 launches (all 34
+bundled and 100 not), so the pre-registered floor of 150 labels cannot be
+met. It becomes **120 of the 134**, set before any label exists.
+`reports/bundle_labelling.csv` is the sheet. The detector's calls are in
+`bundle_labelling_key.json`, which labellers must not open.
