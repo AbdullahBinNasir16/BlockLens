@@ -128,6 +128,28 @@ class Scorer:
                 self.last_error = f"{type(e).__name__}: {str(e)[:200]}"
             time.sleep(POLL_SECONDS)
 
+    resolver_last_run: str | None = None
+    resolver_last_error: str | None = None
+
+    def run_resolver_forever(self) -> None:
+        """Outcomes, the forward record and the paper agent, on their own loop
+        so that resolving never delays scoring. Shares the RPC pacing."""
+        while True:
+            try:
+                rpc = PooledRpcSource(Budget(max_calls=50_000))
+                head = rpc.block_number() - 5
+                with session_factory()() as s:
+                    n = resolver.resolve(s, rpc, self._context(s), head)
+                    self.forward = resolver.scoreboard(s)
+                    self.forward["paper_agent"] = resolver.paper_agent(s)
+                self.resolver_last_run = datetime.now(timezone.utc).isoformat()
+                self.resolver_last_error = None
+            except Exception as e:  # noqa: BLE001 - the loop must survive a bad pass
+                n = 0
+                self.resolver_last_error = f"{type(e).__name__}: {str(e)[:200]}"
+            # busy while there is a backlog, idle when caught up
+            time.sleep(5 if n else POLL_SECONDS)
+
     def tick(self) -> None:
         rpc = PooledRpcSource(Budget(max_calls=20_000))
         clock = d.Clock(rpc)
@@ -204,10 +226,9 @@ class Scorer:
                                     features=self._features.pop(l.token, None), reserve_cutoff=rc,
                                     explanation=l.why)
                 s.commit()
-        with session_factory()() as s:
-            resolver.resolve(s, rpc, self._context(s), head)
-            self.forward = resolver.scoreboard(s)
-            self.forward["paper_agent"] = resolver.paper_agent(s)
+        # Resolution runs on its own thread (run_resolver_forever): since the
+        # 0.2 s blocks a 6-hour outcome is ~216 log requests, and done here it
+        # held minute-5 scores back by a median of 149 minutes.
         self._prune(clock)
         with self._lock:
             self.last_run = datetime.now(timezone.utc).isoformat()

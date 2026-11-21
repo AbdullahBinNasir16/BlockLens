@@ -1797,3 +1797,32 @@ skill.
 - **Research pipeline:** it now converts times to blocks through the same
   clock (`config.window_end`, `label/build.py`). Its results are unchanged
   for the research window, which is all 2 s blocks.
+
+## Resolution moved to its own thread (2026-11-21)
+
+**Found:** since the block-time fix, a 6-hour outcome spans 108,000 blocks.
+The only keyless log endpoint (Tenderly) caps a query at 1,000 blocks, so
+one outcome costs about 216 log requests, roughly 70 seconds. Resolution
+ran inside the scoring loop, which caused two problems:
+
+- **Scores came late:** minute-5 scores were made a median of 149 minutes
+  after launch (p90 358), and 256 came after 6 hours. Those 256 are
+  excluded by the timely-only rule. No information leaked into any score,
+  because features stop at the minute-5 block.
+- **Resolution fell behind:** 526 outcomes were resolved in five days,
+  against about 600 new scored launches a day; 2,186 were overdue on 21
+  November.
+
+**Fix:**
+- Outcomes, the forward record and the paper agent run on a separate loop.
+- RPC pacing is shared across threads, so Tenderly sees no more load than
+  before.
+- The label's method is unchanged: the same `extraction.measure` over the
+  full window.
+
+Expected throughput is about 1,200 outcomes a day, so the backlog should
+clear in about four days.
+
+**Effect on Phase 11:** its floor (2,000 resolved, 50 losses) waits on that
+backlog. Its result is reported once the floor is met on predictions
+recorded after the fix, as pre-registered.
