@@ -46,6 +46,7 @@ from dataclasses import dataclass
 import networkx as nx
 
 from .funding import AddressBook, load_address_book
+from ..config import SEEDS
 
 # Weights for the layer-two similarity graph. Funding adjacency dominates
 # because it is the only component that is evidence on its own; co-purchase
@@ -63,7 +64,7 @@ MIN_COMMUNITY_EDGE_WEIGHT = 0.5
 # Louvain is seeded, so a re-run reproduces the same assignments. Fixed in
 # the source rather than passed in: a seed that varies per invocation is a
 # reproducibility claim nobody can check.
-SEED = 20261013
+SEED = SEEDS.graph
 
 
 @dataclass

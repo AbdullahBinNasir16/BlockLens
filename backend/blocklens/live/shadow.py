@@ -15,9 +15,10 @@ from dataclasses import dataclass
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score
+from ..config import SEEDS
 
 CLIP = 1e-4
-SEED = 20261104
+SEED = SEEDS.shadow
 BOOT = 1000
 FLOOR = {"resolved": 2000, "losses": 50}
 

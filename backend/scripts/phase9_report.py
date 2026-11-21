@@ -23,9 +23,10 @@ from sqlalchemy import text
 
 from blocklens.live import resolver as rv
 from blocklens.store.db import session_factory
+from blocklens.config import SEEDS
 
 OUT = Path(__file__).resolve().parents[1] / "reports"
-SEED = 20261021
+SEED = SEEDS.paper_report
 COST = rv.COSTS["headline"]
 
 

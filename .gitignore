@@ -17,6 +17,9 @@ backend/.local/
 # Runtime state, caches and logs; the trained model artifact is kept
 backend/data/*
 !backend/data/models/
+# the feature and extraction caches the figures are computed from (REPRODUCE.md)
+!backend/data/phase5_features.json
+!backend/data/phase6_extraction.json
 *.log
 *.log.err
 

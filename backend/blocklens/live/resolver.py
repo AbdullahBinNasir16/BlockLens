@@ -20,6 +20,7 @@ from ..label import extraction as ex
 from ..label.sample import BALANCE_OF, _word
 from ..model import token_features as tf
 from ..sampling import design as d
+from ..config import SEEDS
 
 CHAIN = "base"
 WINDOW_SECONDS = ex.WINDOW_SECONDS                # six hours, in either block-time regime
@@ -180,7 +181,7 @@ def scoreboard(s: Session) -> dict:
             from sklearn.metrics import average_precision_score, roc_auc_score
             bl["pr_auc"] = round(float(average_precision_score(y, p)), 4)
             bl["roc_auc"] = round(float(roc_auc_score(y, p)), 4)
-            rng = np.random.default_rng(20261019)
+            rng = np.random.default_rng(SEEDS.forward_bootstrap)
             diffs = []
             for _ in range(1000):
                 i = rng.integers(0, len(y), len(y))
@@ -271,7 +272,7 @@ def paper_agent(s: Session) -> dict:
             co = np.array([r for t in trades
                            for r in [_trade_return(t[1], t[2], cost)] if r is not None])
             if len(ag) > 1 and len(co) > 1:
-                rng = np.random.default_rng(20261019)
+                rng = np.random.default_rng(SEEDS.forward_bootstrap)
                 d = [rng.choice(ag, len(ag)).mean() - rng.choice(co, len(co)).mean()
                      for _ in range(2000)]
                 pol["agent_minus_control_ci"] = [round(float(np.percentile(d, 2.5)), 4),
@@ -281,7 +282,7 @@ def paper_agent(s: Session) -> dict:
             lp = np.array([r for t in trades if t[3]
                            for r in [_trade_return(t[1], t[2], cost)] if r is not None])
             if len(ag) > 1 and len(lp) > 1:
-                rng = np.random.default_rng(20261021)
+                rng = np.random.default_rng(SEEDS.paper_agent)
                 d = [rng.choice(ag, len(ag)).mean() - rng.choice(lp, len(lp)).mean()
                      for _ in range(2000)]
                 pol["agent_minus_launchpad_ci"] = [round(float(np.percentile(d, 2.5)), 4),

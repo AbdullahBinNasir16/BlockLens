@@ -38,9 +38,10 @@ from ..ingest.evm import (
     V4_INITIALIZE, V4_SWAP, words,
 )
 from .. import chain_time
+from ..config import SEEDS
 from ..ingest.sources import RpcSource
 
-SEED = 20261018
+SEED = SEEDS.sampling
 PERIOD_START = datetime(2026, 1, 20, tzinfo=timezone.utc)
 PERIOD_END = datetime(2026, 7, 19, tzinfo=timezone.utc)
 SPLIT_DATE = datetime(2026, 4, 20, tzinfo=timezone.utc)
