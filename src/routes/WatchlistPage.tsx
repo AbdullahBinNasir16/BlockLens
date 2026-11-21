@@ -64,7 +64,7 @@ export function WatchlistPage() {
       )}
 
       {rows.length > 0 && (
-        <div className="bl-tablewrap">
+        <div className="bl-tablewrap" tabIndex={0}>
           <table className="bl-table">
             <thead>
               <tr>

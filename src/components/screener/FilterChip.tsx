@@ -22,6 +22,7 @@ export function DerivedRing() {
   return (
     <span
       className="bl-ring"
+      role="img"
       title="Derived — needs clustering, labelling or price history this build does not run"
       aria-label="derived"
     />

@@ -60,7 +60,9 @@ export function Workspace() {
         </>
       )}
 
-      <main className="bl-ws__main">
+      {/* tabIndex: the main pane scrolls on its own, so keyboard users must be
+          able to focus it to scroll (WCAG 2.1.1; axe scrollable-region-focusable). */}
+      <main className="bl-ws__main" tabIndex={0}>
         <Outlet />
       </main>
     </div>

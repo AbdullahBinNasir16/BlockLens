@@ -47,7 +47,7 @@ it.
 | Section | Writer | Numbers, tables and figures | Citations | Must establish |
 |---|---|---|---|---|
 | Problem | US | 1.7% of 2.06M tokens survived 30 days; 26.7% of pump.fun wallets lost money | Chainalysis 2025; CoinGecko 2026 | Why a launch-time signal with a published record matters |
-| Objectives and their status | US (TOOL table) | The promise-audit tally: 42 delivered, 23 partially delivered, 9 descoped, 4 contradicted by findings, 3 not started (of 85 rows) | | What was promised and what stands |
+| Objectives and their status | US (TOOL table) | The promise-audit tally: 42 delivered, 24 partially delivered, 9 descoped, 4 contradicted by findings, 2 not started (of 85 rows) | | What was promised and what stands |
 | Scope, and what is out of it (KOL descope paragraph, done Phase 7) | TOOL (done) | X at ~$0.005 a post (published, not measured); ~$70/day estimate; Base only | | That the descopes have stated reasons |
 
 ## Chapter 2: Research and existing solutions
@@ -104,7 +104,7 @@ it.
 
 | Section | Writer | Numbers | Gaps |
 |---|---|---|---|
-| Automated tests | TOOL | Backend 192, frontend 40, Playwright 13; CI with a clean-machine compose job | |
+| Automated tests | TOOL | Backend 192, frontend 40, Playwright 25 (13 product paths + 12 accessibility); CI with a clean-machine compose job | |
 | The results that were not what we hoped | TOOL facts (done: `reports/honest_results.md`), US framing | Items 1–10 | |
 | Reproducibility | TOOL | `REPRODUCE.md`; manifest; seeds in `config.Seeds` | ⚠ Reproduction from the raw chain was not re-run end to end (days of RPC); only from the store snapshot |
 
@@ -144,7 +144,7 @@ it.
 3. **Literature beyond the five slide-4 papers.**
 4. **Defence feedback**, and **meeting minutes**, are not recorded.
 5. **Reproduction from raw chain data** was not re-run end to end.
-6. **No accessibility audit** (slide 10 promise).
+6. **Accessibility:** an automated audit only (`reports/accessibility_audit.md`; 0 axe violations on 11 screens after fixes). No manual or screen-reader audit.
 7. **Drawdown** for the paper agent: computed post hoc (`reports/paper_drawdown.md`), not pre-registered.
 8. **Bundle detection** has a prevalence (34 of 983, 3.5%) but no precision or recall until the team labels `reports/bundle_labelling.csv` (120 rows minimum). Insider detection has no result (slide 6 engine).
 9. **The UI screenshots** are out of date.

@@ -14,8 +14,11 @@
   /* Ink scale */
   --ink: #0a0a0a;
   --ink-2: #2e2e2c;
-  --ink-3: #6b6a64;
-  --ink-4: #9a9891;
+  /* ink-3 and ink-4 darkened 2026-11-21 so text in ink-4 meets WCAG AA
+     (4.5:1) on paper and paper-sunken; ink-3 moved with it to keep the step.
+     Was #6b6a64 / #9a9891 (2.7:1). See backend/reports/accessibility_audit.md. */
+  --ink-3: #55544f;
+  --ink-4: #6d6c67;
   --ink-5: #bfbcb3;
 
   /* Hairlines */
@@ -24,11 +27,11 @@
   --rule-faint: #eeece6;
 
   /* Information signals — muted, editorial, never neon */
-  --pos: #1a7f4b;
+  --pos: #197948; /* was #1a7f4b: 4.25:1 on pos-soft */
   --pos-soft: #e4efe8;
   --neg: #b4342a;
   --neg-soft: #f5e6e4;
-  --warn: #a8790e;
+  --warn: #8b640c; /* was #a8790e: 3.4:1 on warn-soft */
   --warn-soft: #f6eeda;
   --info: #2c5aa0;
   --info-soft: #e6ecf5;

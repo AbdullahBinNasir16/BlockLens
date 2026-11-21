@@ -326,7 +326,7 @@ export function WalletDrawer({
             {ruleHolds ? 'rule met' : 'rule not met'}
           </p>
 
-          <div className="bl-tablewrap bl-tablewrap--inline">
+          <div className="bl-tablewrap bl-tablewrap--inline" tabIndex={0}>
             <table className="bl-minitable bl-checkmatrix">
               <thead>
                 <tr>

@@ -182,7 +182,7 @@ export function Portfolio() {
               <h2 className="eyebrow">Four policies, same launches, same cost</h2>
               <span className="meta">computed from the rows below</span>
             </div>
-            <div className="bl-tablewrap">
+            <div className="bl-tablewrap" tabIndex={0}>
               <table className="bl-table">
                 <thead>
                   <tr>
@@ -252,7 +252,7 @@ export function Portfolio() {
               </div>
               <span className="meta num">{int(rows.length)} trades</span>
             </div>
-            <div className="bl-tablewrap">
+            <div className="bl-tablewrap" tabIndex={0}>
               <table className="bl-table bl-table--live">
                 <thead>
                   <tr>

@@ -16,7 +16,7 @@ are marked.
 | Calibration | slide 8, "does 70% mean 70%" | Fails forward. Shadow score A (Phase 11) is under evaluation |
 | Fusion: one risk view with its confidence | slide 6 | Launch type and buyer loss are shown separately |
 | Drawdown for the agent | slide 8 | Computed post hoc on a fixed-stake book (`paper_drawdown.md`); not for a sized book |
-| Accessibility | slide 10 | Not audited |
+| Accessibility | slide 10 | Automated audit done and fixed (0 axe violations, gated in CI); manual and screen-reader audit not done |
 | Dataset size | slide 8, 5,000 launches | 983 labelled alive, plus a 10,233-launch forward record on a different label |
 | Decay study | slide 8 | Thin: few positives in later months |
 | AI text layer | slide 6 | Not started. Decide: build it with a narrow scope, or descope it with a reason |

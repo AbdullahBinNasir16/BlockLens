@@ -163,7 +163,7 @@ export function ModelHealth() {
               <span className="meta">{h.outages.length ? `${h.outages.length} in the window` : 'none in the window'}</span>
             </div>
             {h.outages.length > 0 && (
-              <div className="bl-tablewrap">
+              <div className="bl-tablewrap" tabIndex={0}>
                 <table className="bl-table">
                   <thead>
                     <tr>

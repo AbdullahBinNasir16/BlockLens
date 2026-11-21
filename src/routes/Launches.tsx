@@ -268,7 +268,7 @@ export function Launches() {
         </span>
       </div>
 
-      <div className="bl-tablewrap">
+      <div className="bl-tablewrap" tabIndex={0}>
         <table className="bl-table bl-table--live">
           <thead>
             <tr>

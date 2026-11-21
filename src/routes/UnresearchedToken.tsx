@@ -247,7 +247,7 @@ export function UnresearchedToken() {
               <div className="bl-unres__sech">
                 <h2 className="eyebrow">Pools · {tok.pairs.length}</h2>
               </div>
-              <div className="bl-tablewrap">
+              <div className="bl-tablewrap" tabIndex={0}>
                 <table className="bl-table">
                   <thead>
                     <tr>

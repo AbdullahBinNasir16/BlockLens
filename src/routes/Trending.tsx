@@ -220,7 +220,7 @@ export function Trending() {
           counts are left out. The page keeps retrying every ten seconds.
         </p>
       )}
-      <div className="bl-tablewrap">
+      <div className="bl-tablewrap" tabIndex={0}>
         <table className="bl-table bl-table--live">
           <thead>
             <tr>
