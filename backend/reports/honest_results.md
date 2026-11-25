@@ -185,7 +185,12 @@ calibrated risk score.
 - The product shows the forward band's observed rate ("about 49 in 100"),
   never the raw score as a probability.
 - A recalibrated score (Phase 11, shadow score A) was pre-registered on
-  3 Nov and is being evaluated on post-fix launches.
+  3 Nov. On 25 Nov it **passed its criterion**, but its pass comes from one
+  scam family that raised the loss rate from 2.4% to 22.9%.
+  - A predicts 2.7% on average against 22.9% observed.
+  - Without the family, A's average matches the observed 2.1%, but its
+    interval against a constant crosses zero.
+  - Source: `phase11_shadow.md`.
 
 ---
 

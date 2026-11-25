@@ -1898,3 +1898,31 @@ bundled and 100 not), so the pre-registered floor of 150 labels cannot be
 met. It becomes **120 of the 134**, set before any label exists.
 `reports/bundle_labelling.csv` is the sheet. The detector's calls are in
 `bundle_labelling_key.json`, which labellers must not open.
+
+# Phase 11 result: both pre-registered criteria pass (2026-11-25)
+
+Full report: `backend/reports/phase11_shadow.md`. The floor was passed with
+2,333 resolved launches and 534 losses (launches from 16 to 20 Nov).
+
+| Score | Criterion | Result |
+|---|---|---|
+| A (calibrated buyer loss) | Brier below the fitting-rate constant, interval below zero | 0.2083 vs 0.2186, interval −0.0118 to −0.0090: **pass** |
+| B (buyer loss or pull) | PR-AUC above launch type, interval above zero; Brier below its constant | 0.890 vs 0.739, interval +0.136 to +0.167; Brier 0.2155 vs 0.2547: **pass** |
+
+**Post hoc, written after the result was seen** (`scripts/phase11_posthoc.py`):
+- The buyer-loss base rate went from 2.4% (fitting set) to 22.9%
+  (evaluation set).
+- 498 of the 534 losses are one launch family: the 3 Nov scam template,
+  tagged by its 1.5 B-token seed. It is 611 of 2,333 evaluation launches,
+  against 40 of 8,323 in the fitting set.
+- Outside that family, loss rates are unchanged: launchpad 3.6% against
+  3.9%; self-deployed 0.3% against 0.2%.
+- A predicts 2.7% on average against 22.9% observed, and v1's raw risk has
+  a lower Brier score (0.150). A's pass comes from the family.
+- Without the family (1,722 launches, 36 losses, under the floor), A's
+  average prediction equals the observed 2.1%. Its interval against the
+  constant crosses zero (−0.0012 to +0.0002).
+- B beats launch type with and without the family.
+
+**Not changed:** v1's display, the paper agent and the live feed. Neither
+score replaces v1 without a team decision.

@@ -13,7 +13,7 @@ are marked.
 | Item | Proposal promise | Present state |
 |---|---|---|
 | Insider / bundler detection | slide 6, wallet screening engine Detector v0 exists (21 Nov, pre-registered): 34 of 983 launches bundled (3.5%). Precision and recall wait on the blind hand labels |
-| Calibration | slide 8, "does 70% mean 70%" | Fails forward. Shadow score A (Phase 11) is under evaluation |
+| Calibration | slide 8, "does 70% mean 70%" | Fails forward. Shadow score A passed its Phase 11 criterion on 25 Nov, but only because of one scam family; without it, it matches the mean and does not beat a constant (`phase11_shadow.md`) |
 | Fusion: one risk view with its confidence | slide 6 | Launch type and buyer loss are shown separately |
 | Drawdown for the agent | slide 8 | Computed post hoc on a fixed-stake book (`paper_drawdown.md`); not for a sized book |
 | Accessibility | slide 10 | Automated audit done and fixed (0 axe violations, gated in CI); manual and screen-reader audit not done |
@@ -48,7 +48,8 @@ are marked.
 - Model v2 on the forward record with a pull-aware label: first a
   separately pre-registered record, then a forward test.
 - The decay study by month, once each month has enough positives.
-- The Phase 11 result (due ~23 Nov 2026), then a recalibrated model in
+- The Phase 11 result is in (25 Nov: both criteria pass; post hoc, one
+  scam family drives A's pass). A recalibrated model in
   production.
 
 ## Plan by month
